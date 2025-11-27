@@ -270,8 +270,8 @@ footer {
 /* --- Botão de Enviar --- */
 .botao-sac {
     display: inline-block;
-    background-color: #2f2f2f;
-    color: ;
+    background-color: #f4f4f5;
+    color: #18181b;
     font-weight: bold;
     text-transform: uppercase;
     padding: 1rem 2rem;
@@ -285,10 +285,30 @@ footer {
 
 
 .botao-sac:hover {
-    color: #171717;
-    background-color: #d7d7d7;
+    color: #f4f4f5;
+    background-color: #2563eb;
     scale: 102%;
     box-shadow: 0 10px 20px -5px rgba(178, 185, 200, 0.5);
+}
+
+/* --- Botão Voltar --- */
+.botao-voltar {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    padding: 0.6rem 1.2rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.botao-voltar:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateX(-4px);
 }
 
 /* Ajuste para Select (Seta branca) */
@@ -306,43 +326,75 @@ footer {
 /* =================================================================
    PÁGINA SETOR SAÚDE
 ================================================================= */
+/* =================================================================
+   ESTILOS GERAIS DAS PÁGINAS DE SETOR
+================================================================= */
+.page-setor .hero-header {
+    padding: 4rem 2rem;
+    border-radius: 16px;
+    margin-bottom: -3rem; /* Puxa o conteúdo de baixo para cima */
+    position: relative;
+    z-index: 1;
+    color: #fff;
+    overflow: hidden;
+}
 
-.page-saude .page-title {
-    color: #06b6d4; /* Cor tema de saúde */
-    margin-bottom: 2rem;
+.page-setor .page-title {
+    margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.page-setor .page-description {
+    max-width: 65ch;
+    margin-inline: auto;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.1rem;
+}
+
+.page-setor .hero-header .container {
+    position: relative;
+    z-index: 2;
+    text-align: center;
 }
 
 .search-form {
-    background-color: #f8fafc;
-    padding: 2rem;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
-    margin-bottom: 3rem;
-}
+    /* Efeito Glassmorphism */
+    background-color: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 
-.search-form .form-group label {
-    color: #334155;
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 2.5rem;
+    position: relative;
+    z-index: 2;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    align-items: end;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
 }
 
 .search-form input,
 .search-form select {
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.8);
     border: 1px solid #cbd5e1;
     color: #1e293b;
 }
 
-.search-form input:focus,
-.search-form select:focus {
-    border-color: #06b6d4;
-    outline: 2px solid transparent;
-    box-shadow: 0 0 0 2px #06b6d4;
+.results-container h2 {
+    padding-bottom: 0.5rem;
+    color: #334155;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
-.page-saude .results-container h2 {
-    border-bottom: 2px solid #06b6d4;
-    padding-bottom: 0.5rem;
-    margin-bottom: 1.5rem;
-}
 
 .results-grid {
     display: grid;
@@ -352,17 +404,20 @@ footer {
 
 .result-card {
     background-color: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
+    border: 1px solid #eaf0f6;
+    border-radius: 12px;
+    border-top-width: 4px;
     padding: 1.5rem;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    box-shadow: 0 5px 15px rgba(0, 37, 92, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
 }
 
 .result-card h3 {
-    color: #06b6d4;
-    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .result-card p {
@@ -371,13 +426,17 @@ footer {
     margin-bottom: 0.5rem;
 }
 
+.result-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 37, 92, 0.1);
+}
+
 .botao-detalhes {
-    display: inline-block;
-    background-color: #06b6d4;
+    display: inline-block;    
     color: white;
     padding: 0.75rem 1.5rem;
     border-radius: 6px;
-    text-align: center;
+    text-align: center;    
     text-decoration: none;
     font-weight: 600;
     margin-top: auto; /* Empurra o botão para o final do card */
@@ -385,84 +444,170 @@ footer {
 }
 
 .botao-detalhes:hover {
+    filter: brightness(1.1);
+}
+
+/* =================================================================
+   PÁGINA SETOR SAÚDE (CORES E ESTILOS ESPECÍFICOS)
+================================================================= */
+
+.page-saude .hero-header {
+    background: linear-gradient(45deg, #0891b2, #06b6d4);
+}
+
+.page-saude .page-title,
+.page-saude .result-card h3 {
+    color: #06b6d4; /* Cor tema de saúde */
+}
+
+.page-saude .search-form input:focus,
+    border-top-color: #06b6d4;
+}
+
+.page-saude .search-form input:focus,
+.page-saude .search-form select:focus {
+    border-color: #06b6d4;
+    box-shadow: 0 0 0 3px #06b6d460;
+}
+
+.page-saude .results-container h2 {
+    border-bottom: 2px solid #06b6d4;
+}
+
+.page-saude .botao-detalhes {
+    background-color: #06b6d4;
+}
+
+.page-saude .botao-detalhes:hover {
     background-color: #0891b2;
 }
 
 /* =================================================================
-   PÁGINA SETOR SEGURANÇA
+   PÁGINA SETOR SEGURANÇA (CORES E ESTILOS ESPECÍFICOS)
 ================================================================= */
 
-.page-seguranca .page-title-seguranca {
+.page-seguranca .hero-header {
+    background: linear-gradient(45deg, #1d4ed8, #2563eb);
+}
+
+.page-seguranca .page-title,
+.page-seguranca .result-card h3 {
     color: #2563eb; /* Cor tema de segurança */
-    margin-bottom: 2rem;
 }
 
-.search-form-seguranca {
-    background-color: #f8fafc;
-    padding: 2rem;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
-    margin-bottom: 3rem;
+.page-seguranca .search-form input:focus,
+    border-top-color: #2563eb;
 }
 
-.search-form-seguranca .form-group label {
-    color: #334155;
-}
-
-.search-form-seguranca input,
-.search-form-seguranca select {
-    background-color: #fff;
-    border: 1px solid #cbd5e1;
-    color: #1e293b;
-}
-
-.search-form-seguranca input:focus,
-.search-form-seguranca select:focus {
+.page-seguranca .search-form input:focus,
+.page-seguranca .search-form select:focus {
     border-color: #2563eb;
-    outline: 2px solid transparent;
-    box-shadow: 0 0 0 2px #2563eb;
+    box-shadow: 0 0 0 3px #2563eb60;
 }
 
 .page-seguranca .results-container h2 {
     border-bottom: 2px solid #2563eb;
 }
 
-.result-card-seguranca {
-    background-color: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    display: flex;
-    flex-direction: column;
-}
-
-.result-card-seguranca h3 {
-    color: #2563eb;
-    margin-bottom: 1rem;
-}
-
-.result-card-seguranca p {
-    color: #475569;
-    line-height: 1.6;
-    margin-bottom: 0.5rem;
-}
-
-.botao-detalhes-seguranca {
-    display: inline-block;
+.page-seguranca .botao-detalhes {
     background-color: #2563eb;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    text-align: center;
-    text-decoration: none;
-    font-weight: 600;
-    margin-top: auto;
-    transition: background-color 0.3s ease;
 }
 
-.botao-detalhes-seguranca:hover {
+.page-seguranca .botao-detalhes:hover {
     background-color: #1d4ed8;
+}
+
+/* =================================================================
+   PÁGINA SETOR TRÂNSITO (CORES E ESTILOS ESPECÍFICOS)
+================================================================= */
+
+.page-transito .hero-header {
+    background: linear-gradient(45deg, #b45309, #d97706);
+}
+
+.page-transito .page-title,
+.page-transito .result-card h3 {
+    color: #d97706; /* Cor tema de trânsito */
+}
+
+.page-transito .result-card {
+    border-top-color: #d97706;
+}
+
+.page-transito .search-form input:focus,
+.page-transito .search-form select:focus {
+    border-color: #d97706;
+    box-shadow: 0 0 0 3px #d9770660;
+}
+
+.page-transito .results-container h2 {
+    border-bottom: 2px solid #d97706;
+}
+
+.page-transito .botao-detalhes {
+    background-color: #d97706;
+}
+
+.page-transito .botao-detalhes:hover {
+    background-color: #b45309;
+}
+
+/* =================================================================
+   PÁGINA SETOR EDUCAÇÃO (CORES E ESTILOS ESPECÍFICOS)
+================================================================= */
+
+.page-educacao .hero-header {
+    background: linear-gradient(45deg, #6d28d9, #7c3aed);
+}
+
+.page-educacao .page-title,
+.page-educacao .result-card h3 {
+    color: #7c3aed; /* Cor tema de educação */
+}
+
+.page-educacao .result-card {
+    border-top-color: #7c3aed;
+}
+
+.page-educacao .search-form input:focus,
+.page-educacao .search-form select:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px #7c3aed60;
+}
+
+.page-educacao .results-container h2 {
+    border-bottom: 2px solid #7c3aed;
+}
+
+.page-educacao .botao-detalhes {
+    background-color: #7c3aed;
+}
+
+.page-educacao .botao-detalhes:hover {
+    background-color: #6d28d9;
+}
+
+/* =================================================================
+   PÁGINA SETOR LAZER (CORES E ESTILOS ESPECÍFICOS)
+================================================================= */
+
+.page-lazer .hero-header {
+    background: linear-gradient(45deg, #db2777, #ec4899);
+}
+
+.page-lazer .page-title,
+.page-lazer .result-card h3 {
+    color: #ec4899; /* Cor tema de lazer */
+}
+
+.page-lazer .result-card {
+    border-top-color: #ec4899;
+}
+
+.page-lazer .search-form input:focus,
+.page-lazer .search-form select:focus {
+    border-color: #ec4899;
+    box-shadow: 0 0 0 3px #ec489960;
 }
 
 /* =================================================================
@@ -470,12 +615,18 @@ footer {
 ================================================================= */
 
 .emergency-section {
-    margin-top: 4rem;
+    margin-top: 5rem;
     text-align: center;
 }
 
 .emergency-section h2 {
     margin-bottom: 2rem;
+    justify-content: center;
+}
+
+.emergency-section .container {
+    padding-top: 3rem;
+    border-top: 1px solid #e2e8f0;
 }
 
 .emergency-grid {
@@ -486,22 +637,46 @@ footer {
 }
 
 .emergency-item {
-    padding: 2rem 1rem;
-    border-radius: 8px;
+    padding: 2.5rem 1rem;
+    border-radius: 12px;
     color: white;
     font-weight: bold;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.emergency-item:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 15px 30px -5px rgba(0,0,0,0.2);
 }
 
 .emergency-item h3 {
     font-size: 1.25rem;
     margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 2;
 }
 
 .emergency-item p {
-    font-size: 2.5rem;
+    font-size: 3.5rem;
     font-family: 'Oxanium', sans-serif;
+    line-height: 1;
+    position: relative;
+    z-index: 2;
 }
 
 /* Cores específicas por página */
-.page-saude .emergency-item { background-color: #06b6d4; }
-.page-seguranca .emergency-item { background-color: #2563eb; }
+.page-saude .emergency-item { background: radial-gradient(circle, #06b6d4, #0891b2); }
+.page-seguranca .emergency-item { background: radial-gradient(circle, #2563eb, #1d4ed8); }
+.page-transito .emergency-item { background: radial-gradient(circle, #d97706, #b45309); }
+.page-educacao .emergency-item { background: radial-gradient(circle, #7c3aed, #6d28d9); }
+.page-lazer .emergency-item { background: radial-gradient(circle, #ec4899, #db2777); }
+
+/* Ícones */
+.icon {
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    vertical-align: -0.125em;
+}
