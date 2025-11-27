@@ -460,7 +460,7 @@ footer {
     color: #06b6d4; /* Cor tema de saúde */
 }
 
-.page-saude .search-form input:focus,
+.page-saude .search-form input:focus{
     border-top-color: #06b6d4;
 }
 
@@ -495,7 +495,7 @@ footer {
     color: #2563eb; /* Cor tema de segurança */
 }
 
-.page-seguranca .search-form input:focus,
+.page-seguranca .search-form input:focus{
     border-top-color: #2563eb;
 }
 
