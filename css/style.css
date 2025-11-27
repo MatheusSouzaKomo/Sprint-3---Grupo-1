@@ -1,0 +1,507 @@
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=TASA+Explorer:wght@400..800&display=swap');
+
+body{
+    font-family: "TASA Explorer", system-ui;
+}
+
+
+/* HEADER */
+
+header {
+    width: 100%;
+    padding: 20px;
+    background-color: black;
+    border-bottom: 5px solid transparent;
+    border-image: linear-gradient(to right, 
+        #06b6d4,
+        #2563eb,
+        #d97706,
+        #7c3aed,
+        #ec4899,
+        #10b981 
+    );
+    border-image-slice: 1;
+}
+
+header h1{
+    text-align: center;
+    color: white;
+}
+
+
+/* MAIN */
+
+main h1{
+    margin-top: 10px;
+    text-align: center;
+    font-size: 3rem;
+}
+
+.container-card {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    min-height: 350px;  
+    background-color: white;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 60px;
+
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.card h2{
+    position: relative;
+    z-index: 11;
+    transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+.card-content {
+    padding: 20px;
+}
+
+
+.card-bar {
+    width: 100%;
+    height: 50px;
+    position: absolute;
+    padding: 0 !important; 
+    bottom: 0;
+    left: 0;
+    background-color: currentColor;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 20px;
+
+    transition: height 0.4s ease-in-out;
+    z-index: 10;
+}
+
+.card-bar button, a{
+    width: 100%;
+    height: 100%;
+}
+
+.card-bar button {
+    color: white;
+    background-color: currentColor;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: none;
+    margin: 0;
+    padding: 0;
+    transition: all 0.3s ease;
+}
+
+.card-saude .card-bar {color: #06b6d4;}
+.card-seguranca .card-bar {color: #163b8d;}
+.card-transito .card-bar {color: #d97706;}
+.card-educ .card-bar {color: #7c3aed;}
+.card-lazer .card-bar {color: #ec4899;}
+.card-economia .card-bar {color: #10b981;}
+
+.card-saude .card-bar button {background-color: #06b6d4;}
+.card-seguranca .card-bar button {background-color: #163b8d;}
+.card-transito .card-bar button {background-color: #d97706;}
+.card-educ .card-bar button {background-color: #7c3aed;}
+.card-lazer .card-bar button {background-color: #ec4899;}
+.card-economia .card-bar button {background-color: #10b981;}
+
+
+.card p {
+    color: #333;
+    line-height: 1.5;
+}
+
+.card-saude { color: #06b6d4; box-shadow: #06b6d4ad 0px 13px 27px -5px, #06b6d4ad 0px 8px 16px -8px;  }
+.card-seguranca { color: #163b8d; box-shadow: #163b8dad 0px 13px 27px -5px, #163b8dad 0px 8px 16px -8px;  }
+.card-transito { color: #d97706; box-shadow: #d97706ad 0px 13px 27px -5px, #d97706ad 0px 8px 16px -8px;  }
+.card-educ { color: #7c3aed; box-shadow: #7c3aedad 0px 13px 27px -5px, #7c3aedad 0px 8px 16px -8px;  }
+.card-lazer { color: #ec4899; box-shadow: #ec4899ad 0px 13px 27px -5px, #ec4899ad 0px 8px 16px -8px;  }
+.card-economia { color: #10b981; box-shadow: #10b981ad 0px 13px 27px -5px, #10b981ad 0px 8px 16px -8px; }
+
+
+.card:hover {
+    transform: translateY(-10px);
+}
+.card-saude:hover {
+    box-shadow: #06b6d4ad 0px 20px 40px -5px, #06b6d4ad 0px 15px 25px -8px;
+}
+.card-seguranca:hover {
+    box-shadow: #163b8dad 0px 20px 40px -5px, #163b8dad 0px 15px 25px -8px;
+}
+.card-transito:hover {
+    box-shadow: #d97706ad 0px 20px 40px -5px, #d97706ad 0px 15px 25px -8px;
+}
+.card-educ:hover {
+    box-shadow: #7c3aedad 0px 20px 40px -5px, #7c3aedad 0px 15px 25px -8px;
+}
+.card-lazer:hover {
+    box-shadow: #ec4899ad 0px 20px 40px -5px, #ec4899ad 0px 15px 25px -8px;
+}
+.card-economia:hover {
+    box-shadow: #10b981ad 0px 20px 40px -5px, #10b981ad 0px 15px 25px -8px;
+}
+
+.card:hover .card-bar {
+    height: 100%;
+    display: flex;
+}
+
+.card:hover .card-bar button{
+    font-size: 2.5rem;
+}
+
+.card:hover h2{
+    color: #fff;
+    font-size: 1.8rem;
+}
+
+
+/* FOOTER */
+
+footer {
+    width: 100%;
+    padding: 20px;
+    background-color: black;
+    border-top: 5px solid transparent;
+    border-image: linear-gradient(to right, 
+        #06b6d4, /* Saúde */
+        #2563eb, /* Segurança */
+        #d97706, /* Trânsito */
+        #7c3aed, /* Educação */
+        #ec4899, /* Lazer */
+        #10b981  /* Economia */
+    );
+    border-image-slice: 1;
+}
+
+.sac-footer {
+    background-color: #18181b;
+    color: #f4f4f5;
+    padding-block: 4rem;
+    margin-top: 4rem;
+}
+
+
+.sac-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 4rem;
+    align-items: start;
+}
+
+
+.sac-info h2 {
+    font-size: 2rem;
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+.sac-info p {
+    color: #a1a1aa;
+    line-height: 1.6;
+    max-width: 45ch;
+}
+
+.sac-contacts {
+    list-style: none;
+    margin-top: 2rem;
+    color: #e4e4e7;
+}
+
+.sac-contacts li {
+    margin-bottom: 0.5rem;
+}
+
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #d4d4d8;
+}
+
+
+.sac-form input,
+.sac-form select,
+.sac-form textarea{
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid #3f3f46;
+    border-radius: 4px;
+    color: white;
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+/* Foco nos Inputs (Brilho Azul da Segurança) */
+.sac-form input:focus,
+.sac-form select:focus,
+.sac-form textarea:focus {
+    outline: none;
+    border-color: #ffffff;
+    background-color: rgba(237, 237, 237, 0.1);
+    resize: none;
+}
+
+/* --- Botão de Enviar --- */
+.botao-sac {
+    display: inline-block;
+    background-color: #2f2f2f;
+    color: ;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    align-self: start; 
+}
+
+
+.botao-sac:hover {
+    color: #171717;
+    background-color: #d7d7d7;
+    scale: 102%;
+    box-shadow: 0 10px 20px -5px rgba(178, 185, 200, 0.5);
+}
+
+/* Ajuste para Select (Seta branca) */
+.sac-form select {
+    appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+}
+
+.sac-form select option{
+    color: #000000;
+}
+
+/* =================================================================
+   PÁGINA SETOR SAÚDE
+================================================================= */
+
+.page-saude .page-title {
+    color: #06b6d4; /* Cor tema de saúde */
+    margin-bottom: 2rem;
+}
+
+.search-form {
+    background-color: #f8fafc;
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 3rem;
+}
+
+.search-form .form-group label {
+    color: #334155;
+}
+
+.search-form input,
+.search-form select {
+    background-color: #fff;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+}
+
+.search-form input:focus,
+.search-form select:focus {
+    border-color: #06b6d4;
+    outline: 2px solid transparent;
+    box-shadow: 0 0 0 2px #06b6d4;
+}
+
+.page-saude .results-container h2 {
+    border-bottom: 2px solid #06b6d4;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.result-card {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.result-card h3 {
+    color: #06b6d4;
+    margin-bottom: 1rem;
+}
+
+.result-card p {
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+.botao-detalhes {
+    display: inline-block;
+    background-color: #06b6d4;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: auto; /* Empurra o botão para o final do card */
+    transition: background-color 0.3s ease;
+}
+
+.botao-detalhes:hover {
+    background-color: #0891b2;
+}
+
+/* =================================================================
+   PÁGINA SETOR SEGURANÇA
+================================================================= */
+
+.page-seguranca .page-title-seguranca {
+    color: #2563eb; /* Cor tema de segurança */
+    margin-bottom: 2rem;
+}
+
+.search-form-seguranca {
+    background-color: #f8fafc;
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 3rem;
+}
+
+.search-form-seguranca .form-group label {
+    color: #334155;
+}
+
+.search-form-seguranca input,
+.search-form-seguranca select {
+    background-color: #fff;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+}
+
+.search-form-seguranca input:focus,
+.search-form-seguranca select:focus {
+    border-color: #2563eb;
+    outline: 2px solid transparent;
+    box-shadow: 0 0 0 2px #2563eb;
+}
+
+.page-seguranca .results-container h2 {
+    border-bottom: 2px solid #2563eb;
+}
+
+.result-card-seguranca {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.result-card-seguranca h3 {
+    color: #2563eb;
+    margin-bottom: 1rem;
+}
+
+.result-card-seguranca p {
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+.botao-detalhes-seguranca {
+    display: inline-block;
+    background-color: #2563eb;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: auto;
+    transition: background-color 0.3s ease;
+}
+
+.botao-detalhes-seguranca:hover {
+    background-color: #1d4ed8;
+}
+
+/* =================================================================
+   SEÇÃO DE EMERGÊNCIA (Estilos Compartilhados e Específicos)
+================================================================= */
+
+.emergency-section {
+    margin-top: 4rem;
+    text-align: center;
+}
+
+.emergency-section h2 {
+    margin-bottom: 2rem;
+}
+
+.emergency-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.emergency-item {
+    padding: 2rem 1rem;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+}
+
+.emergency-item h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.emergency-item p {
+    font-size: 2.5rem;
+    font-family: 'Oxanium', sans-serif;
+}
+
+/* Cores específicas por página */
+.page-saude .emergency-item { background-color: #06b6d4; }
+.page-seguranca .emergency-item { background-color: #2563eb; }

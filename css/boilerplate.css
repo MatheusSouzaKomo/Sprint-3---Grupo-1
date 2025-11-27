@@ -1,0 +1,283 @@
+/* =================================================================
+   CSS Boilerplate: Estrutural Avançado v1.0
+   Foco: Layout, Posicionamento e Estrutura (Sem Cores)
+   By: Guru's Company
+================================================================= */
+
+:root {
+  /* --- Tokens de Espaçamento --- */
+  --space-xs: 0.5rem;   /* 8px */
+  --space-sm: 1rem;     /* 16px */
+  --space-md: 2rem;     /* 32px */
+  --space-lg: 4rem;     /* 64px */
+  --space-xl: 8rem;     /* 128px */
+  
+  /* --- Tokens de Layout --- */
+  --container-normal: 60rem; /* ~960px */
+  --container-wide: 80rem;   /* ~1280px */
+  --gap-standard: var(--space-sm);
+
+  --card-padding: var(--space-sm);
+  --card-gap: var(--space-xs);
+  --card-radius: 4px;
+  --card-ratio: 16/9; /* Proporção padrão da imagem */
+}
+
+/* =================================================================
+   1. RESET & NORMALIZAÇÃO
+================================================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  line-height: 1.5;
+  width: 100%;
+  min-height: 100vh;
+  /* Garante que o texto herde a cor definida no seu arquivo de tema */
+  color: inherit; 
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Herança de fonte para formulários */
+input, button, textarea, select {
+  font: inherit;
+  color: inherit;
+}
+
+/* =================================================================
+   2. SISTEMA DE CONTAINERS
+================================================================= */
+
+/* Container Padrão */
+.container {
+  width: 100%;
+  max-width: var(--container-normal);
+  margin-inline: auto;
+  padding-inline: var(--space-sm);
+}
+
+/* Container Largo */
+.container--wide {
+  max-width: var(--container-wide);
+}
+
+/* Container Fluido (Sem limite de largura, apenas padding) */
+.container--fluid {
+  max-width: 100%;
+}
+
+/* =================================================================
+   2. SISTEMA DE CARDS
+================================================================= */
+
+.card {
+  display: flex;
+  flex-direction: column; /* Organiza o conteúdo verticalmente */
+  height: 100%;           /* Garante que o card ocupe 100% da altura da célula do Grid */
+  position: relative;     /* Contexto para posicionamento absoluto (badges, links) */
+  overflow: hidden;       /* Para a imagem não vazar o border-radius */
+  
+  /* Estrutura visual base (sem cor definida, herda do pai) */
+  background-clip: border-box;
+}
+
+/* 2. Área de Mídia (Imagem) */
+.card__media {
+  position: relative;
+  width: 100%;
+  /* Define a proporção da imagem para evitar "layout shift" */
+  aspect-ratio: var(--card-ratio); 
+  background-color: rgba(0,0,0, 0.05); /* Placeholder sutil enquanto carrega */
+}
+
+.card__media > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Garante que a imagem preencha sem distorcer */
+}
+
+/* 3. Corpo do Card */
+.card__body {
+  padding: var(--card-padding);
+  display: flex;
+  flex-direction: column;
+  gap: var(--card-gap);
+  
+  /* O TRUQUE DO ALINHAMENTO:
+     flex-grow: 1 faz esta área crescer para ocupar todo o espaço vazio.
+     Isso empurra o rodapé (.card__footer) sempre para o final do card. */
+  flex-grow: 1; 
+}
+
+/* Título do Card */
+.card__title {
+  /* Reseta margens para controle preciso via gap do flex pai */
+  margin: 0; 
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+/* 4. Rodapé do Card (Opcional) */
+.card__footer {
+  padding: var(--card-padding);
+  padding-top: 0;       /* Remove padding do topo para aproximar do corpo */
+  margin-top: auto;     /* Redundância de segurança para empurrar pro fundo */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* --- UTILITÁRIO: Full Click (Link Estendido) ---
+   Permite colocar o <a> apenas no título, mas tornar o card todo clicável.
+   Melhor para acessibilidade e SEO do que envolver o card todo num <a>. */
+.card__link::after {
+  content: "";
+  position: absolute;
+  inset: 0; /* Cobre todo o card */
+  z-index: 1;
+  cursor: pointer;
+}
+
+/* --- VARIAÇÃO: Card Horizontal ---
+   Transforma o card em uma linha (imagem na esq, texto na dir).
+   Ideal para listas de posts. */
+.card--horizontal {
+  flex-direction: row;
+  height: auto; /* Altura determinada pelo conteúdo, não pelo grid */
+}
+
+.card--horizontal .card__media {
+  width: 30%; /* Largura fixa ou flex-basis */
+  min-width: 150px;
+  aspect-ratio: auto; /* Reseta proporção para preencher altura */
+}
+
+.card--horizontal .card__media > * {
+  position: relative; /* Reseta posicionamento absoluto */
+}
+
+/* Responsividade do Card Horizontal */
+@media (max-width: 600px) {
+  .card--horizontal {
+    flex-direction: column;
+  }
+  .card--horizontal .card__media {
+    width: 100%;
+    aspect-ratio: var(--card-ratio);
+  }
+}
+
+/* =================================================================
+   3. SISTEMA FLEXBOX (Utilitários)
+================================================================= */
+
+/* Flex Básico */
+.d-flex {
+  display: flex;
+  gap: var(--gap-standard);
+}
+
+/* Centralização Total (Vertical e Horizontal) */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-standard);
+}
+
+/* Espalhar Itens (Ex: Navbar - Logo na esq, Menu na dir) */
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-standard);
+}
+
+/* Coluna Flex (Stack) */
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Quebra de linha permitida */
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+/* =================================================================
+   4. SISTEMA GRID
+================================================================= */
+
+/* Grid Básico */
+.d-grid {
+  display: grid;
+  gap: var(--gap-standard);
+}
+
+/* Grid Automático Responsivo ("Ramsey Grid")
+   Cria colunas automaticamente baseado no tamanho mínimo (250px)
+   Sem necessidade de media queries. */
+.grid-auto {
+  display: grid;
+  gap: var(--gap-standard);
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+}
+
+/* Grid de Colunas Fixas (Desktop first, ajustável via media queries externas) */
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* Switch para 1 coluna em mobile para grids fixos */
+@media (max-width: 768px) {
+  .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =================================================================
+   5. ESPAÇAMENTO INTELIGENTE (FLOW)
+================================================================= */
+
+/* .flow: Adiciona margem superior em elementos adjacentes.
+   Ideal para artigos, formulários e listas verticais. */
+.flow > * + * {
+  margin-top: var(--space-sm);
+}
+
+.flow--lg > * + * {
+  margin-top: var(--space-md);
+}
+
+/* =================================================================
+   6. UTILITÁRIOS GERAIS
+================================================================= */
+
+/* Esconder visualmente (acessível para leitores de tela) */
+.visually-hidden {
+  border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px;
+  overflow: hidden; padding: 0; position: absolute; width: 1px;
+}
+
+/* Text Align */
+.text-center { text-align: center; }
+.text-right  { text-align: right; }
+
+/* Full Height */
+.h-full { height: 100%; }
+.vh-100 { min-height: 100vh; }
+
+/* Full Width */
+.h-full { width: 100%; }
+.vh-100 { min-width: 100vh; }

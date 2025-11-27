@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/boilerplate.css">
+    <title>Segurança - Guru's City</title>
+</head>
+<body class="page-seguranca">
+    <header>
+        <h1>Guru's City</h1>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1 class="page-title-seguranca">Segurança Pública</h1>
+            <p>Consulte delegacias, registre ocorrências e acesse informações importantes sobre a segurança na sua cidade.</p>
+
+            <form action="registrar_ocorrencia.php" method="POST" class="search-form-seguranca flow">
+                <div class="form-group">
+                    <label for="tipo-ocorrencia">Tipo de Ocorrência</label>
+                    <input type="text" id="tipo-ocorrencia" name="tipo-ocorrencia" placeholder="Ex: Furto, Perda de Documentos...">
+                </div>
+
+                <div class="form-group">
+                    <label for="localizacao">Localização</label>
+                    <input type="text" id="localizacao" name="localizacao" placeholder="Endereço ou bairro do ocorrido">
+                </div>
+
+                <div class="form-group">
+                    <label for="data">Data da Ocorrência</label>
+                    <input type="date" id="data" name="data">
+                </div>
+
+                <button type="submit" class="botao-sac-seguranca">Registrar</button>
+            </form>
+
+            <div class="results-container flow--lg">
+                <h2>Delegacias e Postos Policiais</h2>
+                <div class="results-grid">
+                    <!-- Exemplo de Card de Resultado (seria gerado pelo PHP) -->
+                    <div class="result-card-seguranca">
+                        <h3>1ª Delegacia de Polícia Civil</h3>
+                        <p><strong>Endereço:</strong> Rua da Justiça, 100, Centro</p>
+                        <p><strong>Serviços:</strong> Registros de B.O., Investigações</p>
+                        <p><strong>Funcionamento:</strong> 24 horas</p>
+                        <a href="#" class="botao-detalhes-seguranca">Ver no Mapa</a>
+                    </div>
+                    <div class="result-card-seguranca">
+                        <h3>Posto da Guarda Civil Municipal</h3>
+                        <p><strong>Endereço:</strong> Praça Cívica, S/N, Centro</p>
+                        <p><strong>Serviços:</strong> Patrulhamento, Apoio Comunitário</p>
+                        <p><strong>Funcionamento:</strong> 08:00 - 18:00</p>
+                        <a href="#" class="botao-detalhes-seguranca">Ver no Mapa</a>
+                    </div>
+                    <div class="result-card-seguranca">
+                        <h3>Delegacia da Mulher</h3>
+                        <p><strong>Endereço:</strong> Av. das Rosas, 321, Bairro Sul</p>
+                        <p><strong>Serviços:</strong> Atendimento especializado, Medidas protetivas</p>
+                        <p><strong>Funcionamento:</strong> 24 horas</p>
+                        <a href="#" class="botao-detalhes-seguranca">Ver no Mapa</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Telefones de Emergência -->
+        <section class="container emergency-section flow">
+            <h2>Telefones de Emergência</h2>
+            <div class="emergency-grid">
+                <div class="emergency-item">
+                    <h3>Polícia Militar</h3>
+                    <p>190</p>
+                </div>
+                <div class="emergency-item">
+                    <h3>Guarda Civil</h3>
+                    <p>153</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="sac-footer">
+        <div class="container">
+            <div class="sac-grid">
+                <div class="sac-info flow">
+                    <h2>Fale Conosco</h2>
+                    <p>Tem alguma dúvida sobre os serviços de saúde, trânsito ou segurança? Envie sua mensagem e nossa equipe responderá em breve.</p>
+                    <ul class="sac-contacts">
+                        <li><strong>Email:</strong> contato@exemplo.com</li>
+                        <li><strong>Tel:</strong> 0800 123 4567</li>
+                    </ul>
+                </div>
+                <form class="sac-form flow">
+                    <div class="form-group"><label for="nome">Nome Completo</label><input type="text" id="nome" name="nome" placeholder="Seu nome" required></div>
+                    <div class="form-group"><label for="email">E-mail</label><input type="email" id="email" name="email" placeholder="seu@email.com" required></div>
+                    <div class="form-group"><label for="assunto">Assunto</label><select id="assunto" name="assunto"><option value="saude">Saúde</option><option value="seguranca">Segurança</option><option value="transito">Trânsito</option><option value="educacao">Educação</option><option value="outros">Outros</option></select></div>
+                    <div class="form-group"><label for="mensagem">Mensagem</label><textarea id="mensagem" name="mensagem" rows="4" placeholder="Como podemos ajudar?"></textarea></div>
+                    <button type="submit" class="botao-sac">Enviar Mensagem</button>
+                </form>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

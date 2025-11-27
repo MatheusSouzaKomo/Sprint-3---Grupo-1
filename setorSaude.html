@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/boilerplate.css">
+    <title>Saúde e Convênio - Guru's City</title>
+</head>
+<body class="page-saude">
+    <header>
+        <h1>Guru's City</h1>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1 class="page-title">Saúde e Convênios</h1>
+            <p>Encontre hospitais, clínicas e laboratórios que atendem ao seu convênio. Utilize o formulário abaixo para realizar sua busca.</p>
+
+            <form action="buscar_saude.php" method="POST" class="search-form flow">
+                <div class="form-group">
+                    <label for="especialidade">Especialidade</label>
+                    <input type="text" id="especialidade" name="especialidade" placeholder="Ex: Cardiologia, Pediatria...">
+                </div>
+
+                <div class="form-group">
+                    <label for="localizacao">Localização</label>
+                    <input type="text" id="localizacao" name="localizacao" placeholder="Ex: Bairro, Cidade...">
+                </div>
+
+                <div class="form-group">
+                    <label for="convenio">Convênio</label>
+                    <select id="convenio" name="convenio">
+                        <option value="">Selecione um convênio</option>
+                        <option value="convenio_a">Convênio A</option>
+                        <option value="convenio_b">Convênio B</option>
+                        <option value="convenio_c">Convênio C</option>
+                        <option value="outros">Outro</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="botao-sac">Buscar</button>
+            </form>
+
+            <div class="results-container flow--lg">
+                <!-- Os resultados da busca com PHP podem ser inseridos aqui -->
+                <h2>Resultados da Busca</h2>
+                <div class="results-grid">
+                    <!-- Exemplo de Card de Resultado (seria gerado pelo PHP) -->
+                    <div class="result-card">
+                        <h3>Hospital Central da Cidade</h3>
+                        <p><strong>Endereço:</strong> Rua Principal, 123, Centro</p>
+                        <p><strong>Especialidades:</strong> Cardiologia, Ortopedia, Pediatria</p>
+                        <p><strong>Convênios:</strong> Convênio A, Convênio C</p>
+                        <a href="#" class="botao-detalhes">Ver Detalhes</a>
+                    </div>
+                    <div class="result-card">
+                        <h3>Clínica Bem-Estar</h3>
+                        <p><strong>Endereço:</strong> Av. das Flores, 456, Jardim Primavera</p>
+                        <p><strong>Especialidades:</strong> Dermatologia, Ginecologia</p>
+                        <p><strong>Convênios:</strong> Convênio B</p>
+                        <a href="#" class="botao-detalhes">Ver Detalhes</a>
+                    </div>
+                    <div class="result-card">
+                        <h3>Laboratório Vida & Saúde</h3>
+                        <p><strong>Endereço:</strong> Praça da Matriz, 789, Centro</p>
+                        <p><strong>Especialidades:</strong> Análises Clínicas, Exames de Imagem</p>
+                        <p><strong>Convênios:</strong> Todos</p>
+                        <a href="#" class="botao-detalhes">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Telefones de Emergência -->
+        <section class="container emergency-section flow">
+            <h2>Telefones de Emergência</h2>
+            <div class="emergency-grid">
+                <div class="emergency-item">
+                    <h3>SAMU</h3>
+                    <p>192</p>
+                </div>
+                <div class="emergency-item">
+                    <h3>Bombeiros</h3>
+                    <p>193</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="sac-footer">
+        <div class="container">
+            <div class="sac-grid">
+                
+                <div class="sac-info flow">
+                    <h2>Fale Conosco</h2>
+                    <p>Tem alguma dúvida sobre os serviços de saúde, trânsito ou segurança? Envie sua mensagem e nossa equipe responderá em breve.</p>
+                    
+                    <ul class="sac-contacts">
+                        <li><strong>Email:</strong> contato@exemplo.com</li>
+                        <li><strong>Tel:</strong> 0800 123 4567</li>
+                    </ul>
+                </div>
+
+                <form class="sac-form flow">
+                    <div class="form-group">
+                        <label for="nome">Nome Completo</label>
+                        <input type="text" id="nome" name="nome" placeholder="Seu nome" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="assunto">Assunto</label>
+                        <select id="assunto" name="assunto">
+                            <option value="saude">Saúde</option>
+                            <option value="seguranca">Segurança</option>
+                            <option value="transito">Trânsito</option>
+                            <option value="educacao">Educação</option>
+                            <option value="outros">Outros</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mensagem">Mensagem</label>
+                        <textarea id="mensagem" name="mensagem" rows="4" placeholder="Como podemos ajudar?"></textarea>
+                    </div>
+
+                    <button type="submit" class="botao-sac">Enviar Mensagem</button>
+                </form>
+
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
