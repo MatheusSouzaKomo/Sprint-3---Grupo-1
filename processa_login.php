@@ -20,7 +20,7 @@ if ($result->num_rows === 1) {
         $_SESSION["id_usuario"] = $user["id_usuario"];
         $_SESSION["nome"] = $user["nome"];
         $_SESSION["nivel"] = $user["nivel_acesso"];
-        header("Location: avaliacao.php");
+        header("Location: hub.html");
         exit();
     }
 
@@ -29,7 +29,7 @@ if ($result->num_rows === 1) {
         $_SESSION["id_usuario"] = $user["id_usuario"];
         $_SESSION["nome"] = $user["nome"];
         $_SESSION["nivel"] = $user["nivel_acesso"];
-        header("Location: avaliacao.php");
+        header("Location: hub.html");
         exit();
     }
 }
