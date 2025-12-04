@@ -1,3 +1,6 @@
+/* =================================================================
+   1. IMPORTS E BIBLIOTECAS
+================================================================= */
 @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=TASA+Explorer:wght@400..800&display=swap');
@@ -8,7 +11,7 @@
 @tailwind utilities;
 
 /* =================================================================
-   PALETA DE CORES E VARIÁVEIS (TEMA CLARO - PADRÃO)
+   2. VARIÁVEIS (:ROOT)
 ================================================================= */
 :root {
     /* Cores Base */
@@ -17,24 +20,22 @@
     --color-text-secondary: #475569;
     --color-border: #e2e8f0;
 
-    /* Cores de Componentes */
+    /* Cores de Componentes (Header/Footer) */
     --color-header-bg: #000000;
     --color-header-text: #ffffff;
     --color-footer-bg: #18181b;
     --color-footer-text: #f4f4f5;
     --color-footer-text-muted: #a1a1aa;
 
-    /* Cores dos Cards do Hub */
+    /* Cores dos Cards */
     --color-card-bg: #ffffff;
     --color-card-text: #333;
-
-    /* Cores dos Cards de Resultado (Páginas de Setor) */
     --color-result-card-bg: #ffffff;
     --color-result-card-border: #eaf0f6;
 }
 
 /* =================================================================
-   ANIMAÇÕES (KEYFRAMES)
+   3. ANIMAÇÕES (KEYFRAMES)
 ================================================================= */
 @keyframes fadeIn {
     from { opacity: 0; }
@@ -52,16 +53,25 @@
     }
 }
 
-body{
+@keyframes brilhoTexto {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* =================================================================
+   4. ESTILOS BASE (GLOBAL)
+================================================================= */
+body {
     background-color: var(--color-background);
     color: var(--color-text-primary);
     font-family: 'Inter', "TASA Explorer", system-ui, sans-serif;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-
-/* HEADER */
-
+/* =================================================================
+   5. LAYOUT: HEADER
+================================================================= */
 header {
     position: relative;
     width: 100%;
@@ -69,30 +79,37 @@ header {
     background-color: var(--color-header-bg);
     border-bottom: 5px solid transparent;
     border-image: linear-gradient(to right, 
-        #06b6d4,
-        #2563eb,
-        #d97706,
-        #7c3aed,
-        #ec4899,
-        #10b981 
+        #06b6d4, #2563eb, #d97706, #7c3aed, #ec4899, #10b981 
     );
     border-image-slice: 1;
 }
 
-header h1{
+header h1 {
     text-align: center;
-    color: var(--color-header-text);
+    font-family: Silkscreen, serif;
+    background: linear-gradient(to right, 
+        #06b6d4, #2563eb, #d97706, #7c3aed, #ec4899, #10b981
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 800; 
+    background-size: 300% auto;
+    animation: brilhoTexto 5s linear infinite;
 }
 
-
-/* MAIN */
-
-main h1{
+/* =================================================================
+   6. LAYOUT: MAIN & TITLES
+================================================================= */
+main h1 {
     margin-top: 10px;
     text-align: center;
     font-size: 3rem;
 }
 
+/* =================================================================
+   7. COMPONENTE: CARDS (HUB)
+================================================================= */
 .container-card {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -111,16 +128,9 @@ main h1{
     flex-direction: column;
     position: relative;
     transition: transform 0.4s ease-out, box-shadow 0.4s ease-out, background-color 0.2s linear, color 0.2s ease-out;
-    cursor: pointer; /* Adicionado para indicar que o card é clicável */
+    cursor: pointer;
     transform-style: preserve-3d;
     border: 1px solid currentColor;
-}
-
-.card h2{
-    position: relative;
-    z-index: 11;
-    transition: transform 0.4s ease-out, color 0.4s ease-out;
-    font-size: 1.8rem;
 }
 
 .card-content {
@@ -134,13 +144,20 @@ main h1{
     transform: translateZ(20px);
 }
 
+.card h2 {
+    position: relative;
+    z-index: 11;
+    transition: transform 0.4s ease;
+    font-size: 1.8rem;
+}
+
 .card p {
     color: var(--color-card-text);
     line-height: 1.5;
     transition: opacity 0.3s ease-out;
 }
 
-/* Efeito de brilho (glare) */
+/* Efeito Glare (Brilho) no Card */
 .card::before {
     content: '';
     position: absolute;
@@ -149,44 +166,25 @@ main h1{
     width: 80%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    
     transition: left 0.6s ease-out;
     z-index: 15;
     transform: skewX(-25deg);
 }
 
-/* --- ESTADOS DE HOVER --- */
-
+/* Estados de Hover do Card */
 .card:hover {
     transform: translateY(-10px) perspective(800px) rotateY(5deg);
     background-color: currentColor;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); /* Adicionado para destacar o hover */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.card:hover h2 {
-    color: #ffffff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
     margin: 0;
     padding: 0;
 }
-.card:hover::before {
-    left: 150%;
-}
 
-.card:hover p {
-    display: none;
-}
+.card:hover h2 { color: #ffffff; }
+.card:hover p { display: none; }
+.card:hover::before { left: 150%; }
 
-.card:hover .arrow-icon {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-/* Cores e Sombras por Card */
+/* Cores Específicas dos Cards */
 .card-saude { color: #06b6d4; box-shadow: 0 10px 30px -5px #06b6d480; }
 .card-seguranca { color: #2563eb; box-shadow: 0 10px 30px -5px #2563eb80; }
 .card-transito { color: #d97706; box-shadow: 0 10px 30px -5px #d9770680; }
@@ -194,6 +192,7 @@ main h1{
 .card-lazer { color: #ec4899; box-shadow: 0 10px 30px -5px #ec489980; }
 .card-economia { color: #10b981; box-shadow: 0 10px 30px -5px #10b98180; }
 
+/* Sombra no Hover (Específico por cor) */
 .card-saude:hover { box-shadow: 0 20px 40px -10px #06b6d4b3; }
 .card-seguranca:hover { box-shadow: 0 20px 40px -10px #2563ebb3; }
 .card-transito:hover { box-shadow: 0 20px 40px -10px #d97706b3; }
@@ -201,31 +200,43 @@ main h1{
 .card-lazer:hover { box-shadow: 0 20px 40px -10px #ec4899b3; }
 .card-economia:hover { box-shadow: 0 20px 40px -10px #10b981b3; }
 
-/* FOOTER */
-
+/* =================================================================
+   8. LAYOUT: FOOTER & LINKS
+================================================================= */
 footer {
     width: 100%;
     padding: 20px;
     background-color: black;
     border-top: 5px solid transparent;
     border-image: linear-gradient(to right, 
-        #06b6d4, /* Saúde */
-        #2563eb, /* Segurança */
-        #d97706, /* Trânsito */
-        #7c3aed, /* Educação */
-        #ec4899, /* Lazer */
-        #10b981  /* Economia */
+        #06b6d4, #2563eb, #d97706, #7c3aed, #ec4899, #10b981 
     );
     border-image-slice: 1;
 }
 
+footer .sac-links {
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 20px;
+    background: linear-gradient(to right, 
+        #06b6d4, #2563eb, #d97706, #7c3aed, #ec4899, #10b981
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-size: 300% auto;
+    color: transparent;
+    animation: brilhoTexto 5s linear infinite;
+}
+
+/* =================================================================
+   9. SEÇÃO SAC (ATENDIMENTO)
+================================================================= */
 .sac-footer {
     background-color: var(--color-footer-bg);
     color: var(--color-footer-text);
     padding-block: 4rem;
     margin-top: 4rem;
 }
-
 
 .sac-grid {
     display: grid;
@@ -234,10 +245,9 @@ footer {
     align-items: start;
 }
 
-
 .sac-info h2 {
     font-size: 2rem;
-    color: var(--color-header-text); /* Reutilizando a variável de texto branco */
+    color: var(--color-header-text);
     margin-bottom: 1rem;
 }
 
@@ -257,7 +267,7 @@ footer {
     margin-bottom: 0.5rem;
 }
 
-
+/* Formulário SAC */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -270,10 +280,9 @@ footer {
     color: var(--color-footer-text-muted);
 }
 
-
 .sac-form input,
 .sac-form select,
-.sac-form textarea{
+.sac-form textarea {
     width: 100%;
     padding: 0.75rem 1rem;
     background-color: rgba(255, 255, 255, 0.05);
@@ -284,7 +293,6 @@ footer {
     transition: all 0.3s ease;
 }
 
-/* Foco nos Inputs (Brilho Azul da Segurança) */
 .sac-form input:focus,
 .sac-form select:focus,
 .sac-form textarea:focus {
@@ -294,7 +302,18 @@ footer {
     resize: none;
 }
 
-/* --- Botão de Enviar --- */
+.sac-form select {
+    appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+}
+
+.sac-form select option {
+    color: #000000;
+}
+
+/* Botões do SAC */
 .botao-sac {
     display: inline-block;
     background-color: var(--color-footer-text);
@@ -310,7 +329,6 @@ footer {
     align-self: start; 
 }
 
-
 .botao-sac:hover {
     color: var(--color-footer-text);
     background-color: #2563eb;
@@ -318,7 +336,151 @@ footer {
     box-shadow: 0 10px 20px -5px rgba(178, 185, 200, 0.5);
 }
 
-/* --- Botão Voltar --- */
+.sac-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.sac-btn {
+    width: 300px;
+    height: 70px;
+    background: linear-gradient(45deg, #2563eb, #7c3aed, #ec4899); 
+    background-size: 200% auto;
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: bold;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    transition: all 0.4s ease;
+    padding: 10px 20px;
+    animation: brilhoTexto 5s linear infinite;
+}
+
+.sac-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+}
+
+.sac-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(124, 58, 237, 0.4);
+}
+
+/* =================================================================
+   10. PÁGINA: LOGIN & SIGNUP
+================================================================= */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f2f5;
+    padding: 0;
+    margin: 0;
+}
+
+.login-container {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+}
+
+.login-form h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #333;
+}
+
+.input-group, 
+.select-group {
+    margin-bottom: 1rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+.input-group input, 
+.select-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.input-group input:focus, 
+.select-group select:focus {
+    outline: none;
+    border-color: #000000;
+    box-shadow: 0 0 0 2px rgba(34, 34, 34, 0.25);
+}
+
+.select-group option {
+    color: #000000;
+    appearance: none;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 4px;
+    background: radial-gradient(circle at 20% 70%, 
+        #06b6d4, #2563eb, #d97706, #7c3aed, #ec4899, #10b981
+    );
+    background-size: 400% auto;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    animation: brilhoTexto 30s linear infinite;
+}
+
+.signup-link {
+    text-align: center;
+    margin-top: 1rem;
+    color: #555;
+}
+
+.signup-link a {
+    text-decoration: none;
+    background: linear-gradient(to right, 
+        #06b6d4, #2563eb, #d97706, #7c3aed, #ec4899, #10b981
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-size: 300% auto;
+    color: transparent;
+    animation: brilhoTexto 5s linear infinite;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}
+
+/* =================================================================
+   11. UI: BOTÕES GERAIS E UTILITÁRIOS
+================================================================= */
+
+/* Botão Voltar (Geral) */
 .botao-voltar {
     display: inline-block;
     margin-bottom: 1.5rem;
@@ -338,53 +500,140 @@ footer {
     transform: translateX(-4px);
 } 
 
-.sac-form select {
-    appearance: none;
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1rem;
+/* Botão Voltar ao Topo */
+.back-to-top-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(45deg, #2563eb, #7c3aed, #ec4899);
+    background-size: 200% auto;
+    color: var(--color-header-text);
+    border: 0.5px solid #000;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: all 0.4s ease;
 }
 
-.sac-form select option{
-    color: #000000;
+.back-to-top-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    background-position: right center;
 }
 
-.sac-buttons{
+
+/* SETORES */
+
+
+/* Estilo genérico para todos os setores */
+.sector {
+    padding: 60px 0; /* Espaçamento vertical para cada setor */
+    margin-bottom: 0; /* Remove margem entre setores, o padding já dá o espaçamento */
+}
+
+/* ==========================================================================
+   Setor 2: Principal (Main Content)
+   ========================================================================== */
+#main-sector {
+    background-color: #ffffff;
+    text-align: center;
+}
+
+#main-sector h2 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    color: currentColor;
+}
+
+#main-sector p {
+    font-size: 1.1em;
+    margin-bottom: 40px;
+}
+
+.sector-section {
+    padding: 40px 0;
+    background-color: #f9f9f9;
+    border-top: 1px solid #eee;
+}
+
+.sector-section h3 {
+    font-size: 2em;
+    margin-bottom: 30px;
+    color: currentColor ;
+}
+
+/* Sub-Setor de Serviços/Features */
+#sector-service {
+    padding: 40px 0;
+}
+
+#setor-service h3 {
+    font-size: 2em;
+    margin-bottom: 30px;
+    color: #3498db;
+}
+
+.item-service {
+    color: currentColor;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    border: 1px solid currentColor;
+    min-height: 300px;
+    max-width: 350px;
+    transition: all 0.4s ease-out;
+}
+
+.item-service:hover {
+    transform: translateY(-5px);
+    background-color: currentColor;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
-    align-items: end;
-    gap: 1rem;
-    margin-top: 2rem;
-    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+.item-service:hover h4{
+    color: #ffffff;
+    font-size: 1.7rem;
+    position: absolute;
 }
 
-.sac-btn {
-    width: 300px;
-    height: 70px; /* Um pouco mais alto para elegância */
-    /* Gradiente mais harmonioso e suave */
-    background: linear-gradient(45deg, #2563eb, #7c3aed, #ec4899); 
-    background-size: 200% auto; /* Permite a animação do fundo */
-    border: none;
-    border-radius: 50px; /* Arredondamento total (Pill shape) */
-    color: white;
-    font-family: 'Segoe UI', sans-serif; /* Fonte mais limpa */
-    font-weight: bold;
-    font-size: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); /* Sombra colorida (Glow) */
-    transition: all 0.4s ease;
-    padding: 10px 20px;
+.item-service:hover p{
+    color: transparent;
 }
 
-.sac-btn:hover {
-    background-position: right center; /* Move o gradiente suavemente */
-    transform: translateY(-2px); /* Levanta levemente em vez de dar zoom */
-    box-shadow: 0 8px 20px rgba(124, 58, 237, 0.5); /* Glow mais intenso */
+.item-service h4 {
+    color: currentColor;
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 1.5em;
+    transition: all 0.05s ease-out;
 }
 
-.sac-btn:active {
-    transform: translateY(1px); /* Efeito de clique */
-    box-shadow: 0 2px 10px rgba(124, 58, 237, 0.4);
+.item-service p {
+    color: currentColor;
+    margin-bottom: 10px;
+    font-size: 1.3em;
+}
+
+
+/* ==========================================================================
+   Responsividade
+   ========================================================================== */
+@media (max-width: 768px) {
+
+    /* Ajuste do espaçamento dos setores */
+    .setor {
+        padding: 40px 0;
+    }
+
+    /* O grid de 3 colunas se ajusta automaticamente graças ao auto-fit */
 }

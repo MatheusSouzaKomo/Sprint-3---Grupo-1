@@ -1,10 +1,27 @@
-<form action="processa_login.php" method="POST">
 
-    <label>Email:</label>
-        <input type="email" name="email" required>
-    <label>Senha:</label>
-        <input type="password" name="senha" required>
-        
-    <button type="submit">Entrar</button>
-
-</form>
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login</title>
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body class="login-page">
+        <div class="login-container">
+            <form action="processa_login.php" method="POST" class="login-form">
+                <h2>Login</h2>
+                <div class="input-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="senha">Senha:</label>
+                    <input type="password" id="senha" name="senha" required>
+                </div>
+                <button type="submit" class="login-btn">Entrar</button>
+                <p class="signup-link">Não tem conta? <a href="cadastro.php">Cadastre-se</a></p>
+            </form> 
+        </div>
+    </body>
+</html>

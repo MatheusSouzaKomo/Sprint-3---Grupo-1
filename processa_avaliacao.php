@@ -20,3 +20,4 @@ if ($stmt->execute()) {
 } else {
     echo "Erro ao registrar avaliação: " . $stmt->error;
 }
+?>

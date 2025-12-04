@@ -19,3 +19,4 @@ if ($stmt->execute()) {
 } else {
     echo "Erro ao registrar reclamação." . $stmt->error;
 }
+?>
