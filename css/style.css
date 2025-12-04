@@ -3,6 +3,10 @@
 @import url('https://fonts.googleapis.com/css2?family=TASA+Explorer:wght@400..800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* =================================================================
    PALETA DE CORES E VARIÁVEIS (TEMA CLARO - PADRÃO)
 ================================================================= */
@@ -106,9 +110,10 @@ main h1{
     display: flex;
     flex-direction: column;
     position: relative;
-    transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
-    cursor: pointer;
+    transition: transform 0.4s ease-out, box-shadow 0.4s ease-out, background-color 0.2s linear, color 0.2s ease-out;
+    cursor: pointer; /* Adicionado para indicar que o card é clicável */
     transform-style: preserve-3d;
+    border: 1px solid currentColor;
 }
 
 .card h2{
@@ -129,39 +134,6 @@ main h1{
     transform: translateZ(20px);
 }
 
-.card-bar {
-    width: 100%;
-    height: 50px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    background-color: currentColor;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: height 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    z-index: 5;
-}
-
-.card-bar a {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    color: white;
-    font-weight: bold;
-    text-transform: uppercase;
-    gap: 0.5rem;
-}
-
-.card-bar .arrow-icon {
-    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    transform: translateX(-10px);
-    opacity: 0;
-}
-
 .card p {
     color: var(--color-card-text);
     line-height: 1.5;
@@ -177,6 +149,7 @@ main h1{
     width: 80%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    
     transition: left 0.6s ease-out;
     z-index: 15;
     transform: skewX(-25deg);
@@ -186,14 +159,26 @@ main h1{
 
 .card:hover {
     transform: translateY(-10px) perspective(800px) rotateY(5deg);
+    background-color: currentColor;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); /* Adicionado para destacar o hover */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-
+.card:hover h2 {
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
 .card:hover::before {
     left: 150%;
 }
 
 .card:hover p {
-    opacity: 0;
+    display: none;
 }
 
 .card:hover .arrow-icon {
@@ -353,7 +338,6 @@ footer {
     transform: translateX(-4px);
 } 
 
-/* Ajuste para Select (Seta branca) */
 .sac-form select {
     appearance: none;
     background-repeat: no-repeat;
@@ -365,615 +349,42 @@ footer {
     color: #000000;
 }
 
-/* =================================================================
-   PÁGINA SETOR SAÚDE
-================================================================= */
-/* =================================================================
-   ESTILOS GERAIS DAS PÁGINAS DE SETOR
-================================================================= */
-.page-setor main {
-    /* Cria o ambiente 3D para o efeito parallax */
-    perspective: 1px;
-    transform-style: preserve-3d;
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-.page-setor .hero-header {
-    animation: fadeIn 0.8s ease-out;
-    padding: 4rem 2rem;
-    border-radius: 16px;
-    margin-bottom: -3rem; /* Puxa o conteúdo de baixo para cima */
-    position: relative;
-    transform-style: preserve-3d; /* Essencial para o parallax funcionar nos filhos */
-    z-index: 0; /* Ajustado para o parallax */
-    color: var(--color-header-text);
-    overflow: hidden;
-}
-
-.page-setor .hero-header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1; /* Fica atrás do conteúdo do header */
-    color: var(--color-header-text);
-    overflow: hidden;
-}
-
-.page-setor .page-title {
-    margin-bottom: 0.5rem;
-    font-size: 2.5rem;
-    font-weight: 700;
-    /* Efeito de texto em gradiente */
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    animation: fadeInUp 0.6s 0.2s backwards;
-}
-
-.page-setor .page-description {
-    max-width: 65ch;
-    margin-inline: auto;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 1.1rem;
-    animation: fadeInUp 0.6s 0.4s backwards;
-}
-
-.page-setor .hero-header .container {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-}
-
-/* Formulário de Busca */
-.search-form {
-    /* Efeito Glassmorphism */
-    background-color: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-
-    padding: 2rem;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    margin-top: 2.5rem;
-    position: relative;
-    z-index: 2;
-
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    align-items: end;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-    animation: fadeInUp 0.6s 0.6s backwards;
-}
-
-.search-form input,
-.search-form select {
-    background-color: rgba(255, 255, 255, 0.8);
-    border: 1px solid #cbd5e1;
-    color: var(--color-text-primary);
-}
-
-/* Remove o estilo inline do container principal */
-.page-setor .main-content-container {
-    padding-top: 5rem;
-}
-
-.page-setor .results-container,
-.page-setor .emergency-section {
-    /* Animação de entrada para as seções de conteúdo */
-    animation: fadeInUp 0.7s 0.2s backwards;
-}
-
-/* Títulos das Seções de Resultados */
-.results-container h2 {
-    padding-bottom: 0.5rem;
-    color: var(--color-text-secondary);
-    margin-bottom: 1.5rem;
-    font-size: 1.8rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-/* Grid de Cards de Resultado */
-.results-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-}
-
-.result-card {
-    background-color: var(--color-result-card-bg);
-    border: 1px solid var(--color-result-card-border);
-    border-radius: 12px;
-    border-top-width: 4px;
-    padding: 1.5rem;
-    box-shadow: 0 5px 15px rgba(0, 37, 92, 0.03);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+.sac-buttons{
     display: flex;
     flex-direction: column;
-    animation: fadeInUp 0.5s backwards;
+    align-items: end;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
 }
 
-.result-card h3 {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.result-card p {
-    color: var(--color-text-secondary);
-    line-height: 1.6;
-    margin-bottom: 0.5rem;
-}
-
-.result-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0, 37, 92, 0.1);
-}
-
-/* Botão de Detalhes nos Cards */
-.botao-detalhes {
-    display: inline-block;
+.sac-btn {
+    width: 300px;
+    height: 70px; /* Um pouco mais alto para elegância */
+    /* Gradiente mais harmonioso e suave */
+    background: linear-gradient(45deg, #2563eb, #7c3aed, #ec4899); 
+    background-size: 200% auto; /* Permite a animação do fundo */
+    border: none;
+    border-radius: 50px; /* Arredondamento total (Pill shape) */
     color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    text-align: center;    
-    text-decoration: none;
-    font-weight: 600;
-    margin-top: auto; /* Empurra o botão para o final do card */
-    transition: background-color 0.3s ease;
-    outline-offset: 4px;
-}
-
-.botao-detalhes:hover {
-    filter: brightness(1.1);
-}
-
-.botao-detalhes:focus-visible {
-    outline: 2px solid currentColor;
-    filter: brightness(1.1);
-}
-
-/* =================================================================
-   PÁGINA SETOR SAÚDE (CORES E ESTILOS ESPECÍFICOS)
-================================================================= */
-
-.page-saude .hero-header {
-    /* O gradiente agora é aplicado no pseudo-elemento para o parallax */
-}
-
-.page-saude .hero-header::before {
-    background: linear-gradient(45deg, #0891b2, #06b6d4);
-    transform: translateZ(-1px) scale(2); /* Empurra para trás e aumenta para preencher */
-}
-
-.page-saude .page-title,
-.page-saude .result-card h3,
-.page-saude .page-title {
-    background-image: linear-gradient(45deg, #0891b2, #2dd4bf);
-    color: #06b6d4; /* Cor tema de saúde */
-}
-
-
-.page-saude .search-form input:focus,
-.page-saude .search-form select:focus {
-    border-color: #06b6d4;
-    box-shadow: 0 0 0 3px #06b6d460;
-}
-
-.page-saude .result-card {
-    border-top-color: #06b6d4;
-}
-
-.page-saude .results-container h2 {
-    border-bottom: 2px solid #06b6d4;
-}
-
-.page-saude .botao-detalhes {
-    background-color: #06b6d4;
-}
-
-.page-saude .botao-detalhes:hover {
-    background-color: #0891b2;
-}
-
-/* =================================================================
-   PÁGINA SETOR SEGURANÇA (CORES E ESTILOS ESPECÍFICOS)
-================================================================= */
-
-.page-seguranca .hero-header {
-    /* O gradiente agora é aplicado no pseudo-elemento para o parallax */
-}
-
-.page-seguranca .hero-header::before {
-    background: linear-gradient(45deg, #1d4ed8, #2563eb);
-    transform: translateZ(-1px) scale(2); /* Empurra para trás e aumenta para preencher */
-}
-
-.page-seguranca .page-title,
-.page-seguranca .result-card h3,
-.page-seguranca .page-title {
-    background-image: linear-gradient(45deg, #1d4ed8, #3b82f6);
-    color: #2563eb; /* Cor tema de segurança */
-}
-
-.page-seguranca .search-form input:focus,
-.page-seguranca .search-form select:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px #2563eb60;
-}
-
-.page-seguranca .results-container h2 {
-    border-bottom: 2px solid #2563eb;
-}
-
-.page-seguranca .result-card {
-    border-bottom: 2px solid #2563eb;
-}
-
-.page-seguranca .botao-detalhes {
-    background-color: #2563eb;
-}
-
-.page-seguranca .botao-detalhes:hover {
-    background-color: #1d4ed8;
-}
-
-/* =================================================================
-   PÁGINA SETOR TRÂNSITO (CORES E ESTILOS ESPECÍFICOS)
-================================================================= */
-
-.page-transito .hero-header {
-    /* O gradiente agora é aplicado no pseudo-elemento para o parallax */
-}
-
-.page-transito .hero-header::before {
-    background: linear-gradient(45deg, #b45309, #d97706);
-    transform: translateZ(-1px) scale(2); /* Empurra para trás e aumenta para preencher */
-}
-
-.page-transito .page-title,
-.page-transito .result-card h3,
-.page-transito .page-title {
-    background-image: linear-gradient(45deg, #b45309, #f97316);
-    color: #d97706; /* Cor tema de trânsito */
-}
-
-.page-transito .result-card {
-    border-top-color: #d97706;
-}
-
-.page-transito .search-form input:focus,
-.page-transito .search-form select:focus {
-    border-color: #d97706;
-    box-shadow: 0 0 0 3px #d9770660;
-}
-
-.page-transito .results-container h2 {
-    border-bottom: 2px solid #d97706;
-}
-
-.page-transito .botao-detalhes {
-    background-color: #d97706;
-}
-
-.page-transito .botao-detalhes:hover {
-    background-color: #b45309;
-}
-
-/* =================================================================
-   PÁGINA SETOR EDUCAÇÃO (CORES E ESTILOS ESPECÍFICOS)
-================================================================= */
-
-.page-educacao .hero-header {
-    /* O gradiente agora é aplicado no pseudo-elemento para o parallax */
-}
-
-.page-educacao .hero-header::before {
-    background: linear-gradient(45deg, #6d28d9, #7c3aed);
-    transform: translateZ(-1px) scale(2); /* Empurra para trás e aumenta para preencher */
-}
-
-.page-educacao .page-title,
-.page-educacao .result-card h3,
-.page-educacao .page-title {
-    background-image: linear-gradient(45deg, #6d28d9, #8b5cf6);
-    color: #7c3aed; /* Cor tema de educação */
-}
-
-.page-educacao .result-card {
-    border-top-color: #7c3aed;
-}
-
-.page-educacao .search-form input:focus,
-.page-educacao .search-form select:focus {
-    border-color: #7c3aed;
-    box-shadow: 0 0 0 3px #7c3aed60;
-}
-
-.page-educacao .results-container h2 {
-    border-bottom: 2px solid #7c3aed;
-}
-
-.page-educacao .botao-detalhes {
-    background-color: #7c3aed;
-}
-
-.page-educacao .botao-detalhes:hover {
-    background-color: #6d28d9;
-}
-
-/* =================================================================
-   PÁGINA SETOR LAZER (CORES E ESTILOS ESPECÍFICOS)
-================================================================= */
-
-.page-lazer .hero-header {
-    /* O gradiente agora é aplicado no pseudo-elemento para o parallax */
-}
-
-.page-lazer .hero-header::before {
-    background: linear-gradient(45deg, #db2777, #ec4899);
-    transform: translateZ(-1px) scale(2); /* Empurra para trás e aumenta para preencher */
-}
-
-.page-lazer .page-title,
-.page-lazer .result-card h3,
-.page-lazer .page-title {
-    background-image: linear-gradient(45deg, #be185d, #f472b6);
-    color: #ec4899; /* Cor tema de lazer */
-}
-
-.page-lazer .result-card {
-    border-top-color: #ec4899;
-}
-
-.page-lazer .search-form input:focus,
-.page-lazer .search-form select:focus {
-    border-color: #ec4899;
-    box-shadow: 0 0 0 3px #ec489960;
-}
-
-/* =================================================================
-   PÁGINA SETOR ECONOMIA (CORES E ESTILOS ESPECÍFICOS)
-================================================================= */
-
-.page-economia .hero-header {
-    /* O gradiente agora é aplicado no pseudo-elemento para o parallax */
-}
-
-.page-economia .hero-header::before {
-    background: linear-gradient(45deg, #047857, #10b981);
-    transform: translateZ(-1px) scale(2); /* Empurra para trás e aumenta para preencher */
-}
-
-.page-economia .page-title,
-.page-economia .result-card h3,
-.page-economia .page-title {
-    background-image: linear-gradient(45deg, #047857, #34d399);
-    color: #10b981; /* Cor tema de economia */
-}
-
-.page-economia .result-card {
-    border-top-color: #10b981;
-}
-
-.page-economia .search-form input:focus,
-.page-economia .search-form select:focus {
-    border-color: #10b981;
-    box-shadow: 0 0 0 3px #10b98160;
-}
-
-.page-economia .botao-detalhes {
-    background-color: #10b981;
-}
-.page-economia .botao-detalhes:hover {
-    background-color: #059669;
-}
-
-/* =================================================================
-   SEÇÃO DE EMERGÊNCIA (Estilos Compartilhados e Específicos)
-================================================================= */
-
-.emergency-section {
-    margin-top: 5rem;
-    text-align: center;
-}
-
-.emergency-section h2 {
-    margin-bottom: 2rem;
-    justify-content: center;
-}
-
-.emergency-section .container {
-    padding-top: 3rem;
-    border-top: 1px solid #e2e8f0;
-}
-
-.emergency-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    justify-content: center;
-}
-
-.emergency-item {
-    padding: 2.5rem 1rem;
-    border-radius: 12px;
-    color: white;
+    font-family: 'Segoe UI', sans-serif; /* Fonte mais limpa */
     font-weight: bold;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.emergency-item:hover {
-    transform: translateY(-8px) scale(1.03);
-    box-shadow: 0 15px 30px -5px rgba(0,0,0,0.2);
-}
-
-.emergency-item h3 {
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
-    position: relative;
-    z-index: 2;
-}
-
-.emergency-item p {
-    font-size: 3.5rem;
-    font-family: 'Oxanium', sans-serif;
-    line-height: 1;
-    /* Melhora o kerning e o espaçamento de números */
-    font-feature-settings: "tnum", "lnum";
-
-    position: relative;
-    z-index: 2;
-}
-
-/* Cores específicas por página */
-.page-saude .emergency-item { background: radial-gradient(circle, #06b6d4, #0891b2); }
-.page-seguranca .emergency-item { background: radial-gradient(circle, #2563eb, #1d4ed8); }
-.page-transito .emergency-item { background: radial-gradient(circle, #d97706, #b45309); }
-.page-educacao .emergency-item { background: radial-gradient(circle, #7c3aed, #6d28d9); }
-.page-lazer .emergency-item { background: radial-gradient(circle, #ec4899, #db2777); }
-.page-economia .emergency-item { background: radial-gradient(circle, #10b981, #059669); }
-
-/* Ícones */
-.icon {
-    width: 1em;
-    height: 1em;
-    display: inline-block;
-    vertical-align: -0.125em;
-}
-
-/* =================================================================
-   BOTÃO VOLTAR AO TOPO
-================================================================= */
-.back-to-top-btn {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    width: 50px;
-    height: 50px;
-    background-color: #18181b;
-    color: white;
-    border: 1px solid #3f3f46;
-    border-radius: 50%;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(20px);
-    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); /* Sombra colorida (Glow) */
+    transition: all 0.4s ease;
+    padding: 10px 20px;
 }
 
-.back-to-top-btn.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
+.sac-btn:hover {
+    background-position: right center; /* Move o gradiente suavemente */
+    transform: translateY(-2px); /* Levanta levemente em vez de dar zoom */
+    box-shadow: 0 8px 20px rgba(124, 58, 237, 0.5); /* Glow mais intenso */
 }
 
-.back-to-top-btn:hover {
-    background-color: #2563eb;
-    border-color: #2563eb;
-}
-
-/* =================================================================
-   TEMA ESCURO (DARK MODE)
-================================================================= */
-html[data-theme="dark"] {
-    /* Cores Base */
-    --color-background: #121212;
-    --color-text-primary: #e0e0e0;
-    --color-text-secondary: #a1a1aa;
-    --color-border: #3f3f46;
-
-    /* Cores de Componentes */
-    --color-header-bg: #1c1c1c;
-    --color-footer-bg: #1c1c1c;
-
-    /* Cores dos Cards do Hub */
-    --color-card-bg: #1f1f1f;
-    --color-card-text: #a1a1aa;
-
-    /* Cores dos Cards de Resultado (Páginas de Setor) */
-    --color-result-card-bg: #1f1f1f;
-    --color-result-card-border: #3f3f46;
-}
-
-/* Ajustes específicos para o Modo Escuro */
-html[data-theme="dark"] .search-form {
-    background-color: rgba(30, 30, 30, 0.6);
-    border-color: rgba(255, 255, 255, 0.1);
-}
-
-html[data-theme="dark"] .search-form input,
-html[data-theme="dark"] .search-form select {
-    background-color: rgba(40, 40, 40, 0.8);
-    border-color: #52525b;
-    color: var(--color-text-primary);
-}
-
-html[data-theme="dark"] .emergency-section .container {
-    border-top-color: var(--color-border);
-}
-
-/* =================================================================
-   BOTÃO DE TROCA DE TEMA
-================================================================= */
-.theme-toggle-button {
-    position: absolute;
-    top: 50%;
-    right: 2rem;
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s ease;
-}
-
-.theme-toggle-button:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.theme-icon {
-    width: 20px;
-    height: 20px;
-    position: absolute;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-/* Ícone da Lua (Padrão no tema claro) */
-.theme-icon.moon {
-    opacity: 1;
-    transform: scale(1);
-}
-
-/* Ícone do Sol (Escondido no tema claro) */
-.theme-icon.sun {
-    opacity: 0;
-    transform: scale(0.5);
-}
-
-/* Mostra o Sol e esconde a Lua no tema escuro */
-html[data-theme="dark"] .theme-icon.sun {
-    opacity: 1;
-    transform: scale(1);
-}
-
-html[data-theme="dark"] .theme-icon.moon {
-    opacity: 0;
-    transform: scale(0.5);
+.sac-btn:active {
+    transform: translateY(1px); /* Efeito de clique */
+    box-shadow: 0 2px 10px rgba(124, 58, 237, 0.4);
 }
