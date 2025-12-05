@@ -1,5 +1,29 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- LÓGICA DO RELÓGIO ---
+        function atualizarRelogio() {
+            const agora = new Date();
+
+            const dia = String(agora.getDate()).padStart(2, "0");
+            const mes = String(agora.getMonth() + 1).padStart(2, "0");
+            const ano = agora.getFullYear();
+
+            const horas = String(agora.getHours()).padStart(2, "0");
+            const minutos = String(agora.getMinutes()).padStart(2, "0");
+            const segundos = String(agora.getSeconds()).padStart(2, "0");
+
+            // Fuso horário (ex.: GMT-3)
+            const fusoBruto = -agora.getTimezoneOffset() / 60;
+            const fusoString = `GMT${fusoBruto >= 0 ? "+" : ""}${fusoBruto}`;
+
+            relEl.textContent =
+                `${dia}/${mes}/${ano} — ${horas}:${minutos}:${segundos} (${fusoString})`;
+        }
+
+        setInterval(atualizarRelogio, 1000);
+        atualizarRelogio();
+    })();
+
     // --- LÓGICA DO BOTÃO "VOLTAR AO TOPO" ---
     const backToTopBtn = document.getElementById('backToTopBtn');
 
@@ -35,30 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- OUTRAS LÓGICAS JAVASCRIPT PODEM SER ADICIONADAS AQUI ---
-
-    // Lógica do relógio
-
-    function atualizarHorario() {
-    const agora = new Date();
-
-    const dia = String(agora.getDate()).padStart(2, '0');
-    const mes = String(agora.getMonth() + 1).padStart(2, '0');
-    const ano = agora.getFullYear();
-
-    const horas = String(agora.getHours()).padStart(2, '0');
-    const minutos = String(agora.getMinutes()).padStart(2, '0');
-    const segundos = String(agora.getSeconds()).padStart(2, '0');
-
-    // Fuso horário de Brasília (utc-3)
-    const fuso = -agora.getTimezoneOffset() / 60;
-    const fusoString = `GMT${fuso >= 0 ? '+' : ''}${fuso}`;
-
-    document.getElementById('relogio').textContent =
-    `${dia}/${mes}/${ano} ${horas}:${minutos}:${segundos} (${fusoString})`;
-}
-
-setInterval(atualizarHorario, 1000);
-atualizarHorario(); //Chama o código para que não haja atraso
 
     // Lógica do tema claro/escuro
     const themeToggleButton = document.getElementById('theme-toggle');
@@ -151,4 +151,3 @@ atualizarHorario(); //Chama o código para que não haja atraso
             cssToggleBtn.style.background = 'linear-gradient(45deg, #22c55e, #16a34a)';
         }
     }
-});

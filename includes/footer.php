@@ -10,7 +10,7 @@
                     <li><strong>Email:</strong> <a href="mailto:contato@exemplo.com" class="sac-links">contato@exemplo.com</a></li>
                     <li><strong>Tel:</strong> <a href="tel:08001234567" class="sac-links">0800 123 4567</a></li>
                 </ul>
-            </div>   
+            </div>
             <div class="sac-buttons">
                 <a href="avaliacao.php"><button class="sac-btn">Enviar Avaliação</button></a>
                 <a href="reclamacao.php"><button class="sac-btn">Enviar Reclamação</button></a>
@@ -28,6 +28,16 @@
                     </button>
                 <?php endif; ?>
             </div>
+
+            <?php
+            /* Botão Voltar flutuante: aparece em todas as páginas que incluam este footer,
+               exceto nas páginas hub.php, login.php e cadastro.php */
+            $current = basename($_SERVER['PHP_SELF']);
+            $exclude = ['hub.php', 'login.php', 'cadastro.php'];
+            if (!in_array($current, $exclude)):
+            ?>
+                <button onclick="history.back()" class="sac-btn voltar-btn">Voltar</button>
+            <?php endif; ?>
 
         </div>
     </div>

@@ -5,7 +5,7 @@ session_start();
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <script src="theme.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/boilerplate.css">
@@ -29,6 +29,15 @@ session_start();
             <p style="text-align: center; font-size: 1.2rem; color: var(--color-text-secondary); margin-bottom: 2rem;">
                 Bem vindo: <strong><?php echo htmlspecialchars($_SESSION['nome']); ?></strong>
             </p>
+        <?php endif; ?>
+
+        <!-- Botão Admin (apenas para administradores) -->
+        <?php if (isset($_SESSION['nivel']) && $_SESSION['nivel'] === 'Administração'): ?>
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <button onclick="location.href='admin_visao.php'" class="sac-btn" style="width: auto; padding: 12px 24px; font-size: 1rem;">
+                    🛡️ Painel de Administrador
+                </button>
+            </div>
         <?php endif; ?>
 
             <section class="container-card">

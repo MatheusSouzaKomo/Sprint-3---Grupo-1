@@ -650,25 +650,21 @@ footer .sac-links {
 
  /* Design Relógio do header */
 
-#relogio {
-    color: #ffffff;
+header { text-align: center; }
+
+#relogio, .relogio {
+    color: #ffffff !important;
     font-size: 1rem;
-    font-family: Silkscren, monospace;
+    font-family: 'Silkscreen', monospace;
     text-align: center;
-    padding: 10px 20px;
-    background: linear-gradient(to right, 
-        #06b6d4, #2563eb, #d97706, #7c3aed, #ec4899, #10b981);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    border-radius: 8px;
-    min-width: 250px;
-    letter-spacing: 1px;
-    font-weight: 600;
-    background-size: 300% auto;
-    animation: brilhoTexto 5s linear infinite;
+    display: block;
+    margin: 0.5rem auto;
+    padding: 6px 12px;
+    background: transparent !important;
+    border: none !important;
 }
 html[data-theme="dark"] {
     --color-background : #121212;
     --color-text-primary : #e0e0e0; 
-}}
+}
+}

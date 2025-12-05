@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="theme.js"></script>
     <link rel="stylesheet" href="css/style.css">
-    <title>Document</title>
+    <title>Aba de Reclamação</title>
 </head>
 <body class="login-page">
     <div class="login-container">
@@ -26,8 +26,8 @@
                 </select>
             </div>
             <button type="submit" class="login-btn">Enviar Reclamação</button>
+             <button onclick="history.back()" class="sac-btn voltar-btn">Voltar</button><p></p><p></p>
         </form>
     </div>
 </body>
 </html>
-    

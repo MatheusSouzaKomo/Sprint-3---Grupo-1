@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="theme.js"></script>
     <link rel="stylesheet" href="css/style.css">
-    <title>Document</title>
+    <title>Cadastro</title>
 </head>
     <body class="login-page">
         <div class="login-container">
