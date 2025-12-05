@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- LÓGICA DO RELÓGIO ---
+    const relEl = document.getElementById('relogio');
+    if (relEl) {
         function atualizarRelogio() {
             const agora = new Date();
 
@@ -20,9 +22,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 `${dia}/${mes}/${ano} — ${horas}:${minutos}:${segundos} (${fusoString})`;
         }
 
+        // Força o relógio ficar visível
+        try {
+            relEl.style.setProperty('color', '#ffffff', 'important');
+            relEl.style.setProperty('background', 'transparent', 'important');
+        } catch (e) {
+            relEl.style.color = '#ffffff';
+            relEl.style.background = 'transparent';
+        }
+
         setInterval(atualizarRelogio, 1000);
         atualizarRelogio();
-    })();
+    }
 
     // --- LÓGICA DO BOTÃO "VOLTAR AO TOPO" ---
     const backToTopBtn = document.getElementById('backToTopBtn');
@@ -58,96 +69,5 @@ document.addEventListener('DOMContentLoaded', () => {
         backToTopBtn.addEventListener('click', scrollToTop);
     }
 
-    // --- OUTRAS LÓGICAS JAVASCRIPT PODEM SER ADICIONADAS AQUI ---
-
-    // Lógica do tema claro/escuro
-    const themeToggleButton = document.getElementById('theme-toggle');
-    const htmlElement = document.documentElement;
-
-    if (themeToggleButton) {
-        // Função para atualizar o texto/ícone do botão
-        const updateThemeButtonIcon = (theme) => {
-            if (theme === 'dark') {
-                themeToggleButton.textContent = '☀️ Modo Claro';
-            } else {
-                themeToggleButton.textContent = '🌙 Modo Noturno';
-            }
-        };
-
-        // Função para aplicar o tema
-        const applyTheme = (theme) => {
-            htmlElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            updateThemeButtonIcon(theme); // Atualiza o ícone do botão
-        };
-
-        // Função para alternar o tema
-        const toggleTheme = () => {
-            const currentTheme = htmlElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            applyTheme(newTheme);
-        };
-
-        // Adiciona o evento de clique ao botão
-        themeToggleButton.addEventListener('click', toggleTheme);
-
-        // Lógica para definir o tema inicial
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-        if (savedTheme) {
-            // Se houver um tema salvo, usa ele
-            applyTheme(savedTheme);
-        } else if (prefersDark) {
-            // Senão, se o sistema operacional preferir o modo escuro, usa ele
-            applyTheme('dark');
-        } else {
-            // Se nada, usa o claro e atualiza o ícone
-            updateThemeButtonIcon('light');
-        }
-    }
-    
-    // Lógica do botão de modo desenvolvedor (desliga/liga CSS)
-    const cssToggleBtn = document.getElementById('css-toggle');
-    
-    if (cssToggleBtn) {
-        // Função para aplicar/remover CSS
-        const toggleCSS = () => {
-            const styleLinks = document.querySelectorAll('link[rel="stylesheet"]');
-            const isCSSDisabled = localStorage.getItem('css-disabled') === 'true';
-            
-            styleLinks.forEach(link => {
-                if (isCSSDisabled) {
-                    link.disabled = false;
-                } else {
-                    link.disabled = true;
-                }
-            });
-            
-            // Salva o estado
-            localStorage.setItem('css-disabled', !isCSSDisabled);
-            
-            // Muda o texto do botão
-            if (isCSSDisabled) {
-                cssToggleBtn.textContent = '🔧 Modo Desenvolvedor (CSS)';
-                cssToggleBtn.style.background = 'linear-gradient(45deg, #ef4444, #f97316)';
-            } else {
-                cssToggleBtn.textContent = '✅ CSS Desligado';
-                cssToggleBtn.style.background = 'linear-gradient(45deg, #22c55e, #16a34a)';
-            }
-        };
-        
-        // Evento de clique
-        cssToggleBtn.addEventListener('click', toggleCSS);
-        
-        // Verifica se CSS estava desligado na última sessão
-        const isCSSDisabled = localStorage.getItem('css-disabled') === 'true';
-        if (isCSSDisabled) {
-            const styleLinks = document.querySelectorAll('link[rel="stylesheet"]');
-            styleLinks.forEach(link => {
-                link.disabled = true;
-            });
-            cssToggleBtn.textContent = '✅ CSS Desligado';
-            cssToggleBtn.style.background = 'linear-gradient(45deg, #22c55e, #16a34a)';
-        }
-    }
+    // --- OUTRAS LÓGICAS JAVASCRIPT PODEM SER ADICIONADAS AQUI --
+});

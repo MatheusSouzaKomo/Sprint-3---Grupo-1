@@ -13,17 +13,17 @@
      <main class="sector" id="main-sector">
         <div class="container">
             <h2>Saúde</h2>
-            <p>Este é o setor principal do seu modelo. Ele pode conter subseções, artigos ou o conteúdo mais importante da página.</p>
+            <p>Como o futuro existe sem saúde? Sem cuidar ao próximo? Esse é o lema da Guru's. Com nossos projetos de saúde, temos o compromisso de manter nossa sociedade saudável e unida.</p>
             <section class="sector-section" id="sector-service">
                 <h3>Serviços</h3>
                 <div class="flex flex-center">
                     <div class="item-service card-saude" onclick="location.href='setorSaude.php';">
                         <h4>Guru's Health & Care</h4>
-                        <p>Descrição breve do serviço ou feature 2.</p>
+                        <p>Desde exames de rotina a cirurgias importantes. Você está seguro nas mãos da Guru's Health & Care.</p>
                     </div>
                     <div class="item-service card-saude" onclick="location.href='setorSaude.php';">
                         <h4>Guru's Mind</h4>
-                        <p>Descrição breve do serviço ou feature 2.</p>
+                        <p>Uma nova forma de hackear o próprio corpo. Venha viver o futuro de protéses com a Guru's Mind</p>
                 </div>
             </section>
         </div>

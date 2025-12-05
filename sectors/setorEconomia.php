@@ -13,13 +13,13 @@
     <main class="sector" id="main-sector">
         <div class="container">
             <h2>Economia</h2>
-            <p>Este é o setor principal do seu modelo. Ele pode conter subseções, artigos ou o conteúdo mais importante da página.</p>
+            <p>Se afilie a tecnologia do novo mundo, da cidade tecnológica! Com todos as transações, investimentos e previsões na palma da sua mão, nada há de se temer. Seu futuro está em boas mãos.</p>
             <section class="sector-section" id="sector-service">
                 <h3>Serviços</h3>
                 <div class="flex flex-center">
                     <div class="item-service card-economia" onclick="location.href='setorSaude.php';">
                         <h4>Guru's Bank</h4>
-                        <p>Descrição breve do serviço ou feature 2.</p>
+                        <p>Facilidade, transparência e segurança financeira. Isso e muito mais, na Guru's Bank!</p>
                     </div>
                 </div>
             </section>

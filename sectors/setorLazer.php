@@ -13,13 +13,13 @@
     <main class="sector" id="main-sector">
         <div class="container">
             <h2>Lazer</h2>
-            <p>Este é o setor principal do seu modelo. Ele pode conter subseções, artigos ou o conteúdo mais importante da página.</p>
+            <p>A Guru's House é mais que um investimento, é uma promessa para o futuro. A certeza de uma boa aposentadoria, boa estadia e muitas risadas com seus entes queridos. Família em primeiro lugar!</p>
             <section class="sector-section" id="sector-service">
                 <h3>Serviços</h3>
                 <div class="flex flex-center">
                     <div class="item-service card-lazer" onclick="location.href='setorSaude.php';">
                         <h4>Guru's House</h4>
-                        <p>Descrição breve do serviço ou feature 2.</p>
+                        <p>Conforto, segurança e lazer. A Guru's House é melhor que casa de vó!</p>
                     </div>
                 </div>
             </section>

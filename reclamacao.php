@@ -25,8 +25,8 @@
                     <option value="6">Trânsito</option>
                 </select>
             </div>
-            <button type="submit" class="login-btn">Enviar Reclamação</button>
-             <button onclick="history.back()" class="sac-btn voltar-btn">Voltar</button><p></p><p></p>
+            <button type="submit" class="login-btn">Enviar Reclamação</button><p></p><p></p>
+             <button onclick="history.back()" class="sac-btn voltar-btn">Voltar</button> 
         </form>
     </div>
 </body>

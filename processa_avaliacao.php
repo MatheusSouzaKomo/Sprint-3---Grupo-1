@@ -39,7 +39,6 @@ if (!isset($_SESSION['id_usuario'])) {
             <?php echo htmlspecialchars($sucesso ? $mensagem : $erro); ?>
         </div>
         <a href="hub.php" class="botao-voltar" style="display: block; text-align: center; margin-top: 1.5rem;">Voltar ao Hub</a>
-    </div>
-    <button onclick="location.href='hub.php'" class="voltar-btn">Voltar</button>
+    </div>  
 </body>
 </html>
