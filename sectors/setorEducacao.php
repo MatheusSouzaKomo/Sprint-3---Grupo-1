@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modelo Padrão de Setores</title>
+    <script src="../theme.js"></script>
     <link rel="stylesheet" href="../css/boilerplate.css">
     <link rel="stylesheet" href="../css/style.css">
 </head>
@@ -16,7 +17,7 @@
             <section class="sector-section" id="sector-service">
                 <h3>Serviços</h3>
                 <div class="flex flex-center">
-                    <div class="item-service card-educ" onclick="location.href='setorSaude.html';">
+                    <div class="item-service card-educ" onclick="location.href='setorSaude.php';">
                         <h4>Guru's Learn</h4>
                         <p>Descrição breve do serviço ou feature 2.</p>
                     </div>

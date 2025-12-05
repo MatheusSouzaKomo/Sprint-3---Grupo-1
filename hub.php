@@ -6,6 +6,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="theme.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/boilerplate.css">
     <title>Painel Principal</title>
@@ -24,44 +25,50 @@ session_start();
         <?php endif; ?>
         <h1>Painel Principal</h1>
 
-        <section class="container-card">
+        <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
+            <p style="text-align: center; font-size: 1.2rem; color: var(--color-text-secondary); margin-bottom: 2rem;">
+                Bem vindo: <strong><?php echo htmlspecialchars($_SESSION['nome']); ?></strong>
+            </p>
+        <?php endif; ?>
+
+            <section class="container-card">
             <!-- Cards aqui (sem alterações) -->
-            <div class="card card-saude" onclick="location.href='setorSaude.html';" style="cursor: pointer;">
+            <div class="card card-saude" onclick="location.href='sectors/setorSaude.php';" style="cursor: pointer;">
                 <div class="card-content">
                     <h2>Saúde</h2>
                     <p>Explore informações e serviços relacionados à saúde.</p>
                 </div>
             </div>
 
-            <div class="card card-seguranca" onclick="location.href='setorSeguranca.html';" style="cursor: pointer;">
+            <div class="card card-seguranca" onclick="location.href='sectors/setorSeguranca.php';" style="cursor: pointer;">
                 <div class="card-content">
                     <h2>Segurança</h2>
                     <p>Descubra iniciativas e dados sobre segurança pública.</p>
                 </div>
             </div>
 
-            <div class="card card-transito" onclick="location.href='setorTransito.html';" style="cursor: pointer;">
+            <div class="card card-transito" onclick="location.href='sectors/setorTransito.php';" style="cursor: pointer;">
                 <div class="card-content">
                     <h2>Trânsito</h2>
                     <p>Informações sobre mobilidade urbana e trânsito.</p>
                 </div>
             </div>
 
-            <div class="card card-educ" onclick="location.href='setorEducacao.html';" style="cursor: pointer;">
+            <div class="card card-educ" onclick="location.href='sectors/setorEducacao.php';" style="cursor: pointer;">
                 <div class="card-content">
                     <h2>Educação</h2>
                     <p>Acesse conteúdos e serviços educacionais.</p>
                 </div>
             </div>
 
-            <div class="card card-lazer" onclick="location.href='setorLazer.html';" style="cursor: pointer;">
+            <div class="card card-lazer" onclick="location.href='sectors/setorLazer.php';" style="cursor: pointer;">
                 <div class="card-content">
                     <h2>Lazer</h2>
                     <p>Encontre opções de lazer e entretenimento.</p>
                 </div>
             </div>
 
-            <div class="card card-economia" onclick="location.href='setorEconomia.html';" style="cursor: pointer;">
+            <div class="card card-economia" onclick="location.href='sectors/setorEconomia.php';" style="cursor: pointer;">
                 <div class="card-content">
                     <h2>Economia</h2>
                     <p>Saiba mais sobre economia e finanças.</p>
