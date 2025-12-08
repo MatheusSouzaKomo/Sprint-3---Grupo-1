@@ -26,6 +26,10 @@ if ($result->num_rows === 1) {
             $update_stmt->bind_param("si", $new_hash, $user["id_usuario"]);
             $update_stmt->execute();
         }
+    // Verificação para senhas do MYSQL com MD5
+    if (md5($senha) === $user["senha"]) {
+
+        // Define as variáveis de sessão
         $_SESSION["loggedin"] = true;
         $_SESSION["id_usuario"] = $user["id_usuario"];
         $_SESSION["nome"] = $user["nome"];
@@ -35,7 +39,24 @@ if ($result->num_rows === 1) {
     }
 }
 
-// Se não logou:
-echo "Email ou senha incorretos.";
+// Se não logou: renderiza uma página com header/footer (mostra botão Voltar)
+?>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="theme.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <title>Login - Falha</title>
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="alert error">Email ou senha incorretos.</div>
+        <a href="login.php" class="botao-voltar">Voltar ao Login</a>
+    </div>
+</body>
+</html>
+<?php
 exit;
 ?>

@@ -6,12 +6,18 @@ session_start(); // Inicia a sessão para que o header possa acessar as variáve
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Segurança - Guru's City</title>
     <script src="../main.js" defer></script>
+=======
+    <title>Setor de Segurança</title>
+    <script src="../theme.js"></script>
+>>>>>>> cfdd3a026e6c4bf7132408c20428d0f9bf42b7fb
     <link rel="stylesheet" href="../css/boilerplate.css">
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
+<<<<<<< HEAD
     <?php
     // Usando __DIR__ para criar um caminho absoluto e robusto para os includes.
     // __DIR__ aponta para a pasta 'sectors', então usamos '/../' para subir um nível.
@@ -27,6 +33,24 @@ session_start(); // Inicia a sessão para que o header possa acessar as variáve
                 <div class="c-card__content">
                     <h4 class="c-card__title">Guru's Drone</h4>
                     <p>Descrição breve do serviço ou feature 1.</p>
+=======
+    <?php include '../includes/header.php'; ?>
+     <main class="sector" id="main-sector">
+        <div class="container">
+            <h2>Segurança</h2>
+            <p>Este é o setor principal do seu modelo. Ele pode conter subseções, artigos ou o conteúdo mais importante da página.</p>
+            <section class="sector-section" id="sector-service">
+                <h3>Serviços</h3>
+                <div class="flex flex-center">
+                    <div class="item-service card-segurança" onclick="location.href='setorSaude.php';">
+                        <h4>Guru's Drone</h4>
+                        <p>Descrição breve do serviço ou feature 2.</p>
+                    </div>
+                    <div class="item-service card-segurança" onclick="location.href='setorSaude.php';">
+                        <h4>Guru's Alert</h4>
+                        <p>Descrição breve do serviço ou feature 2.</p>
+                    </div>
+>>>>>>> cfdd3a026e6c4bf7132408c20428d0f9bf42b7fb
                 </div>
             </a>
             <a href="#" class="c-card c-card--seguranca" style="animation: fadeInUp 0.5s ease-out 0.1s forwards;">

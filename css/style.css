@@ -213,6 +213,7 @@ a:hover {
   text-align: center;
 }
 
+<<<<<<< HEAD
 #relogio {
   position: absolute;
   top: 50%;
@@ -618,4 +619,542 @@ html[data-theme='dark'] .c-card--skeleton .c-card__skeleton-line {
   transform: translateX(-100%);
   background-image: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
   animation: shimmer 1.5s infinite;
+=======
+.card {
+    min-height: 350px;  
+    background-color: var(--color-card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform 0.4s ease-out, box-shadow 0.4s ease-out, background-color 0.2s linear, color 0.2s ease-out;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    border: 1px solid currentColor;
+}
+
+.card-content {
+    padding: 20px;
+    position: relative;
+    z-index: 10;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transform: translateZ(20px);
+}
+
+.card h2 {
+    position: relative;
+    z-index: 11;
+    transition: transform 0.4s ease;
+    font-size: 1.8rem;
+}
+
+.card p {
+    color: var(--color-card-text);
+    line-height: 1.5;
+    transition: opacity 0.3s ease-out;
+}
+
+/* Efeito Glare (Brilho) no Card */
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 80%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.6s ease-out;
+    z-index: 15;
+    transform: skewX(-25deg);
+}
+
+/* Estados de Hover do Card */
+.card:hover {
+    transform: translateY(-10px) perspective(800px) rotateY(5deg);
+    background-color: currentColor;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    margin: 0;
+    padding: 0;
+}
+
+.card:hover h2 { color: #ffffff; }
+.card:hover p { display: none; }
+.card:hover::before { left: 150%; }
+
+/* Cores Específicas dos Cards */
+.card-saude { color: #06b6d4; box-shadow: 0 10px 30px -5px #06b6d480; }
+.card-seguranca { color: #2563eb; box-shadow: 0 10px 30px -5px #2563eb80; }
+.card-transito { color: #d97706; box-shadow: 0 10px 30px -5px #d9770680; }
+.card-educ { color: #7c3aed; box-shadow: 0 10px 30px -5px #7c3aed80; }
+.card-lazer { color: #ec4899; box-shadow: 0 10px 30px -5px #ec489980; }
+.card-economia { color: #10b981; box-shadow: 0 10px 30px -5px #10b98180; }
+
+/* Sombra no Hover (Específico por cor) */
+.card-saude:hover { box-shadow: 0 20px 40px -10px #06b6d4b3; }
+.card-seguranca:hover { box-shadow: 0 20px 40px -10px #2563ebb3; }
+.card-transito:hover { box-shadow: 0 20px 40px -10px #d97706b3; }
+.card-educ:hover { box-shadow: 0 20px 40px -10px #7c3aedb3; }
+.card-lazer:hover { box-shadow: 0 20px 40px -10px #ec4899b3; }
+.card-economia:hover { box-shadow: 0 20px 40px -10px #10b981b3; }
+
+
+  /* 8. LAYOUT: FOOTER & LINKS */
+
+footer {
+    width: 100%;
+    padding: 20px;
+    background-color: black;
+    border-top: 5px solid transparent;
+    border-image: linear-gradient(to right, 
+        #06b6d4, #2563eb, #d97706, #7c3aed, #ec4899, #10b981 
+    );
+    border-image-slice: 1;
+}
+
+footer .sac-links {
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 20px;
+    background: linear-gradient(to right, 
+        #06b6d4, #2563eb, #d97706, #7c3aed, #ec4899, #10b981
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-size: 300% auto;
+    color: transparent;
+    animation: brilhoTexto 5s linear infinite;
+}
+
+
+  /*  9. SEÇÃO SAC (ATENDIMENTO) */
+
+.sac-footer {
+    background-color: var(--color-footer-bg);
+    color: var(--color-footer-text);
+    padding-block: 4rem;
+    margin-top: 4rem;
+}
+
+.sac-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 4rem;
+    align-items: start;
+}
+
+.sac-info h2 {
+    font-size: 2rem;
+    color: var(--color-header-text);
+    margin-bottom: 1rem;
+}
+
+.sac-info p {
+    color: var(--color-footer-text-muted);
+    line-height: 1.6;
+    max-width: 45ch;
+}
+
+.sac-contacts {
+    list-style: none;
+    margin-top: 2rem;
+    color: var(--color-footer-text);
+}
+
+.sac-contacts li {
+    margin-bottom: 0.5rem;
+}
+
+/* Formulário SAC e botões footer. */
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-footer-text-muted);
+}
+
+.sac-form input,
+.sac-form select,
+.sac-form textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid #3f3f46;
+    border-radius: 4px;
+    color: var(--color-header-text);
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+.sac-form input:focus,
+.sac-form select:focus,
+.sac-form textarea:focus {
+    outline: none;
+    border-color: var(--color-header-text);
+    background-color: rgba(237, 237, 237, 0.1);
+    resize: none;
+}
+
+.sac-form select {
+    appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+}
+
+.sac-form select option {
+    color: var(--color-text-primary);
+}
+
+/* Botões do SAC */
+.botao-sac {
+    display: inline-block;
+    background-color: var(--color-footer-text);
+    color: var(--color-footer-bg);
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    align-self: start; 
+}
+
+.botao-sac:hover {
+    color: var(--color-footer-text);
+    background-color: #2563eb;
+    scale: 102%;
+    box-shadow: 0 10px 20px -5px rgba(178, 185, 200, 0.5);
+}
+
+.sac-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.sac-btn {
+    width: 300px;
+    height: 70px;
+    background: linear-gradient(45deg, #2563eb, #7c3aed, #ec4899); 
+    background-size: 200% auto;
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: bold;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    transition: all 0.4s ease;
+    padding: 10px 20px;
+    animation: brilhoTexto 5s linear infinite;
+}
+
+.sac-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+}
+
+.sac-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(124, 58, 237, 0.4);
+}
+
+
+/* 10. PÁGINA: LOGIN & SIGNUP */
+
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--color-background);
+    padding: 0;
+    margin: 0;
+}
+
+.login-container {
+    background-color: var(--color-card-bg);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+}
+
+.login-form h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: var(--color-text-primary);
+}
+
+.input-group, 
+.select-group {
+    margin-bottom: 1rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-secondary);
+}
+
+.input-group input, 
+.select-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: var(--color-card-bg);
+    color: var(--color-text-primary);
+}
+
+.input-group input:focus, 
+.select-group select:focus {
+    outline: none;
+    border-color: var(--color-text-primary);
+    box-shadow: 0 0 0 2px rgba(34, 34, 34, 0.25);
+}
+
+.select-group option {
+    color: var(--color-text-primary);
+    appearance: none;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 4px;
+    background: radial-gradient(circle at 20% 70%, 
+        #06b6d4, #2563eb, #d97706, #7c3aed, #ec4899, #10b981
+    );
+    background-size: 400% auto;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    animation: brilhoTexto 30s linear infinite;
+}
+
+.signup-link {
+    text-align: center;
+    margin-top: 1rem;
+    color: var(--color-text-secondary);
+}
+
+.signup-link a {
+    text-decoration: none;
+    background: linear-gradient(to right, 
+        #06b6d4, #2563eb, #d97706, #7c3aed, #ec4899, #10b981
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-size: 300% auto;
+    color: transparent;
+    animation: brilhoTexto 5s linear infinite;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}
+
+
+/* Utilitários de Botões */
+
+/* Botão Voltar (Geral) */
+.botao-voltar {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    padding: 0.6rem 1.2rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-header-text);
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.botao-voltar:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateX(-4px);
+} 
+
+/* Botão Voltar ao Topo */
+.back-to-top-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(45deg, #2563eb, #7c3aed, #ec4899);
+    background-size: 200% auto;
+    color: var(--color-header-text);
+    border: 0.5px solid #000;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: all 0.4s ease;
+}
+
+.back-to-top-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    background-position: right center;
+}
+
+
+/* SETORES */
+
+
+/* Estilo genérico para todos os setores */
+.sector {
+    padding: 60px 0; 
+    margin-bottom: 0; 
+
+
+/* Setor Principal */
+
+#main-sector {
+    background-color: var(--color-card-bg);
+    text-align: center;
+}
+
+#main-sector h2 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    color: currentColor;
+}
+
+#main-sector p {
+    font-size: 1.1em;
+    margin-bottom: 40px;
+}
+
+.sector-section {
+    padding: 40px 0;
+    background-color: var(--color-background);
+    border-top: 1px solid var(--color-border);
+}
+
+.sector-section h3 {
+    font-size: 2em;
+    margin-bottom: 30px;
+    color: currentColor ;
+}
+
+/* Sub-Setor de Serviços/Features e Cards.*/
+#sector-service {
+    padding: 40px 0;
+}
+
+#setor-service h3 {
+    font-size: 2em;
+    margin-bottom: 30px;
+    color: #3498db;
+}
+
+.item-service {
+    color: currentColor;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    border: 1px solid currentColor;
+    min-height: 300px;
+    max-width: 350px;
+    transition: all 0.4s ease-out;
+}
+
+.item-service:hover {
+    transform: translateY(-5px);
+    background-color: currentColor;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.item-service:hover h4{
+    color: #ffffff;
+    font-size: 1.7rem;
+    position: absolute;
+}
+
+.item-service:hover p{
+    color: transparent;
+}
+
+.item-service h4 {
+    color: currentColor;
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 1.5em;
+    transition: all 0.05s ease-out;
+}
+
+.item-service p {
+    color: currentColor;
+    margin-bottom: 10px;
+    font-size: 1.3em;
+}
+
+/* Responsividade */
+
+@media (max-width: 768px) {
+
+    /* Espaçamento para melhor qualidade de vida */
+
+    .setor {
+        padding: 40px 0;
+    }
+}
+
+ /* Design Relógio do header */
+
+header { text-align: center; }
+
+#relogio, .relogio {
+    color: #ffffff !important;
+    font-size: 1rem;
+    font-family: 'Silkscreen', monospace;
+    text-align: center;
+    display: block;
+    margin: 0.5rem auto;
+    padding: 6px 12px;
+    background: transparent !important;
+    border: none !important;
+}
+html[data-theme="dark"] {
+    --color-background : #121212;
+    --color-text-primary : #e0e0e0; 
+}
+>>>>>>> cfdd3a026e6c4bf7132408c20428d0f9bf42b7fb
 }

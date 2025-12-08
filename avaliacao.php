@@ -36,7 +36,8 @@
                     <option value="5">5 - Excelente</option>
                 </select>
             </div>
-            <button type="submit" class="c-btn c-btn--primary" style="width: 100%; margin-top: var(--space-4);">Enviar Avaliação</button>
+            <button type="submit" class="login-btn">Enviar Avaliação</button><p></p><p></p>
+               <button onclick="history.back()" class="sac-btn voltar-btn">Voltar</button>
         </form>
     </div>
 </body>

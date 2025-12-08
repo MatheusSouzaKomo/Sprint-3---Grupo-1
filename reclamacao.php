@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="theme.js"></script>
     <link rel="stylesheet" href="css/style.css">
-    <title>Document</title>
+    <title>Aba de Reclamação</title>
 </head>
 <body class="o-page-container">
     <div class="c-login-box">
@@ -26,9 +26,13 @@
                     <option value="6">Trânsito</option>
                 </select>
             </div>
+<<<<<<< HEAD
             <button type="submit" class="c-btn c-btn--primary" style="width: 100%; margin-top: var(--space-4);">Enviar Reclamação</button>
+=======
+            <button type="submit" class="login-btn">Enviar Reclamação</button><p></p><p></p>
+             <button onclick="history.back()" class="sac-btn voltar-btn">Voltar</button> 
+>>>>>>> cfdd3a026e6c4bf7132408c20428d0f9bf42b7fb
         </form>
     </div>
 </body>
 </html>
-    

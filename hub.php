@@ -3,7 +3,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <script src="theme.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/boilerplate.css">
     <title>Painel Principal</title>
@@ -60,6 +61,20 @@
             <a href="sectors/setorSaude.php" class="c-card c-card--saude" style="--animation-delay: 0.1s;">
                 <div class="c-card__content">
                     <h2 class="c-card__title">Saúde</h2>
+        <!-- Botão Admin (apenas para administradores) -->
+        <?php if (isset($_SESSION['nivel']) && $_SESSION['nivel'] === 'Administração'): ?>
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <button onclick="location.href='admin_visao.php'" class="sac-btn" style="width: auto; padding: 12px 24px; font-size: 1rem;">
+                    🛡️ Painel de Administrador
+                </button>
+            </div>
+        <?php endif; ?>
+
+            <section class="container-card">
+            <!-- Cards aqui (sem alterações) -->
+            <div class="card card-saude" onclick="location.href='sectors/setorSaude.php';" style="cursor: pointer;">
+                <div class="card-content">
+                    <h2>Saúde</h2>
                     <p>Explore informações e serviços relacionados à saúde.</p>
                 </div>
                 <footer class="c-card__footer">
