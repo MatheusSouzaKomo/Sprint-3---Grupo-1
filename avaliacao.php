@@ -7,17 +7,17 @@
     <script src="theme.js"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="login-page">
-    <div class="login-container">
-        <form action="processa_avaliacao.php" method="POST" class="login-form">
-            <h2>Deixe sua Avaliação</h2>
-            <div class="input-group">
-                <label for="msg_avaliacao">Mensagem de avaliação:</label>
-                <input type="text" id="msg_avaliacao" name="msg_avaliacao" required>
+<body class="o-page-container">
+    <div class="c-login-box">
+        <h2 class="c-login-box__title">Deixe sua Avaliação</h2>
+        <form action="processa_avaliacao.php" method="POST" class="c-login-box__form">
+            <div class="c-form-field">
+                <label for="msg_avaliacao" class="c-form-field__label">Mensagem de avaliação:</label>
+                <textarea id="msg_avaliacao" name="msg_avaliacao" class="c-form-field__input" rows="4" required></textarea>
             </div>
-            <div class="select-group">
-                <label for="setor_avaliacao">Setor:</label>
-                <select id="setor_avaliacao" name="setor_avaliacao" required>
+            <div class="c-form-field">
+                <label for="setor_avaliacao" class="c-form-field__label">Setor:</label>
+                <select id="setor_avaliacao" name="setor_avaliacao" class="c-form-field__input" required>
                     <option value="1">Saúde</option>
                     <option value="2">Educação</option>
                     <option value="3">Economia</option>
@@ -26,9 +26,9 @@
                     <option value="6">Trânsito</option>
                 </select>
             </div>
-            <div class="select-group">
-                <label for="nota_avaliacao">Nota (1 a 5):</label>
-                <select id="nota_avaliacao" name="nota_avaliacao" required>
+            <div class="c-form-field">
+                <label for="nota_avaliacao" class="c-form-field__label">Nota (1 a 5):</label>
+                <select id="nota_avaliacao" name="nota_avaliacao" class="c-form-field__input" required>
                     <option value="1">1 - Péssimo</option>
                     <option value="2">2 - Ruim</option>
                     <option value="3">3 - Regular</option>
@@ -36,7 +36,7 @@
                     <option value="5">5 - Excelente</option>
                 </select>
             </div>
-            <button type="submit" class="login-btn">Enviar Avaliação</button>
+            <button type="submit" class="c-btn c-btn--primary" style="width: 100%; margin-top: var(--space-4);">Enviar Avaliação</button>
         </form>
     </div>
 </body>

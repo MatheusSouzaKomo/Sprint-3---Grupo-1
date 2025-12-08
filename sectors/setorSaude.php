@@ -3,29 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modelo Padrão de Setores</title>
-    <script src="../theme.js"></script>
+    <title>Saúde - Guru's City</title>
+    <script src="../main.js" defer></script>
     <link rel="stylesheet" href="../css/boilerplate.css">
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
-     <main class="sector" id="main-sector">
-        <div class="container">
-            <h2>Saúde</h2>
-            <p>Este é o setor principal do seu modelo. Ele pode conter subseções, artigos ou o conteúdo mais importante da página.</p>
-            <section class="sector-section" id="sector-service">
-                <h3>Serviços</h3>
-                <div class="flex flex-center">
-                    <div class="item-service card-saude" onclick="location.href='setorSaude.php';">
-                        <h4>Guru's Health & Care</h4>
-                        <p>Descrição breve do serviço ou feature 2.</p>
-                    </div>
-                    <div class="item-service card-saude" onclick="location.href='setorSaude.php';">
-                        <h4>Guru's Mind</h4>
-                        <p>Descrição breve do serviço ou feature 2.</p>
+    <main class="o-container c-sector-page u-text-center">
+        <h2 class="c-sector-page__title">Saúde</h2>
+        <p class="c-sector-page__description">Este é o setor principal do seu modelo. Ele pode conter subseções, artigos ou o conteúdo mais importante da página.</p>
+        
+        <h3 class="c-sector-page__services-title">Serviços</h3>
+        <div class="c-service-grid">
+            <a href="#" class="c-card c-card--saude" style="animation: fadeInUp 0.5s ease-out forwards;">
+                <div class="c-card__content">
+                    <h4 class="c-card__title">Guru's Health & Care</h4>
+                    <p>Descrição breve do serviço ou feature 1.</p>
                 </div>
-            </section>
+            </a>
+            <a href="#" class="c-card c-card--saude" style="animation: fadeInUp 0.5s ease-out 0.1s forwards;">
+                <div class="c-card__content">
+                    <h4 class="c-card__title">Guru's Mind</h4>
+                    <p>Descrição breve do serviço ou feature 2.</p>
+                </div>
+            </a>
         </div>
     </main>
     <?php include '../includes/footer.php';?>  

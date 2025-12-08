@@ -14,29 +14,23 @@ $result = $stmt->get_result();
 if ($result->num_rows === 1) {
     $user = $result->fetch_assoc();
 
-    // 1️⃣ Verificação para senhas antigas com MD5
-    if (md5($senha) === $user["senha"]) {
-
-        // Define as variáveis de sessão
+    // Verifica a senha usando password_verify para senhas hash
+    // Ou verifica com MD5 ou texto plano para senhas antigas (se ainda houver)
+    if (password_verify($senha, $user["senha"]) || (md5($senha) === $user["senha"]) || ($senha === $user["senha"])) {
+        // Se a senha for MD5 ou texto plano e o PHP estiver usando password_hash,
+        // é uma boa prática re-hashear a senha e atualizar no banco de dados
+        if (($senha === $user["senha"] || md5($senha) === $user["senha"]) && password_needs_rehash($user["senha"], PASSWORD_DEFAULT)) {
+            $new_hash = password_hash($senha, PASSWORD_DEFAULT);
+            $update_sql = "UPDATE login SET senha = ? WHERE id_usuario = ?";
+            $update_stmt = $conn->prepare($update_sql);
+            $update_stmt->bind_param("si", $new_hash, $user["id_usuario"]);
+            $update_stmt->execute();
+        }
         $_SESSION["loggedin"] = true;
         $_SESSION["id_usuario"] = $user["id_usuario"];
         $_SESSION["nome"] = $user["nome"];
         $_SESSION["nivel"] = $user["nivel_acesso"];
-
-        header("Location: hub.php"); // use sempre .php
-        exit();
-    }
-
-    // 2️⃣ Verificação para senhas novas com password_hash()
-    if (password_verify($senha, $user["senha"])) {
-
-        // Define as variáveis de sessão
-        $_SESSION["loggedin"] = true;
-        $_SESSION["id_usuario"] = $user["id_usuario"];
-        $_SESSION["nome"] = $user["nome"];
-        $_SESSION["nivel"] = $user["nivel_acesso"];
-
-        header("Location: hub.php");
+        header("Location: hub.php?status=loggedin");
         exit();
     }
 }

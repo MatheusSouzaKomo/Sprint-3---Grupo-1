@@ -7,16 +7,17 @@
     <link rel="stylesheet" href="css/style.css">
     <title>Document</title>
 </head>
-<body class="login-page">
-    <div class="login-container">
-        <form action="processa_reclamacao.php" method="POST">
-            <div class="input-group">
-                <label>Mensagem de reclamação:</label>
-                <input type="text" name="msg_reclamacao" required>
+<body class="o-page-container">
+    <div class="c-login-box">
+        <h2 class="c-login-box__title">Enviar Reclamação</h2>
+        <form action="processa_reclamacao.php" method="POST" class="c-login-box__form">
+            <div class="c-form-field">
+                <label for="msg_reclamacao" class="c-form-field__label">Mensagem de reclamação:</label>
+                <textarea id="msg_reclamacao" name="msg_reclamacao" class="c-form-field__input" rows="4" required></textarea>
             </div>
-            <div class="select-group">
-                <label>Setor:</label>
-                <select name="setor_reclamacao">
+            <div class="c-form-field">
+                <label for="setor_reclamacao" class="c-form-field__label">Setor:</label>
+                <select name="setor_reclamacao" id="setor_reclamacao" class="c-form-field__input">
                     <option value="1">Saúde</option>
                     <option value="2">Educação</option>
                     <option value="3">Economia</option>
@@ -25,7 +26,7 @@
                     <option value="6">Trânsito</option>
                 </select>
             </div>
-            <button type="submit" class="login-btn">Enviar Reclamação</button>
+            <button type="submit" class="c-btn c-btn--primary" style="width: 100%; margin-top: var(--space-4);">Enviar Reclamação</button>
         </form>
     </div>
 </body>

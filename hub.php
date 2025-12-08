@@ -1,12 +1,9 @@
-<?php
-session_start();
-?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="theme.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/boilerplate.css">
     <title>Painel Principal</title>
@@ -14,70 +11,120 @@ session_start();
 <body>
     <?php include 'includes/header.php'; ?>
 
-    <main>
+    <main id="main-content" class="o-container" style="padding-top: var(--space-12); padding-bottom: var(--space-12);">
+
+        <?php if (isset($_GET['status']) && $_GET['status'] === 'loggedin'): ?>
+            <div class="c-alert c-alert--success" role="alert" tabindex="-1">
+                <p>Login efetuado com sucesso!</p>
+                <button class="c-alert__close-btn" aria-label="Fechar">&times;</button>
+            </div>
+        <?php endif; ?>
+        <?php if (isset($_GET['status']) && $_GET['status'] === 'complaint_success'): ?>
+            <div class="c-alert c-alert--success" role="alert" tabindex="-1">
+                <p>Reclamação enviada com sucesso!</p>
+                <button class="c-alert__close-btn" aria-label="Fechar">&times;</button>
+            </div>
+        <?php endif; ?>
 
         <?php
         // MOSTRAR o botão somente se o usuário NÃO estiver logado
         if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true): ?>
-            <div class="login-button-container">
-                <a href="login.php" class="login-btn">Entrar</a>
+            <div class="u-text-center" style="margin-bottom: var(--space-8);">
+                <a href="login.php" class="c-btn c-btn--primary">Entrar</a>
             </div>
         <?php endif; ?>
-        <h1>Painel Principal</h1>
+        <h1 class="u-text-center" style="margin-bottom: var(--space-2);">Painel Principal</h1>
 
         <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
-            <p style="text-align: center; font-size: 1.2rem; color: var(--color-text-secondary); margin-bottom: 2rem;">
+            <p class="u-text-center" style="font-size: var(--font-size-lg); color: var(--color-neutral-500); margin-top: var(--space-2); margin-bottom: var(--space-8);">
                 Bem vindo: <strong><?php echo htmlspecialchars($_SESSION['nome']); ?></strong>
             </p>
         <?php endif; ?>
 
-            <section class="container-card">
-            <!-- Cards aqui (sem alterações) -->
-            <div class="card card-saude" onclick="location.href='sectors/setorSaude.php';" style="cursor: pointer;">
-                <div class="card-content">
-                    <h2>Saúde</h2>
+        <!-- Skeleton Loading Grid -->
+        <div id="skeleton-grid" class="o-grid o-grid--3-cols">
+            <?php for ($i = 0; $i < 6; $i++): ?>
+                <div class="c-card c-card--skeleton">
+                    <div class="c-card__content">
+                        <div class="c-card__skeleton-line" style="height: 2rem; width: 60%; margin-bottom: 1rem;"></div>
+                        <div class="c-card__skeleton-line" style="height: 1rem; width: 90%;"></div>
+                        <div class="c-card__skeleton-line" style="height: 1rem; width: 80%; margin-top: 0.5rem;"></div>
+                    </div>
+                </div>
+            <?php endfor; ?>
+        </div>
+
+        <!-- Real Card Grid (Initially hidden, shown via JS) -->
+        <div id="card-grid" class="o-grid o-grid--3-cols" style="display: none;">
+            <!-- Cards -->
+            <a href="sectors/setorSaude.php" class="c-card c-card--saude" style="--animation-delay: 0.1s;">
+                <div class="c-card__content">
+                    <h2 class="c-card__title">Saúde</h2>
                     <p>Explore informações e serviços relacionados à saúde.</p>
                 </div>
-            </div>
-
-            <div class="card card-seguranca" onclick="location.href='sectors/setorSeguranca.php';" style="cursor: pointer;">
-                <div class="card-content">
-                    <h2>Segurança</h2>
+                <footer class="c-card__footer">
+                    <span class="c-card__action-btn">Ver Detalhes</span>
+                </footer>
+            </a>
+            <a href="sectors/setorSeguranca.php" class="c-card c-card--seguranca" style="--animation-delay: 0.2s;">
+                <div class="c-card__content">
+                    <h2 class="c-card__title">Segurança</h2>
                     <p>Descubra iniciativas e dados sobre segurança pública.</p>
                 </div>
-            </div>
-
-            <div class="card card-transito" onclick="location.href='sectors/setorTransito.php';" style="cursor: pointer;">
-                <div class="card-content">
-                    <h2>Trânsito</h2>
+                <footer class="c-card__footer">
+                    <span class="c-card__action-btn">Ver Detalhes</span>
+                </footer>
+            </a>
+            <a href="sectors/setorTransito.php" class="c-card c-card--transito" style="--animation-delay: 0.3s;">
+                <div class="c-card__content">
+                    <h2 class="c-card__title">Trânsito</h2>
                     <p>Informações sobre mobilidade urbana e trânsito.</p>
                 </div>
-            </div>
-
-            <div class="card card-educ" onclick="location.href='sectors/setorEducacao.php';" style="cursor: pointer;">
-                <div class="card-content">
-                    <h2>Educação</h2>
+                <footer class="c-card__footer">
+                    <span class="c-card__action-btn">Ver Detalhes</span>
+                </footer>
+            </a>
+            <a href="sectors/setorEducacao.php" class="c-card c-card--educ" style="--animation-delay: 0.4s;">
+                <div class="c-card__content">
+                    <h2 class="c-card__title">Educação</h2>
                     <p>Acesse conteúdos e serviços educacionais.</p>
                 </div>
-            </div>
-
-            <div class="card card-lazer" onclick="location.href='sectors/setorLazer.php';" style="cursor: pointer;">
-                <div class="card-content">
-                    <h2>Lazer</h2>
+                <footer class="c-card__footer">
+                    <span class="c-card__action-btn">Ver Detalhes</span>
+                </footer>
+            </a>
+            <a href="sectors/setorLazer.php" class="c-card c-card--lazer" style="--animation-delay: 0.5s;">
+                <div class="c-card__content">
+                    <h2 class="c-card__title">Lazer</h2>
                     <p>Encontre opções de lazer e entretenimento.</p>
                 </div>
-            </div>
-
-            <div class="card card-economia" onclick="location.href='sectors/setorEconomia.php';" style="cursor: pointer;">
-                <div class="card-content">
-                    <h2>Economia</h2>
+                <footer class="c-card__footer">
+                    <span class="c-card__action-btn">Ver Detalhes</span>
+                </footer>
+            </a>
+            <a href="sectors/setorEconomia.php" class="c-card c-card--economia" style="--animation-delay: 0.6s;">
+                <div class="c-card__content">
+                    <h2 class="c-card__title">Economia</h2>
                     <p>Saiba mais sobre economia e finanças.</p>
                 </div>
-            </div>
-        </section>
+                <footer class="c-card__footer">
+                    <span class="c-card__action-btn">Ver Detalhes</span>
+                </footer>
+            </a>
+        </div>
 
-        <button id="backToTopBtn" class="back-to-top-btn" title="Voltar ao topo">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+        <?php
+        // Verifica se o usuário está logado e se é um administrador para exibir o botão de modo desenvolvedor
+        if (isset($_SESSION['nivel']) && $_SESSION['nivel'] === 'Administração'):
+        ?>
+            <div class="u-text-center" style="margin-top: var(--space-8);">
+                <button id="css-toggle" class="c-btn c-btn--primary" style="background: linear-gradient(45deg, #ef4444, #f97316); font-size: 0.85rem;">
+                    🔧 Modo Desenvolvedor (CSS Desligado)
+                </button>
+            </div>
+        <?php endif; ?>
+        <button id="backToTopBtn" class="c-back-to-top" aria-label="Voltar ao topo" title="Voltar ao topo">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24" aria-hidden="true">
                 <path d="M11.9999 10.8284L7.05019 15.7782L5.63598 14.364L11.9999 8L18.3639 14.364L16.9497 15.7782L11.9999 10.8284Z"></path>
             </svg>
         </button>
@@ -85,7 +132,6 @@ session_start();
     </main>
 
     <?php include 'includes/footer.php'; ?>
-
-    <script src="script.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
