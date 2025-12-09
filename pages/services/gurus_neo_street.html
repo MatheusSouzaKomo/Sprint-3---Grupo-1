@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Guru's Neo Street | Urban Guide</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Roboto+Flex:opsz,wght@8..144,400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0..1,0" />
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        :root {
+            --md-sys-color-primary: #6750a4;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-primary-container: #eaddff;
+            --md-sys-color-on-primary-container: #21005d;
+            
+            --md-sys-color-surface: #fffbfe;
+            --md-sys-color-surface-variant: #f3edf7;
+            --md-sys-color-on-surface: #1c1b1f;
+            --md-sys-color-outline: #79747e;
+
+            --traffic-heavy: #b3261e;
+            --traffic-mod: #e2c018;
+            --traffic-light: #449e59;
+
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.2);
+            --radius-xl: 28px;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            --md-sys-color-surface: #1c1b1f;
+            --md-sys-color-surface-variant: #49454f;
+            --md-sys-color-on-surface: #e6e1e5;
+            --md-sys-color-primary: #d0bcff;
+            --md-sys-color-on-primary: #381e72;
+            --md-sys-color-primary-container: #4f378b;
+            --md-sys-color-on-primary-container: #eaddff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: 'Roboto Flex', sans-serif;
+            height: 100vh; width: 100vw; overflow: hidden;
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            display: flex; flex-direction: column;
+        }
+
+        /* MAPA */
+        #map {
+            flex: 1; z-index: 0; width: 100%; height: 100%;
+        }
+        /* Ajuste visual do mapa para dark mode via CSS filter */
+        body.dark-mode .leaflet-layer,
+        body.dark-mode .leaflet-control-zoom-in,
+        body.dark-mode .leaflet-control-zoom-out,
+        body.dark-mode .leaflet-control-attribution {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        }
+
+        /* UI LAYER */
+        .ui-container {
+            position: absolute; inset: 0; pointer-events: none; z-index: 1000;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .interactive { pointer-events: auto; }
+
+        /* SEARCH BAR */
+        .top-bar {
+            padding: 16px; display: flex; justify-content: center; width: 100%;
+        }
+        .search-box {
+            background: var(--md-sys-color-surface);
+            width: 100%; max-width: 480px; height: 56px;
+            border-radius: var(--radius-xl);
+            display: flex; align-items: center; padding: 0 8px 0 16px;
+            box-shadow: var(--shadow-md);
+            transition: 0.3s;
+        }
+        .search-input {
+            flex: 1; border: none; background: transparent; height: 100%;
+            margin: 0 10px; font-size: 1rem; color: var(--md-sys-color-on-surface); outline: none;
+        }
+        .avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container);
+            display: grid; place-items: center; font-weight: bold; cursor: pointer;
+        }
+
+        /* RIGHT CONTROLS (FABs) */
+        .fab-stack {
+            position: absolute; right: 16px; top: 100px;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .fab {
+            width: 56px; height: 56px; border-radius: 16px;
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            border: none; box-shadow: var(--shadow-md);
+            display: grid; place-items: center; cursor: pointer;
+            transition: 0.2s;
+        }
+        .fab:hover { transform: scale(1.05); }
+        .fab.active {
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        /* BOTTOM SHEET */
+        .sheet-container {
+            background: var(--md-sys-color-surface);
+            border-radius: 28px 28px 0 0;
+            padding: 12px 24px 30px 24px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+            transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+            max-height: 50vh; overflow-y: auto;
+        }
+        .sheet-container.closed { transform: translateY(85%); } /* Show only handle/title */
+        
+        .drag-handle {
+            width: 40px; height: 4px; background: var(--md-sys-color-outline);
+            border-radius: 2px; margin: 0 auto 15px auto; opacity: 0.4;
+        }
+
+        /* INFO CARDS */
+        .location-header { margin-bottom: 20px; }
+        .location-header h2 { font-family: 'Outfit'; margin: 0; font-size: 1.5rem; }
+        .location-header p { margin: 4px 0 0 0; color: var(--md-sys-color-outline); font-size: 0.9rem; }
+
+        .chips-row { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .chip {
+            padding: 8px 16px; border-radius: 8px; background: var(--md-sys-color-surface-variant);
+            white-space: nowrap; font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 6px;
+        }
+
+        .action-row { display: flex; gap: 10px; margin-bottom: 20px; }
+        .btn-primary {
+            flex: 1; height: 48px; border-radius: 24px;
+            background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary);
+            border: none; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-secondary {
+            width: 48px; height: 48px; border-radius: 24px;
+            background: var(--md-sys-color-surface-variant); color: var(--md-sys-color-primary);
+            border: none; cursor: pointer; display: grid; place-items: center;
+        }
+
+        /* ALERTS */
+        .alert-card {
+            background: #fff8e1; color: #f57f17; padding: 16px; border-radius: 12px;
+            display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px;
+        }
+        body.dark-mode .alert-card { background: #3e2723; color: #ffca28; }
+
+        /* TRANSPORT LIST */
+        .transport-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid var(--md-sys-color-surface-variant);
+        }
+        .bus-badge {
+            background: var(--md-sys-color-primary); color: white; padding: 4px 8px;
+            border-radius: 4px; font-weight: bold; font-size: 0.8rem; margin-right: 8px;
+        }
+
+        /* Navigation Mode Overlay */
+        .nav-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; padding: 20px;
+            background: var(--md-sys-color-primary); color: white;
+            display: none; z-index: 2000;
+        }
+        .nav-overlay.active { display: block; }
+        .nav-instruction { font-size: 1.5rem; font-weight: bold; font-family: 'Outfit'; display: flex; align-items: center; gap: 15px; }
+
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <div class="nav-overlay" id="nav-mode">
+        <div class="nav-instruction">
+            <span class="material-symbols-rounded" style="font-size: 40px;">turn_right</span>
+            <div>
+                <div style="font-size: 0.9rem; opacity: 0.8;">A 200 metros</div>
+                Vire à direita na Av. Paulista
+            </div>
+        </div>
+        <button onclick="app.stopNav()" style="margin-top: 10px; background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 16px; border-radius: 20px; cursor: pointer;">Encerrar</button>
+    </div>
+
+    <div class="ui-container">
+        
+        <div class="top-bar interactive">
+            <div class="search-box">
+                <span class="material-symbols-rounded" style="color: var(--md-sys-color-outline);">menu</span>
+                <input type="text" class="search-input" id="search-input" placeholder="Pesquisar aqui...">
+                <span class="material-symbols-rounded" style="color: var(--md-sys-color-outline); margin-right: 10px;">mic</span>
+                <div class="avatar">G</div>
+            </div>
+        </div>
+
+        <div class="fab-stack interactive">
+            <button class="fab" onclick="app.toggleTraffic()" title="Trânsito" id="btn-traffic">
+                <span class="material-symbols-rounded">traffic</span>
+            </button>
+            <button class="fab" onclick="app.toggleTheme()" title="Tema">
+                <span class="material-symbols-rounded">dark_mode</span>
+            </button>
+            <button class="fab" onclick="app.locateUser()" title="Minha Localização">
+                <span class="material-symbols-rounded">my_location</span>
+            </button>
+        </div>
+
+        <div class="sheet-container interactive" id="bottom-sheet">
+            <div class="drag-handle" onclick="app.toggleSheet()"></div>
+            
+            <div class="location-header">
+                <h2 id="loc-title">Av. Paulista, 1578</h2>
+                <p id="loc-desc">Bela Vista, São Paulo - SP</p>
+            </div>
+
+            <div class="chips-row">
+                <div class="chip"><span class="material-symbols-rounded" style="color: var(--traffic-heavy);">directions_car</span> 14 min</div>
+                <div class="chip"><span class="material-symbols-rounded" style="color: var(--traffic-light);">directions_bus</span> 10 min</div>
+                <div class="chip"><span class="material-symbols-rounded">directions_walk</span> 2.1 km</div>
+            </div>
+
+            <div class="action-row">
+                <button class="btn-primary" onclick="app.startNav()">
+                    <span class="material-symbols-rounded">navigation</span> Iniciar
+                </button>
+                <button class="btn-secondary">
+                    <span class="material-symbols-rounded">share</span>
+                </button>
+                <button class="btn-secondary">
+                    <span class="material-symbols-rounded">bookmark</span>
+                </button>
+            </div>
+
+            <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--md-sys-color-outline);">Alertas na Região</h3>
+            <div class="alert-card">
+                <span class="material-symbols-rounded">warning</span>
+                <div>
+                    <strong>Manifestação em andamento</strong>
+                    <div style="font-size: 0.9rem;">Bloqueio parcial na altura do MASP. Evite a região.</div>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1rem; margin-bottom: 10px; margin-top: 20px; color: var(--md-sys-color-outline);">Transporte Público</h3>
+            <div class="transport-item">
+                <div style="display: flex; align-items: center;">
+                    <span class="material-symbols-rounded" style="margin-right: 10px;">directions_bus</span>
+                    <div><span class="bus-badge">875H</span> Term. Lapa</div>
+                </div>
+                <span style="color: var(--traffic-light); font-weight: bold;">Chegando</span>
+            </div>
+            <div class="transport-item">
+                <div style="display: flex; align-items: center;">
+                    <span class="material-symbols-rounded" style="margin-right: 10px;">subway</span>
+                    <div><strong>Estação Trianon-Masp</strong> <span style="font-size: 0.8rem;">Linha 2-Verde</span></div>
+                </div>
+                <span style="color: var(--md-sys-color-primary); font-weight: bold;">200m</span>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        class NeoStreetApp {
+            constructor() {
+                this.map = null;
+                this.userMarker = null;
+                this.trafficLayer = null;
+                
+                // Elementos
+                this.sheet = document.getElementById('bottom-sheet');
+                this.input = document.getElementById('search-input');
+                this.navOverlay = document.getElementById('nav-mode');
+                
+                this.initMap();
+                this.initEvents();
+            }
+
+            initMap() {
+                // Inicializa Leaflet (Coordenadas SP)
+                this.map = L.map('map', {
+                    zoomControl: false, // Zoom customizado
+                    attributionControl: false
+                }).setView([-23.561414, -46.655881], 15);
+
+                // Tile Layer (OpenStreetMap)
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19
+                }).addTo(this.map);
+
+                // Marcador Inicial
+                this.addMarker(-23.561414, -46.655881, "Local Selecionado");
+            }
+
+            initEvents() {
+                // Search
+                this.input.addEventListener('keypress', (e) => {
+                    if(e.key === 'Enter') {
+                        this.searchLocation(this.input.value);
+                    }
+                });
+
+                // Clique no mapa fecha o sheet parcialmente
+                this.map.on('click', () => {
+                    this.sheet.classList.add('closed');
+                });
+            }
+
+            addMarker(lat, lng, title) {
+                if(this.userMarker) this.map.removeLayer(this.userMarker);
+                
+                this.userMarker = L.marker([lat, lng]).addTo(this.map)
+                    .bindPopup(title)
+                    .openPopup();
+            }
+
+            searchLocation(query) {
+                // Simulação de busca
+                this.sheet.classList.remove('closed');
+                document.getElementById('loc-title').innerText = query;
+                document.getElementById('loc-desc').innerText = "Resultado da busca • 2.5km";
+                
+                // Move mapa (Simulado randomico perto de SP)
+                const lat = -23.56 + (Math.random() - 0.5) * 0.02;
+                const lng = -46.65 + (Math.random() - 0.5) * 0.02;
+                
+                this.map.flyTo([lat, lng], 16);
+                this.addMarker(lat, lng, query);
+            }
+
+            locateUser() {
+                this.map.flyTo([-23.561414, -46.655881], 16);
+                this.sheet.classList.remove('closed');
+                document.getElementById('loc-title').innerText = "Minha Localização";
+            }
+
+            toggleTraffic() {
+                const btn = document.getElementById('btn-traffic');
+                btn.classList.toggle('active');
+                
+                // Simulação visual: apenas feedback no botão por enquanto
+                // (Implementação real exigiria API de tráfego Google/TomTom)
+                if(btn.classList.contains('active')) {
+                    alert("Camada de trânsito ativada (Simulação)");
+                }
+            }
+
+            toggleTheme() {
+                document.body.classList.toggle('dark-mode');
+            }
+
+            toggleSheet() {
+                this.sheet.classList.toggle('closed');
+            }
+
+            startNav() {
+                this.navOverlay.classList.add('active');
+                this.sheet.classList.add('closed');
+                // Simula movimento no mapa
+                this.map.setZoom(18);
+                // Rotate map logic would require WebGL/Mapbox, keeping simple for Leaflet
+            }
+
+            stopNav() {
+                this.navOverlay.classList.remove('active');
+                this.sheet.classList.remove('closed');
+                this.map.setZoom(15);
+            }
+        }
+
+        // Iniciar
+        const app = new NeoStreetApp();
+    </script>
+</body>
+</html>

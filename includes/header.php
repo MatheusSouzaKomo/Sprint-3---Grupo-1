@@ -50,9 +50,6 @@ if (session_status() === PHP_SESSION_NONE) {
                 <p class="c-menu-profile__level">(<?php echo htmlspecialchars($_SESSION['nivel']); ?>)</p>
             </div>
             <a href="/Sprint-3---Grupo-1/hub.php" class="c-btn c-btn--primary u-w-full">Painel Principal</a>
-            <?php if (isset($_SESSION['nivel']) && $_SESSION['nivel'] === 'Administração'): ?>
-                <a href="/Sprint-3---Grupo-1/admin_users.php" class="c-btn u-w-full">Gerenciar Usuários</a>
-            <?php endif; ?>
             <a href="/Sprint-3---Grupo-1/logout.php" class="c-btn c-btn--danger u-w-full">Sair</a>
         <?php else: ?>
             <a href="/Sprint-3---Grupo-1/login.php" class="c-btn c-btn--primary u-w-full">Entrar</a>
@@ -61,16 +58,26 @@ if (session_status() === PHP_SESSION_NONE) {
 
         <hr class="c-menu-divider" role="separator">
 
-        <div class="c-site-header__tools">
-            <button id="theme-toggle" class="c-btn u-w-full" type="button" aria-pressed="false">
-                <span id="theme-toggle-moon" aria-hidden="true">🌙</span>
-                <span id="theme-toggle-text">Modo Escuro</span>
-                <span id="theme-toggle-sun" style="display: none;" aria-hidden="true">☀️</span>
+        <div class="o-grid o-grid--settings">
+            <button class="c-settings-item" id="btn-theme-toggle">
+                <div class="c-settings-item__content">
+                    <span class="c-settings-item__title">Modo Escuro</span>
+                    <!-- <span class="c-settings-item__subtitle">Alternar aparência</span> -->
+                </div>
+                <div class="c-settings-switch">
+                    <div class="c-settings-switch__handle"></div>
+                </div>
             </button>
 
-            <button id="css-toggle-menu" class="c-btn u-w-full" type="button" aria-pressed="false">
-                🚫 No CSS
+            <button class="c-settings-item" id="btn-no-css">
+                <div class="c-settings-item__content">
+                    <span class="c-settings-item__title">Modo NoCSS</span>
+                </div>
+                <div class="c-settings-switch">
+                    <div class="c-settings-switch__handle"></div>
+                </div>
             </button>
         </div>
     </div>
 </nav>
+<script src="../main.js"></script>

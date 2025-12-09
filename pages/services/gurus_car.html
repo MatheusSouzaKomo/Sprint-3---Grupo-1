@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guru's Car | Ultimate Dashboard</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
+
+    <style>
+        /* =========================================
+           1. DESIGN SYSTEM & VARIAVEIS
+           ========================================= */
+        :root {
+            /* Cores Dinâmicas (Alteradas via JS) */
+            --primary-color: #00d9ff; /* Cyan padrão */
+            --primary-glow: rgba(0, 217, 255, 0.4);
+            
+            /* Base Dark */
+            --bg-color: #050505;
+            --surface-color: rgba(20, 20, 20, 0.7);
+            --surface-border: rgba(255, 255, 255, 0.08);
+            
+            /* Texto */
+            --text-main: #ffffff;
+            --text-muted: #8b9bb4;
+            
+            /* Status */
+            --success: #00ff9d;
+            --warning: #ffaa00;
+            --danger: #ff3366;
+
+            /* Fontes */
+            --font-tech: 'Chakra Petch', sans-serif; /* Para dados */
+            --font-ui: 'Inter', sans-serif; /* Para textos */
+        }
+
+        /* RESET */
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at 50% 0%, #1a1f35 0%, #000000 70%);
+            color: var(--text-main);
+            font-family: var(--font-ui);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* UTILITARIOS */
+        .flex-center { display: flex; align-items: center; justify-content: center; }
+        .glass-panel {
+            background: var(--surface-color);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--surface-border);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        /* HEADER */
+        .top-bar {
+            height: 70px;
+            padding: 0 30px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 10;
+        }
+        .logo { font-family: var(--font-tech); font-size: 1.5rem; font-weight: 700; letter-spacing: 2px; color: var(--primary-color); display: flex; gap: 10px; align-items: center; }
+        .top-widgets { display: flex; gap: 20px; }
+        .widget { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 6px 14px; border-radius: 20px; }
+
+        /* MAIN GRID */
+        .dashboard-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 320px 1fr 320px;
+            gap: 24px;
+            padding: 10px 30px 30px 30px;
+            max-width: 1920px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* COLUNA ESQUERDA: NAVEGAÇÃO & MIDIA */
+        .col-left { display: flex; flex-direction: column; gap: 24px; }
+
+        /* Mapa */
+        .map-card { flex: 1; position: relative; overflow: hidden; }
+        .map-bg { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; filter: grayscale(40%) invert(100%); }
+        .nav-overlay { position: absolute; bottom: 20px; left: 20px; right: 20px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 16px; border-left: 4px solid var(--primary-color); }
+        .nav-instruction { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
+        .nav-meta { font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; }
+
+        /* Midia Player */
+        .media-card { height: 160px; padding: 20px; display: flex; gap: 15px; align-items: center; }
+        .album-art { width: 80px; height: 80px; border-radius: 12px; background: #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5); object-fit: cover; }
+        .media-info { flex: 1; overflow: hidden; }
+        .track-title { font-weight: 600; margin-bottom: 4px; white-space: nowrap; }
+        .artist-name { font-size: 0.85rem; color: var(--text-muted); }
+        .media-controls { display: flex; gap: 10px; margin-top: 10px; }
+        .icon-btn { background: rgba(255,255,255,0.1); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: 0.2s; display: grid; place-items: center; }
+        .icon-btn:hover { background: var(--primary-color); color: black; }
+        .play-btn { background: var(--primary-color); color: black; width: 42px; height: 42px; }
+
+        /* COLUNA CENTRAL: VELOCIDADE & CARRO */
+        .col-center { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+
+        /* Modos de Condução */
+        .drive-modes { display: flex; gap: 10px; margin-bottom: 30px; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 30px; }
+        .mode-btn { padding: 8px 24px; border-radius: 20px; border: none; background: transparent; color: var(--text-muted); font-family: var(--font-tech); font-weight: 700; cursor: pointer; transition: 0.3s; letter-spacing: 1px; }
+        .mode-btn.active { background: var(--primary-color); color: #000; box-shadow: 0 0 15px var(--primary-glow); }
+
+        /* Velocímetro */
+        .speedometer-container { position: relative; width: 400px; height: 400px; display: grid; place-items: center; }
+        
+        /* Anel de Progresso (SVG ou Conic Gradient) */
+        .speed-ring {
+            width: 360px; height: 360px; border-radius: 50%;
+            background: conic-gradient(var(--primary-color) var(--speed-deg, 0deg), rgba(255,255,255,0.05) 0deg);
+            mask: radial-gradient(transparent 62%, black 63%);
+            -webkit-mask: radial-gradient(transparent 62%, black 63%);
+            transform: rotate(-180deg); /* Começa de baixo */
+            transition: background 0.1s linear;
+        }
+
+        .speed-data { position: absolute; text-align: center; z-index: 2; }
+        .speed-value { font-family: var(--font-tech); font-size: 7rem; font-weight: 700; line-height: 1; text-shadow: 0 0 20px var(--primary-glow); }
+        .speed-unit { font-size: 1.2rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-top: -10px; }
+
+        /* Câmbio */
+        .gear-selector { margin-top: 40px; display: flex; gap: 15px; }
+        .gear { width: 50px; height: 50px; border-radius: 12px; background: rgba(255,255,255,0.05); display: grid; place-items: center; font-family: var(--font-tech); font-weight: 700; font-size: 1.2rem; cursor: pointer; transition: 0.3s; color: var(--text-muted); border: 1px solid transparent; }
+        .gear.active { background: var(--primary-color); color: #000; box-shadow: 0 0 20px var(--primary-glow); transform: scale(1.1); }
+        .gear:hover:not(.active) { border-color: var(--primary-color); color: white; }
+
+        /* Botão START */
+        .start-btn {
+            position: absolute; bottom: 0;
+            width: 180px; height: 60px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #222, #000);
+            border: 2px solid #333;
+            color: var(--danger);
+            font-family: var(--font-tech); font-size: 1.2rem; font-weight: 700; letter-spacing: 2px;
+            cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            transition: 0.3s;
+        }
+        .start-btn:hover { border-color: var(--danger); box-shadow: 0 0 15px rgba(255, 51, 102, 0.3); }
+        .start-btn.running { border-color: var(--primary-color); color: var(--primary-color); box-shadow: 0 0 20px var(--primary-glow); }
+
+        /* COLUNA DIREITA: STATUS & CONTROLES */
+        .col-right { display: flex; flex-direction: column; gap: 24px; }
+
+        .info-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        .stat-card { padding: 20px; display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden; }
+        .stat-icon { font-size: 2rem; color: var(--text-muted); }
+        .stat-value { font-family: var(--font-tech); font-size: 2rem; font-weight: 700; }
+        .stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; }
+        
+        /* Barra de Bateria */
+        .battery-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: auto; overflow: hidden; }
+        .battery-fill { height: 100%; background: var(--success); width: 82%; box-shadow: 0 0 10px var(--success); }
+
+        /* Pneus Carro */
+        .tires-card { flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .car-outline {
+            width: 100px; height: 180px;
+            border: 2px solid var(--text-muted); border-radius: 16px;
+            position: relative; margin: 20px 0;
+            opacity: 0.5;
+        }
+        .tire-dot {
+            position: absolute; width: 40px; height: 24px;
+            background: rgba(0,0,0,0.8); border: 1px solid var(--success); border-radius: 6px;
+            color: var(--success); font-family: var(--font-tech); font-size: 0.8rem;
+            display: grid; place-items: center; transition: 0.3s;
+        }
+        .tire-dot.warning { border-color: var(--warning); color: var(--warning); animation: pulse 1s infinite; }
+        .tire-fl { top: 20px; left: -50px; }
+        .tire-fr { top: 20px; right: -50px; }
+        .tire-rl { bottom: 20px; left: -50px; }
+        .tire-rr { bottom: 20px; right: -50px; }
+
+        /* Sliders de Controle (AC / Acelerador) */
+        .control-slider { margin-top: 10px; width: 100%; -webkit-appearance: none; height: 4px; background: #333; border-radius: 2px; }
+        .control-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; background: var(--primary-color); border-radius: 50%; cursor: pointer; box-shadow: 0 0 10px var(--primary-glow); }
+
+        /* Notificação */
+        #toast {
+            position: fixed; bottom: 40px; left: 50%; transform: translate(-50%, 50px);
+            background: rgba(20,20,20,0.95); border: 1px solid var(--surface-border);
+            padding: 12px 30px; border-radius: 30px;
+            display: flex; align-items: center; gap: 12px;
+            opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none; z-index: 100;
+        }
+        #toast.visible { opacity: 1; transform: translate(-50%, 0); }
+        #toast.warning i { color: var(--warning); }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* Mobile */
+        @media (max-width: 1024px) {
+            .dashboard-grid { grid-template-columns: 1fr; overflow-y: auto; }
+            .col-center { order: -1; margin-bottom: 20px; }
+            .speedometer-container { width: 300px; height: 300px; }
+            .speed-ring { width: 280px; height: 280px; }
+            .top-bar { padding: 0 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-bar">
+        <div class="logo">
+            <span class="material-symbols-rounded">electric_bolt</span>
+            GURU'S EV
+        </div>
+        <div class="top-widgets">
+            <div class="widget">
+                <span class="material-symbols-rounded">cloud</span> 24°C
+            </div>
+            <div class="widget">
+                <span class="material-symbols-rounded">wifi</span> 5G
+            </div>
+            <div class="widget" id="clock">12:00</div>
+        </div>
+    </header>
+
+    <main class="dashboard-grid">
+        
+        <section class="col-left">
+            <div class="glass-panel map-card">
+                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop" class="map-bg" alt="Map">
+                <div class="nav-overlay">
+                    <div class="nav-meta">
+                        <span><span class="material-symbols-rounded" style="font-size:1rem; vertical-align:middle;">near_me</span> 2.4 km</span>
+                        <span>12 min</span>
+                    </div>
+                    <div class="nav-instruction">Vire à direita na Av. Neural</div>
+                    <div style="font-size: 0.8rem; color: #aaa;">Guru's HQ - Ribeirão Pires</div>
+                </div>
+            </div>
+
+            <div class="glass-panel media-card">
+                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=150&auto=format&fit=crop" class="album-art" id="album-art">
+                <div class="media-info">
+                    <div class="track-title" id="track-name">Midnight City</div>
+                    <div class="artist-name" id="artist-name">M83</div>
+                    <div class="media-controls">
+                        <button class="icon-btn" onclick="car.media.prev()"><span class="material-symbols-rounded">skip_previous</span></button>
+                        <button class="icon-btn play-btn" onclick="car.media.toggle()" id="play-btn"><span class="material-symbols-rounded">play_arrow</span></button>
+                        <button class="icon-btn" onclick="car.media.next()"><span class="material-symbols-rounded">skip_next</span></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="col-center">
+            
+            <div class="drive-modes">
+                <button class="mode-btn" onclick="car.setMode('eco')">ECO</button>
+                <button class="mode-btn active" onclick="car.setMode('comfort')">COMFORT</button>
+                <button class="mode-btn" onclick="car.setMode('sport')">SPORT</button>
+            </div>
+
+            <div class="speedometer-container">
+                <div class="speed-ring" id="speed-ring"></div>
+                
+                <div class="speed-data">
+                    <div class="speed-value" id="speed-display">0</div>
+                    <div class="speed-unit">km/h</div>
+                </div>
+            </div>
+
+            <div class="gear-selector">
+                <div class="gear active" id="gear-p" onclick="car.setGear('P')">P</div>
+                <div class="gear" id="gear-r" onclick="car.setGear('R')">R</div>
+                <div class="gear" id="gear-n" onclick="car.setGear('N')">N</div>
+                <div class="gear" id="gear-d" onclick="car.setGear('D')">D</div>
+            </div>
+
+            <button class="start-btn" id="start-btn" onclick="car.toggleEngine()">START ENGINE</button>
+            
+            <div style="margin-top: 30px; width: 200px; text-align: center;">
+                <label style="font-size: 0.8rem; color: #555;">ACELERADOR (SIMULAÇÃO)</label>
+                <input type="range" class="control-slider" min="0" max="220" value="0" id="pedal-slider" oninput="car.accelerate(this.value)" disabled>
+            </div>
+
+        </section>
+
+        <section class="col-right">
+            
+            <div class="info-row">
+                <div class="glass-panel stat-card">
+                    <span class="material-symbols-rounded stat-icon">battery_charging_full</span>
+                    <div class="stat-value">82<span style="font-size:1rem">%</span></div>
+                    <div class="stat-label">380 km</div>
+                    <div class="battery-bar"><div class="battery-fill"></div></div>
+                </div>
+                <div class="glass-panel stat-card">
+                    <span class="material-symbols-rounded stat-icon">thermostat</span>
+                    <div class="stat-value" id="ac-temp">22°</div>
+                    <div class="stat-label">A/C Auto</div>
+                    <input type="range" class="control-slider" min="16" max="28" value="22" oninput="document.getElementById('ac-temp').innerText = this.value + '°'">
+                </div>
+            </div>
+
+            <div class="glass-panel tires-card">
+                <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-weight:600;">Pressão (PSI)</span>
+                    <button class="icon-btn" onclick="car.calibrateTires()" title="Calibrar"><span class="material-symbols-rounded">compress</span></button>
+                </div>
+                
+                <div class="car-outline">
+                    <div class="tire-dot tire-fl" id="tire-fl">32</div>
+                    <div class="tire-dot tire-fr" id="tire-fr">32</div>
+                    <div class="tire-dot tire-rl" id="tire-rl">32</div>
+                    <div class="tire-dot tire-rr warning" id="tire-rr">28</div>
+                </div>
+            </div>
+
+            <div class="glass-panel" style="padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <button class="mode-btn" style="background:rgba(255,255,255,0.05);" onclick="car.toggleLock()">
+                    <span class="material-symbols-rounded" id="lock-icon">lock</span>
+                </button>
+                <button class="mode-btn" style="background:rgba(255,255,255,0.05);" onclick="car.toggleLights()">
+                    <span class="material-symbols-rounded" id="light-icon">light_mode</span>
+                </button>
+            </div>
+
+        </section>
+
+    </main>
+
+    <div id="toast">
+        <span class="material-symbols-rounded" style="font-size: 1.5rem; color: var(--primary-color);">info</span>
+        <span id="toast-msg">Sistema Iniciado</span>
+    </div>
+
+    <script>
+        class SmartCar {
+            constructor() {
+                this.state = {
+                    engine: false,
+                    gear: 'P',
+                    speed: 0,
+                    mode: 'comfort',
+                    locked: true,
+                    lights: false
+                };
+                
+                // Módulos
+                this.media = new MediaManager(this);
+                
+                // Elementos
+                this.ui = {
+                    ring: document.getElementById('speed-ring'),
+                    speed: document.getElementById('speed-display'),
+                    pedal: document.getElementById('pedal-slider'),
+                    startBtn: document.getElementById('start-btn')
+                };
+
+                this.init();
+            }
+
+            init() {
+                this.updateClock();
+                setInterval(() => this.updateClock(), 60000);
+            }
+
+            // --- MOTOR & VELOCIDADE ---
+            toggleEngine() {
+                this.state.engine = !this.state.engine;
+                
+                if(this.state.engine) {
+                    this.ui.startBtn.classList.add('running');
+                    this.ui.startBtn.innerText = "STOP ENGINE";
+                    this.ui.pedal.disabled = false;
+                    this.state.locked = false;
+                    this.notify("Motor Iniciado. Sistemas Online.");
+                } else {
+                    this.ui.startBtn.classList.remove('running');
+                    this.ui.startBtn.innerText = "START ENGINE";
+                    this.accelerate(0); // Zera velocidade
+                    this.ui.pedal.value = 0;
+                    this.ui.pedal.disabled = true;
+                    this.setGear('P');
+                    this.notify("Motor Desligado.");
+                }
+                this.updateLockUI();
+            }
+
+            accelerate(val) {
+                if(!this.state.engine) return;
+                
+                this.state.speed = val;
+                this.ui.speed.innerText = val;
+                
+                // Atualiza Anel Gradiente (Máx 220km/h = 240 graus visíveis aprox)
+                // Usamos graus no conic-gradient
+                const percentage = val / 220;
+                const degrees = percentage * 260; // 260 graus de arco total
+                this.ui.ring.style.setProperty('--speed-deg', `${degrees}deg`);
+
+                // Câmbio Automático Lógico
+                if(val > 0 && (this.state.gear === 'P' || this.state.gear === 'N')) {
+                    this.setGear('D');
+                } else if (val == 0 && this.state.gear === 'D') {
+                    // Mantem D mas carro parado
+                }
+            }
+
+            setGear(gear) {
+                if(!this.state.engine && gear !== 'P') {
+                    this.notify("Ligue o motor para mudar a marcha", true);
+                    return;
+                }
+                
+                this.state.gear = gear;
+                document.querySelectorAll('.gear').forEach(el => el.classList.remove('active'));
+                document.getElementById(`gear-${gear.toLowerCase()}`).classList.add('active');
+            }
+
+            // --- MODOS DE CONDUÇÃO ---
+            setMode(mode) {
+                this.state.mode = mode;
+                document.querySelectorAll('.mode-btn').forEach(el => el.classList.remove('active'));
+                event.target.classList.add('active'); // O botão clicado
+
+                const root = document.documentElement.style;
+                
+                if(mode === 'sport') {
+                    root.setProperty('--primary-color', '#ff3366'); // Vermelho Neon
+                    root.setProperty('--primary-glow', 'rgba(255, 51, 102, 0.4)');
+                    this.notify("Modo SPORT Ativado");
+                } else if (mode === 'eco') {
+                    root.setProperty('--primary-color', '#00ff9d'); // Verde Neon
+                    root.setProperty('--primary-glow', 'rgba(0, 255, 157, 0.4)');
+                    this.notify("Modo ECO Ativado");
+                } else {
+                    root.setProperty('--primary-color', '#00d9ff'); // Cyan Padrão
+                    root.setProperty('--primary-glow', 'rgba(0, 217, 255, 0.4)');
+                    this.notify("Modo COMFORT Ativado");
+                }
+            }
+
+            // --- UTILITARIOS ---
+            toggleLock() {
+                this.state.locked = !this.state.locked;
+                this.updateLockUI();
+                this.notify(this.state.locked ? "Portas Travadas" : "Portas Destravadas");
+            }
+
+            updateLockUI() {
+                const icon = document.getElementById('lock-icon');
+                icon.innerText = this.state.locked ? 'lock' : 'lock_open';
+                icon.style.color = this.state.locked ? 'var(--primary-color)' : 'white';
+            }
+
+            toggleLights() {
+                this.state.lights = !this.state.lights;
+                const icon = document.getElementById('light-icon');
+                icon.style.color = this.state.lights ? '#ffaa00' : 'white';
+                this.notify(this.state.lights ? "Faróis Ligados" : "Faróis Desligados");
+            }
+
+            calibrateTires() {
+                this.notify("Calibrando Sensores...");
+                setTimeout(() => {
+                    document.getElementById('tire-rr').innerText = '32';
+                    document.getElementById('tire-rr').classList.remove('warning');
+                    this.notify("Pneus Calibrados");
+                }, 2000);
+            }
+
+            notify(msg, isWarning = false) {
+                const toast = document.getElementById('toast');
+                document.getElementById('toast-msg').innerText = msg;
+                if(isWarning) toast.classList.add('warning');
+                else toast.classList.remove('warning');
+                
+                toast.classList.add('visible');
+                setTimeout(() => toast.classList.remove('visible'), 3000);
+            }
+
+            updateClock() {
+                const now = new Date();
+                document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            }
+        }
+
+        class MediaManager {
+            constructor(car) {
+                this.car = car;
+                this.playing = false;
+                this.songs = [
+                    { t: "Midnight City", a: "M83", img: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=150&auto=format&fit=crop" },
+                    { t: "Nightcall", a: "Kavinsky", img: "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=150&auto=format&fit=crop" },
+                    { t: "Blinding Lights", a: "The Weeknd", img: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=150&auto=format&fit=crop" }
+                ];
+                this.idx = 0;
+            }
+
+            toggle() {
+                this.playing = !this.playing;
+                const icon = document.getElementById('play-btn').querySelector('span');
+                icon.innerText = this.playing ? 'pause' : 'play_arrow';
+            }
+
+            next() {
+                this.idx = (this.idx + 1) % this.songs.length;
+                this.updateUI();
+            }
+
+            prev() {
+                this.idx = (this.idx - 1 + this.songs.length) % this.songs.length;
+                this.updateUI();
+            }
+
+            updateUI() {
+                const s = this.songs[this.idx];
+                document.getElementById('track-name').innerText = s.t;
+                document.getElementById('artist-name').innerText = s.a;
+                document.getElementById('album-art').src = s.img;
+            }
+        }
+
+        // Iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            window.car = new SmartCar();
+        });
+
+    </script>
+</body>
+</html>

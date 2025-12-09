@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guru's Pole | Smart City Grid</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
+
+    <style>
+        /* =========================================
+           1. DESIGN TOKENS (MD3 Industrial Theme)
+           ========================================= */
+        :root {
+            /* Palette: Amber (Electricity) & Slate */
+            --md-sys-color-primary: #ffb74d; /* Amber 300 */
+            --md-sys-color-on-primary: #4f2500;
+            --md-sys-color-primary-container: #6d3900;
+            --md-sys-color-on-primary-container: #ffdcc1;
+            
+            --md-sys-color-secondary: #ccc2dc;
+            --md-sys-color-secondary-container: #4a4458;
+            --md-sys-color-on-secondary-container: #e8def8;
+
+            --md-sys-color-surface: #141218;
+            --md-sys-color-surface-container: #1d1b20;
+            --md-sys-color-surface-container-high: #2b2930;
+            --md-sys-color-on-surface: #e6e1e5;
+            --md-sys-color-outline: #938f99;
+
+            --status-ok: #a8dab5; /* Greenish */
+            --status-error: #ffb4ab; /* Reddish */
+            --status-warn: #eec246;
+
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 28px;
+            
+            --font-ui: 'Manrope', sans-serif;
+            --font-code: 'Roboto Mono', monospace;
+        }
+
+        /* RESET */
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; user-select: none; }
+
+        body {
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            font-family: var(--font-ui);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* --- LAYOUT: NAV RAIL --- */
+        .nav-rail {
+            width: 80px;
+            background: var(--md-sys-color-surface-container);
+            display: flex; flex-direction: column; align-items: center;
+            padding: 24px 0; border-right: 1px solid rgba(255,255,255,0.05);
+            z-index: 10;
+        }
+
+        .brand-icon {
+            width: 48px; height: 48px; border-radius: 16px;
+            background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary);
+            display: grid; place-items: center; margin-bottom: 40px;
+            box-shadow: 0 0 15px rgba(255, 183, 77, 0.3);
+        }
+
+        .nav-fab {
+            width: 56px; height: 56px; border-radius: 16px;
+            display: grid; place-items: center; cursor: pointer;
+            color: var(--md-sys-color-outline); transition: 0.3s;
+            margin-bottom: 12px;
+        }
+        .nav-fab:hover { background: rgba(255,255,255,0.05); color: var(--md-sys-color-on-surface); }
+        .nav-fab.active {
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+        .nav-fab span { font-size: 24px; }
+
+        /* --- MAIN CONTENT --- */
+        .main { flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 24px; overflow-y: auto; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; height: 60px; }
+        .header h1 { font-weight: 700; font-size: 1.8rem; letter-spacing: -0.5px; }
+        .grid-status {
+            display: flex; align-items: center; gap: 8px; padding: 8px 16px;
+            background: rgba(76, 175, 80, 0.15); color: #81c784;
+            border-radius: 50px; font-weight: 600; font-size: 0.9rem;
+        }
+
+        /* --- STATS ROW --- */
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        
+        .stat-card {
+            background: var(--md-sys-color-surface-container);
+            border-radius: var(--radius-md); padding: 20px;
+            display: flex; flex-direction: column; gap: 5px;
+        }
+        .stat-icon { font-size: 24px; color: var(--md-sys-color-primary); margin-bottom: 5px; }
+        .stat-value { font-size: 2rem; font-weight: 700; font-family: var(--font-code); }
+        .stat-label { font-size: 0.85rem; color: var(--md-sys-color-outline); }
+
+        /* --- WORKSPACE GRID --- */
+        .workspace { flex: 1; display: grid; grid-template-columns: 2fr 1fr; gap: 24px; min-height: 0; }
+
+        /* MAP AREA */
+        .map-panel {
+            background: #000; border-radius: var(--radius-lg);
+            position: relative; overflow: hidden;
+            border: 1px solid var(--md-sys-color-outline);
+            /* Grid Pattern */
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .map-overlay-info {
+            position: absolute; top: 20px; left: 20px;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
+            padding: 8px 16px; border-radius: 8px; color: var(--md-sys-color-outline); font-family: var(--font-code); font-size: 0.8rem;
+        }
+
+        /* Interactive Pole Marker */
+        .pole {
+            position: absolute; width: 16px; height: 16px; 
+            background: var(--status-ok); border-radius: 50%;
+            transform: translate(-50%, -50%); cursor: pointer;
+            box-shadow: 0 0 15px var(--status-ok); transition: 0.3s;
+            z-index: 5;
+        }
+        .pole:hover { transform: translate(-50%, -50%) scale(1.5); z-index: 10; }
+        .pole.active { border: 2px solid white; transform: translate(-50%, -50%) scale(1.5); }
+        .pole.faulty { background: var(--status-error); box-shadow: 0 0 15px var(--status-error); animation: blink 1s infinite; }
+        .pole.off { background: #555; box-shadow: none; }
+
+        @keyframes blink { 50% { opacity: 0.4; } }
+
+        /* CONTROL PANEL */
+        .control-panel {
+            background: var(--md-sys-color-surface-container-high);
+            border-radius: var(--radius-lg); padding: 24px;
+            display: flex; flex-direction: column; gap: 24px;
+            overflow-y: auto;
+        }
+
+        .panel-header {
+            display: flex; justify-content: space-between; align-items: start;
+            border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;
+        }
+        .chip {
+            padding: 4px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700;
+            background: #333; color: #ccc; text-transform: uppercase;
+        }
+        .chip.live { background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); }
+
+        /* MD3 SLIDER */
+        .slider-group label { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; font-weight: 600; }
+        input[type=range] {
+            width: 100%; height: 24px; -webkit-appearance: none; background: transparent; cursor: pointer;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 16px; background: var(--md-sys-color-surface-container);
+            border-radius: 20px; overflow: hidden;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
+            background: var(--md-sys-color-primary);
+            box-shadow: -407px 0 0 400px var(--md-sys-color-primary-container);
+        }
+
+        /* BUTTONS */
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn {
+            height: 50px; border-radius: 25px; border: none; font-family: var(--font-ui);
+            font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: 0.2s;
+        }
+        .btn-filled { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+        .btn-filled:hover { opacity: 0.9; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .btn-tonal { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
+        .btn-tonal:hover { background: rgba(255,255,255,0.1); }
+        
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Color Picker */
+        .color-picker { display: flex; gap: 10px; margin-top: 10px; }
+        .color-opt { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .color-opt.active { border-color: white; transform: scale(1.1); }
+
+    </style>
+</head>
+<body>
+
+    <nav class="nav-rail">
+        <div class="brand-icon">
+            <span class="material-symbols-rounded">lightbulb</span>
+        </div>
+        <div class="nav-fab active" title="Dashboard">
+            <span class="material-symbols-rounded">dashboard</span>
+        </div>
+        <div class="nav-fab" title="Mapa">
+            <span class="material-symbols-rounded">map</span>
+        </div>
+        <div class="nav-fab" title="Alertas">
+            <span class="material-symbols-rounded">warning</span>
+        </div>
+        <div class="nav-fab" title="Configurações" style="margin-top: auto;">
+            <span class="material-symbols-rounded">settings</span>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="header">
+            <div>
+                <h1>Gestão de Iluminação</h1>
+                <span style="color: var(--md-sys-color-outline); font-size: 0.9rem;">Setor Norte • Rede Mesh v4.2</span>
+            </div>
+            <div class="grid-status">
+                <span class="material-symbols-rounded" style="font-size: 18px;">bolt</span>
+                GRID ESTÁVEL
+            </div>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <span class="material-symbols-rounded stat-icon">wb_twilight</span>
+                <div class="stat-value">84%</div>
+                <div class="stat-label">Eficiência Energética</div>
+            </div>
+            <div class="stat-card">
+                <span class="material-symbols-rounded stat-icon" style="color: var(--status-error);">error</span>
+                <div class="stat-value" style="color: var(--status-error);">03</div>
+                <div class="stat-label">Dispositivos Offline</div>
+            </div>
+            <div class="stat-card">
+                <span class="material-symbols-rounded stat-icon" style="color: #90caf9;">sensors</span>
+                <div class="stat-value">1,240</div>
+                <div class="stat-label">Sensores Ativos</div>
+            </div>
+            <div class="stat-card">
+                <span class="material-symbols-rounded stat-icon" style="color: #ce93d8;">schedule</span>
+                <div class="stat-value">18:00</div>
+                <div class="stat-label">Próximo Agendamento</div>
+            </div>
+        </div>
+
+        <div class="workspace">
+            <div class="map-panel" id="map-container">
+                <div class="map-overlay-info">
+                    LAT: -23.5505 • LNG: -46.6333<br>
+                    ZOOM: 18x
+                </div>
+                
+                </div>
+
+            <div class="control-panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 style="font-family: var(--font-code); font-size: 1.2rem;" id="ctrl-id">SELECIONE</h2>
+                        <div style="font-size: 0.8rem; color: var(--md-sys-color-outline);" id="ctrl-loc">---</div>
+                    </div>
+                    <div class="chip" id="ctrl-status">AGUARDANDO</div>
+                </div>
+
+                <div class="btn-grid">
+                    <button class="btn btn-filled" id="btn-power" onclick="sys.togglePower()" disabled>
+                        <span class="material-symbols-rounded">power_settings_new</span>
+                        <span id="txt-power">LIGAR</span>
+                    </button>
+                    <button class="btn btn-tonal" id="btn-reset" onclick="sys.resetDevice()" disabled>
+                        <span class="material-symbols-rounded">restart_alt</span>
+                        REINICIAR
+                    </button>
+                </div>
+
+                <div class="slider-group">
+                    <label>
+                        <span>Intensidade</span>
+                        <span id="val-dimmer">0%</span>
+                    </label>
+                    <input type="range" min="0" max="100" value="0" id="inp-dimmer" oninput="sys.setDimmer(this.value)" disabled>
+                </div>
+
+                <div class="slider-group">
+                    <label>Temperatura / Cor</label>
+                    <div class="color-picker">
+                        <div class="color-opt" style="background: #ffffff;" onclick="sys.setColor('white', this)"></div>
+                        <div class="color-opt" style="background: #ffecb3;" onclick="sys.setColor('warm', this)"></div>
+                        <div class="color-opt" style="background: #ffb74d;" onclick="sys.setColor('amber', this)"></div>
+                        <div class="color-opt" style="background: #f44336;" onclick="sys.setColor('red', this)"></div>
+                    </div>
+                </div>
+
+                <div style="margin-top: auto; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="font-size: 0.8rem; color: var(--md-sys-color-outline);">CONSUMO</span>
+                        <span style="font-family: var(--font-code); font-weight: bold;" id="val-watts">0 W</span>
+                    </div>
+                    <div style="height: 4px; background: #333; border-radius: 2px; overflow: hidden;">
+                        <div style="height: 100%; width: 0%; background: var(--status-ok);" id="bar-watts"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        class PoleSystem {
+            constructor() {
+                this.poles = [
+                    { id: 'POLE-A01', x: 20, y: 30, status: 'ok', power: true, dim: 80, watts: 45 },
+                    { id: 'POLE-A02', x: 40, y: 60, status: 'ok', power: true, dim: 60, watts: 32 },
+                    { id: 'POLE-B01', x: 60, y: 25, status: 'faulty', power: false, dim: 0, watts: 0 },
+                    { id: 'POLE-B02', x: 80, y: 70, status: 'ok', power: false, dim: 0, watts: 0 },
+                    { id: 'POLE-C01', x: 50, y: 50, status: 'ok', power: true, dim: 100, watts: 60 }
+                ];
+                
+                this.selectedPole = null;
+                
+                this.dom = {
+                    map: document.getElementById('map-container'),
+                    lblId: document.getElementById('ctrl-id'),
+                    lblLoc: document.getElementById('ctrl-loc'),
+                    lblStatus: document.getElementById('ctrl-status'),
+                    btnPower: document.getElementById('btn-power'),
+                    txtPower: document.getElementById('txt-power'),
+                    btnReset: document.getElementById('btn-reset'),
+                    inpDimmer: document.getElementById('inp-dimmer'),
+                    valDimmer: document.getElementById('val-dimmer'),
+                    valWatts: document.getElementById('val-watts'),
+                    barWatts: document.getElementById('bar-watts')
+                };
+
+                this.init();
+            }
+
+            init() {
+                this.renderMap();
+            }
+
+            renderMap() {
+                this.dom.map.innerHTML = '<div class="map-overlay-info">LAT: -23.5505 • LNG: -46.6333<br>ZOOM: 18x</div>'; // Reset, keep overlay
+                
+                this.poles.forEach((pole, index) => {
+                    const el = document.createElement('div');
+                    el.className = `pole ${pole.status} ${!pole.power ? 'off' : ''}`;
+                    if (this.selectedPole && this.selectedPole.id === pole.id) el.classList.add('active');
+                    
+                    el.style.left = pole.x + '%';
+                    el.style.top = pole.y + '%';
+                    el.onclick = () => this.selectPole(index);
+                    
+                    this.dom.map.appendChild(el);
+                });
+            }
+
+            selectPole(index) {
+                this.selectedPole = this.poles[index];
+                this.renderMap(); // Re-render to show active ring
+                this.updateUI();
+            }
+
+            updateUI() {
+                const p = this.selectedPole;
+                
+                // Enable Controls
+                this.dom.btnPower.disabled = false;
+                this.dom.btnReset.disabled = false;
+                this.dom.inpDimmer.disabled = false;
+
+                // Update Labels
+                this.dom.lblId.innerText = p.id;
+                this.dom.lblLoc.innerText = `COORD: ${p.x * 120}, ${p.y * 85}`;
+                
+                // Status Chip
+                this.dom.lblStatus.innerText = p.status === 'faulty' ? 'FALHA' : p.power ? 'ONLINE' : 'OFFLINE';
+                this.dom.lblStatus.className = `chip ${p.power ? 'live' : ''}`;
+                if(p.status === 'faulty') this.dom.lblStatus.style.background = 'var(--status-error)';
+
+                // Power Button
+                if (p.power) {
+                    this.dom.btnPower.style.backgroundColor = 'var(--status-error)';
+                    this.dom.btnPower.style.color = '#000';
+                    this.dom.txtPower.innerText = 'DESLIGAR';
+                } else {
+                    this.dom.btnPower.style.backgroundColor = 'var(--md-sys-color-primary)';
+                    this.dom.btnPower.style.color = 'var(--md-sys-color-on-primary)';
+                    this.dom.txtPower.innerText = 'LIGAR';
+                }
+
+                // Dimmer & Watts
+                this.dom.inpDimmer.value = p.dim;
+                this.dom.valDimmer.innerText = p.dim + '%';
+                this.dom.valWatts.innerText = p.watts + ' W';
+                this.dom.barWatts.style.width = (p.watts / 60) * 100 + '%'; // Max 60W bulb
+            }
+
+            togglePower() {
+                if (!this.selectedPole) return;
+                
+                this.selectedPole.power = !this.selectedPole.power;
+                if(this.selectedPole.power) {
+                    this.selectedPole.dim = 100;
+                    this.selectedPole.watts = 60;
+                } else {
+                    this.selectedPole.dim = 0;
+                    this.selectedPole.watts = 0;
+                }
+                
+                this.renderMap();
+                this.updateUI();
+            }
+
+            setDimmer(val) {
+                if (!this.selectedPole) return;
+                
+                this.selectedPole.dim = val;
+                this.selectedPole.power = val > 0;
+                this.selectedPole.watts = Math.floor((val / 100) * 60);
+                
+                this.dom.valDimmer.innerText = val + '%';
+                this.dom.valWatts.innerText = this.selectedPole.watts + ' W';
+                this.dom.barWatts.style.width = (this.selectedPole.watts / 60) * 100 + '%';
+                
+                // Debounce map render for performance usually, but direct here is fine
+                // Visual update only on power status change visually in map
+                if(val == 0) this.renderMap(); 
+            }
+
+            setColor(color, el) {
+                if (!this.selectedPole) return;
+                
+                document.querySelectorAll('.color-opt').forEach(c => c.classList.remove('active'));
+                el.classList.add('active');
+                
+                // Visual feedback only (Simulado)
+                // Na vida real mudaria o ícone no mapa
+            }
+
+            resetDevice() {
+                if (!this.selectedPole) return;
+                alert(`Reiniciando firmware do dispositivo ${this.selectedPole.id}...`);
+                this.selectedPole.status = 'ok'; // Fix faulty
+                this.renderMap();
+                this.updateUI();
+            }
+        }
+
+        const sys = new PoleSystem();
+    </script>
+</body>
+</html>

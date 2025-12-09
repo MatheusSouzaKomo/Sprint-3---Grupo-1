@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guru's Learn | Portal Académico</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+    <style>
+        /* =========================================
+           1. DESIGN TOKENS (MD3 DARK THEME)
+           ========================================= */
+        :root {
+            --md-sys-color-background: #141218;
+            --md-sys-color-on-background: #E6E1E5;
+            
+            --md-sys-color-surface: #1D1B20;
+            --md-sys-color-surface-container: #211F26;
+            --md-sys-color-surface-container-high: #2B2930;
+            --md-sys-color-on-surface: #E6E1E5;
+            --md-sys-color-on-surface-variant: #CAC4D0;
+            
+            --md-sys-color-primary: #D0BCFF;
+            --md-sys-color-on-primary: #381E72;
+            --md-sys-color-primary-container: #4F378B;
+            --md-sys-color-on-primary-container: #EADDFF;
+            
+            --md-sys-color-secondary: #CCC2DC;
+            --md-sys-color-secondary-container: #4A4458;
+            --md-sys-color-on-secondary-container: #E8DEF8;
+            
+            --md-sys-color-outline: #938F99;
+            --md-sys-color-outline-variant: #49454F;
+            
+            --md-sys-color-success: #8CD695;
+            --md-sys-color-error: #F2B8B5;
+
+            /* Elevação e Formas */
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 28px;
+            --shadow-2: 0px 4px 8px 3px rgba(0,0,0,0.15);
+            --shadow-3: 0px 8px 12px 6px rgba(0,0,0,0.15);
+        }
+
+        /* Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-background);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .hidden { display: none !important; }
+
+        /* --- COMPONENTES --- */
+
+        /* Botões */
+        .md-btn {
+            height: 40px; padding: 0 24px; border-radius: 20px; border: none;
+            font-size: 14px; font-weight: 500; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: 0.2s; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .btn-filled { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+        .btn-filled:hover { box-shadow: var(--shadow-2); opacity: 0.9; }
+        
+        .btn-tonal { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
+        .btn-text { background: transparent; color: var(--md-sys-color-primary); }
+        .btn-text:hover { background: rgba(208, 188, 255, 0.08); }
+
+        /* Inputs */
+        .md-field { position: relative; margin-bottom: 20px; width: 100%; }
+        .md-input {
+            width: 100%; padding: 16px; background: transparent;
+            border: 1px solid var(--md-sys-color-outline); border-radius: 4px;
+            color: var(--md-sys-color-on-surface); font-size: 16px; outline: none;
+            transition: 0.2s;
+        }
+        .md-label {
+            position: absolute; left: 12px; top: 16px; font-size: 16px;
+            color: var(--md-sys-color-on-surface-variant); background: var(--md-sys-color-surface-container);
+            padding: 0 4px; pointer-events: none; transition: 0.2s;
+        }
+        .md-input:focus { border-color: var(--md-sys-color-primary); border-width: 2px; }
+        .md-input:focus ~ .md-label, .md-input:not(:placeholder-shown) ~ .md-label {
+            top: -10px; font-size: 12px; color: var(--md-sys-color-primary);
+        }
+
+        /* Cards */
+        .md-card {
+            background: var(--md-sys-color-surface-container-high);
+            border-radius: var(--radius-lg); padding: 16px; margin-bottom: 16px;
+            box-shadow: var(--shadow-2); transition: 0.2s;
+        }
+        .md-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-3); }
+
+        /* FAB */
+        .md-fab {
+            position: fixed; bottom: 32px; right: 32px;
+            width: 56px; height: 56px; border-radius: 16px;
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            display: grid; place-items: center; border: none; cursor: pointer;
+            box-shadow: var(--shadow-3); transition: 0.2s; z-index: 100;
+        }
+        .md-fab:hover { transform: scale(1.05); }
+
+        /* Chips */
+        .chip {
+            padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 700;
+            display: inline-block;
+        }
+        .chip-pending { background: #3e2c2c; color: #ffb4ab; border: 1px solid #ffb4ab; }
+        .chip-done { background: #1a3020; color: #8CD695; border: 1px solid #8CD695; }
+
+        /* --- LAYOUT --- */
+
+        /* Login */
+        #login-screen {
+            height: 100vh; display: flex; align-items: center; justify-content: center;
+            background: radial-gradient(circle at 50% 0%, #2b2930 0%, #141218 100%);
+        }
+        .login-card {
+            width: 100%; max-width: 400px; padding: 40px;
+            background: var(--md-sys-color-surface-container); border-radius: var(--radius-xl);
+            text-align: center;
+        }
+
+        /* App Layout */
+        #app-layout { display: flex; height: 100%; }
+        
+        .nav-rail {
+            width: 80px; background: var(--md-sys-color-surface-container);
+            display: flex; flex-direction: column; align-items: center; padding: 20px 0;
+            border-right: 1px solid var(--md-sys-color-outline-variant); z-index: 10;
+        }
+        .nav-item {
+            width: 56px; height: 32px; border-radius: 16px; margin-bottom: 24px;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            color: var(--md-sys-color-on-surface-variant); cursor: pointer;
+        }
+        .nav-icon-box {
+            width: 56px; height: 32px; border-radius: 16px; display: grid; place-items: center;
+            transition: 0.2s;
+        }
+        .nav-item.active .nav-icon-box {
+            background: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+        }
+        .nav-item span { font-size: 12px; font-weight: 500; }
+
+        .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .top-bar {
+            height: 64px; background: var(--md-sys-color-surface);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .avatar {
+            width: 32px; height: 32px; background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary); border-radius: 50%;
+            display: grid; place-items: center; font-weight: bold;
+        }
+
+        .content-scroll { flex: 1; overflow-y: auto; padding: 24px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+        
+        .modal-box {
+            background: var(--md-sys-color-surface-container); padding: 24px;
+            border-radius: var(--radius-xl); width: 90%; max-width: 500px;
+            transform: scale(0.9); transition: 0.3s;
+        }
+        .modal-overlay.open .modal-box { transform: scale(1); }
+
+        /* Toast Notification */
+        #toast {
+            position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            padding: 12px 24px; border-radius: 50px; font-weight: 500;
+            box-shadow: var(--shadow-3); transition: 0.4s; z-index: 2000;
+        }
+        #toast.visible { transform: translateX(-50%) translateY(0); }
+
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-card">
+            <span class="material-symbols-rounded" style="font-size: 48px; color: var(--md-sys-color-primary);">school</span>
+            <h1 style="margin: 16px 0;">Guru's Learn</h1>
+            <p style="color: var(--md-sys-color-on-surface-variant); margin-bottom: 32px;">Portal Educacional Seguro</p>
+            
+            <form id="form-login">
+                <div class="md-field">
+                    <input type="email" class="md-input" id="login-email" placeholder=" " required>
+                    <label class="md-label">E-mail</label>
+                </div>
+                <div class="md-field">
+                    <input type="password" class="md-input" id="login-pass" placeholder=" " required>
+                    <label class="md-label">Senha</label>
+                </div>
+                <div style="font-size: 12px; color: var(--md-sys-color-outline); margin-bottom: 24px; text-align: left;">
+                    Aluno: aluno@guru.com / 123<br>
+                    Prof: prof@guru.com / 123
+                </div>
+                <button type="submit" class="md-btn btn-filled" style="width: 100%;">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="app-layout" class="hidden">
+        
+        <nav class="nav-rail">
+            <div style="margin-bottom: 30px;">
+                <span class="material-symbols-rounded" style="color: var(--md-sys-color-primary); font-size: 28px;">school</span>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon-box"><span class="material-symbols-rounded">dashboard</span></div>
+                <span>Início</span>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon-box"><span class="material-symbols-rounded">assignment</span></div>
+                <span>Tarefas</span>
+            </div>
+            <div class="nav-item" style="margin-top: auto;" onclick="app.logout()">
+                <div class="nav-icon-box"><span class="material-symbols-rounded">logout</span></div>
+                <span>Sair</span>
+            </div>
+        </nav>
+
+        <main class="main">
+            <header class="top-bar">
+                <h2 id="page-title">Painel Geral</h2>
+                <div class="user-info">
+                    <div style="text-align: right;">
+                        <div id="u-name" style="font-weight: 500; font-size: 14px;">Usuário</div>
+                        <div id="u-role" style="font-size: 12px; color: var(--md-sys-color-primary);">Cargo</div>
+                    </div>
+                    <div class="avatar" id="u-avatar">U</div>
+                </div>
+            </header>
+
+            <div class="content-scroll">
+                <div class="container">
+                    
+                    <div id="view-student" class="hidden">
+                        <h3 style="margin-bottom: 20px;">Minhas Atividades</h3>
+                        <div id="student-list">
+                            </div>
+                    </div>
+
+                    <div id="view-teacher" class="hidden">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3>Atividades da Turma</h3>
+                            <span style="font-size: 12px; color: var(--md-sys-color-outline);">Turma A - 2025</span>
+                        </div>
+                        <div id="teacher-list">
+                            </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
+        <button id="fab-add" class="md-fab hidden" onclick="app.openModal('create')">
+            <span class="material-symbols-rounded">add</span>
+        </button>
+
+    </div>
+
+    <div id="modal-create" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="margin-bottom: 24px;">Nova Atividade</h3>
+            <form id="form-create">
+                <div class="md-field">
+                    <input type="text" class="md-input" id="new-title" placeholder=" " required>
+                    <label class="md-label">Título</label>
+                </div>
+                <div class="md-field">
+                    <input type="text" class="md-input" id="new-desc" placeholder=" " required>
+                    <label class="md-label">Descrição</label>
+                </div>
+                <div class="md-field">
+                    <input type="date" class="md-input" id="new-date" required>
+                    <label class="md-label">Data de Entrega</label>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="md-btn btn-text" onclick="app.closeModal('create')">Cancelar</button>
+                    <button type="submit" class="md-btn btn-filled">Criar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-grade" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="margin-bottom: 8px;">Atribuir Nota</h3>
+            <p id="grade-student-name" style="margin-bottom: 24px; color: var(--md-sys-color-outline);">Aluno: ---</p>
+            <form id="form-grade">
+                <input type="hidden" id="grade-task-id">
+                <input type="hidden" id="grade-student-id">
+                <div class="md-field">
+                    <input type="number" class="md-input" id="grade-val" min="0" max="10" step="0.5" placeholder=" " required>
+                    <label class="md-label">Nota (0 - 10)</label>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="md-btn btn-text" onclick="app.closeModal('grade')">Cancelar</button>
+                    <button type="submit" class="md-btn btn-filled">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast">Notificação</div>
+
+    <script>
+        class GurusLearnApp {
+            constructor() {
+                // Dados Iniciais (Se localStorage estiver vazio)
+                this.defaultData = {
+                    users: [
+                        { id: 1, email: 'aluno@guru.com', pass: '123', name: 'João Silva', role: 'student' },
+                        { id: 2, email: 'prof@guru.com', pass: '123', name: 'Dr. Xavier', role: 'teacher' },
+                        { id: 3, email: 'maria@guru.com', pass: '123', name: 'Maria Souza', role: 'student' }
+                    ],
+                    tasks: [
+                        { id: 101, title: 'HTML Básico', desc: 'Criar site pessoal', date: '2025-10-10', grades: { 1: 9.5 } },
+                        { id: 102, title: 'CSS Flexbox', desc: 'Layout responsivo', date: '2025-10-15', grades: {} }
+                    ]
+                };
+
+                this.state = this.loadData();
+                this.currentUser = null;
+
+                // Cache DOM
+                this.dom = {
+                    login: document.getElementById('login-screen'),
+                    app: document.getElementById('app-layout'),
+                    studentView: document.getElementById('view-student'),
+                    teacherView: document.getElementById('view-teacher'),
+                    studentList: document.getElementById('student-list'),
+                    teacherList: document.getElementById('teacher-list'),
+                    fab: document.getElementById('fab-add'),
+                    toast: document.getElementById('toast')
+                };
+
+                this.bindEvents();
+            }
+
+            // --- DATA MANAGEMENT ---
+            loadData() {
+                const stored = localStorage.getItem('gurus_data');
+                return stored ? JSON.parse(stored) : this.defaultData;
+            }
+
+            saveData() {
+                localStorage.setItem('gurus_data', JSON.stringify(this.state));
+            }
+
+            // --- AUTH ---
+            login(email, pass) {
+                const user = this.state.users.find(u => u.email === email && u.pass === pass);
+                if (user) {
+                    this.currentUser = user;
+                    this.dom.login.classList.add('hidden');
+                    this.dom.app.classList.remove('hidden');
+                    this.renderDashboard();
+                } else {
+                    this.showToast('Credenciais inválidas!');
+                }
+            }
+
+            logout() {
+                this.currentUser = null;
+                this.dom.app.classList.add('hidden');
+                this.dom.login.classList.remove('hidden');
+                document.getElementById('form-login').reset();
+            }
+
+            // --- RENDER ---
+            renderDashboard() {
+                // Header Info
+                document.getElementById('u-name').innerText = this.currentUser.name;
+                document.getElementById('u-role').innerText = this.currentUser.role === 'teacher' ? 'Professor' : 'Aluno';
+                document.getElementById('u-avatar').innerText = this.currentUser.name.charAt(0);
+
+                if (this.currentUser.role === 'student') {
+                    this.dom.teacherView.classList.add('hidden');
+                    this.dom.studentView.classList.remove('hidden');
+                    this.dom.fab.classList.add('hidden');
+                    this.renderStudentList();
+                } else {
+                    this.dom.studentView.classList.add('hidden');
+                    this.dom.teacherView.classList.remove('hidden');
+                    this.dom.fab.classList.remove('hidden');
+                    this.renderTeacherList();
+                }
+            }
+
+            renderStudentList() {
+                this.dom.studentList.innerHTML = '';
+                this.state.tasks.forEach(task => {
+                    const grade = task.grades[this.currentUser.id];
+                    const hasGrade = grade !== undefined;
+                    
+                    const card = document.createElement('div');
+                    card.className = 'md-card';
+                    card.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                            <span style="font-size:18px; font-weight:700; color:var(--md-sys-color-primary);">${task.title}</span>
+                            <span style="font-size:12px; color:var(--md-sys-color-outline);">${task.date}</span>
+                        </div>
+                        <p style="font-size:14px; color:var(--md-sys-color-on-surface-variant); margin-bottom:16px;">${task.desc}</p>
+                        <div style="border-top:1px solid #333; padding-top:12px; display:flex; justify-content:space-between; align-items:center;">
+                            <span class="chip ${hasGrade ? 'chip-done' : 'chip-pending'}">${hasGrade ? 'Avaliado' : 'Pendente'}</span>
+                            ${hasGrade ? `<span style="font-weight:bold; font-size:18px;">${grade}</span>` : `<button class="md-btn btn-tonal" onclick="app.showToast('Trabalho enviado!')">Enviar</button>`}
+                        </div>
+                    `;
+                    this.dom.studentList.appendChild(card);
+                });
+            }
+
+            renderTeacherList() {
+                this.dom.teacherList.innerHTML = '';
+                this.state.tasks.forEach(task => {
+                    const students = this.state.users.filter(u => u.role === 'student');
+                    const gradedCount = Object.keys(task.grades).length;
+
+                    // Lista de alunos neste card
+                    let studentRows = '';
+                    students.forEach(st => {
+                        const grade = task.grades[st.id];
+                        studentRows += `
+                            <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
+                                <span style="font-size:14px;">${st.name}</span>
+                                ${grade !== undefined 
+                                    ? `<span style="font-weight:bold; color:var(--md-sys-color-success);">${grade}</span>`
+                                    : `<button class="md-btn btn-text" style="height:30px; font-size:12px;" onclick="app.openGradeModal(${task.id}, ${st.id}, '${st.name}')">Avaliar</button>`
+                                }
+                            </div>
+                        `;
+                    });
+
+                    const card = document.createElement('div');
+                    card.className = 'md-card';
+                    card.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <h3 style="color:var(--md-sys-color-primary); font-size:18px;">${task.title}</h3>
+                            <span class="chip chip-pending">${gradedCount}/${students.length} Avaliados</span>
+                        </div>
+                        <p style="font-size:12px; color:var(--md-sys-color-outline); margin-bottom:15px;">Prazo: ${task.date}</p>
+                        <div style="background:rgba(0,0,0,0.2); border-radius:8px; padding:10px;">
+                            ${studentRows}
+                        </div>
+                    `;
+                    this.dom.teacherList.appendChild(card);
+                });
+            }
+
+            // --- ACTIONS ---
+            addTask(title, desc, date) {
+                this.state.tasks.unshift({
+                    id: Date.now(),
+                    title, desc, date,
+                    grades: {}
+                });
+                this.saveData();
+                this.renderTeacherList();
+                this.showToast('Atividade criada com sucesso!');
+            }
+
+            addGrade(taskId, studentId, grade) {
+                const task = this.state.tasks.find(t => t.id === taskId);
+                if (task) {
+                    task.grades[studentId] = grade;
+                    this.saveData();
+                    this.renderTeacherList();
+                    this.showToast('Nota salva!');
+                }
+            }
+
+            // --- MODALS ---
+            openModal(type) {
+                document.getElementById(`modal-${type}`).classList.add('open');
+            }
+
+            closeModal(type) {
+                document.getElementById(`modal-${type}`).classList.remove('open');
+            }
+
+            openGradeModal(taskId, studentId, name) {
+                document.getElementById('grade-task-id').value = taskId;
+                document.getElementById('grade-student-id').value = studentId;
+                document.getElementById('grade-student-name').innerText = `Aluno: ${name}`;
+                document.getElementById('grade-val').value = '';
+                this.openModal('grade');
+            }
+
+            showToast(msg) {
+                this.dom.toast.innerText = msg;
+                this.dom.toast.classList.add('visible');
+                setTimeout(() => this.dom.toast.classList.remove('visible'), 3000);
+            }
+
+            bindEvents() {
+                document.getElementById('form-login').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.login(
+                        document.getElementById('login-email').value,
+                        document.getElementById('login-pass').value
+                    );
+                });
+
+                document.getElementById('form-create').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.addTask(
+                        document.getElementById('new-title').value,
+                        document.getElementById('new-desc').value,
+                        document.getElementById('new-date').value
+                    );
+                    this.closeModal('create');
+                    e.target.reset();
+                });
+
+                document.getElementById('form-grade').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.addGrade(
+                        parseInt(document.getElementById('grade-task-id').value),
+                        parseInt(document.getElementById('grade-student-id').value),
+                        parseFloat(document.getElementById('grade-val').value)
+                    );
+                    this.closeModal('grade');
+                });
+            }
+        }
+
+        // START
+        const app = new GurusLearnApp();
+    </script>
+</body>
+</html>

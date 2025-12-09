@@ -1,357 +1,474 @@
-// Função para aplicar o tema e atualizar os ícones
-const applyTheme = (theme) => {
-    const htmlElement = document.documentElement;
-    const themeToggleButton = document.getElementById('theme-toggle');
-    const isDark = theme === 'dark';
+/* ==========================================================================
+    Script Principal da Aplicação
+    Descrição: Gerencia funcionalidades principais do site.
+    Autor: Guru's Company
+    Versão: 1.7.5
+     ========================================================================== */
 
-    htmlElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
+(function () {
+  'use strict';
 
-    // Atualiza o texto e os ícones do botão de tema
-    if (themeToggleButton) {
-        const sunIcon = themeToggleButton.querySelector('#theme-toggle-sun');
-        const moonIcon = themeToggleButton.querySelector('#theme-toggle-moon');
-        if (sunIcon && moonIcon) {
-            sunIcon.style.display = isDark ? 'inline-block' : 'none';
-            moonIcon.style.display = isDark ? 'none' : 'inline-block';
-            // Remove o texto antigo e adiciona o novo
-            themeToggleButton.lastChild.textContent = isDark ? ' Modo Claro' : ' Modo Escuro';
-        }
-    }
-};
-
-// Função para aplicar o estado do CSS
-const applyCssState = (isDisabled) => {
-    const mainStylesheet = document.querySelector('link[href*="style.css"]');
-    if (mainStylesheet) {
-        mainStylesheet.disabled = isDisabled;
-        localStorage.setItem('css-disabled', isDisabled ? 'true' : 'false');
-    }
-};
-
-// --- CONFIGURAÇÃO INICIAL IMEDIATA ---
-// Aplica o tema salvo ou preferencial para evitar FOUC (Flash of Unstyled Content)
-const savedTheme = localStorage.getItem('theme');
-const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
-
-// Aplica o estado do CSS salvo
-const savedCssState = localStorage.getItem('css-disabled');
-applyCssState(savedCssState === 'true');
-
-
-// --- EVENT LISTENERS (APÓS O DOM CARREGAR) ---
-document.addEventListener('DOMContentLoaded', () => {
-    // Lógica do Relógio Digital
-    const relogioEl = document.getElementById('relogio');
-    if (relogioEl) {
-        const atualizarHorario = () => {
-            const agora = new Date();
-            const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-            relogioEl.textContent = agora.toLocaleTimeString('pt-BR', options);
-        };
-        setInterval(atualizarHorario, 1000);
-        atualizarHorario(); // Chama imediatamente para não haver atraso
-    }
-
-    // Lógica do Menu Hambúrguer
-    const hamburgerBtn = document.getElementById('hamburger-btn');
-    const mobileNav = document.getElementById('mobile-nav');
-    const menuOverlay = document.getElementById('menu-overlay');
+  /* ==========================================================================
+     1. PREVENÇÃO DE FOUC (Flash of Unstyled Content) & CONFIG INICIAL
+     Deve rodar imediatamente, antes do DOM estar pronto.
+     ========================================================================== */
+  
+  const initImmediateSettings = () => {
+    // --- TEMA ---
+    const html = document.documentElement;
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
     
-    if (hamburgerBtn && mobileNav && menuOverlay) {
-        const toggleMenu = () => {
-            const isActive = mobileNav.classList.contains('is-active');
-            
-            // Adiciona ou remove as classes de todos os elementos relevantes
-            hamburgerBtn.classList.toggle('is-active', !isActive);
-            mobileNav.classList.toggle('is-active', !isActive);
-            menuOverlay.classList.toggle('is-active', !isActive);
-            
-            // Atualiza o atributo ARIA para acessibilidade
-            hamburgerBtn.setAttribute('aria-expanded', !isActive);
-            
-            // Trava o scroll do body quando o menu está aberto
-            document.body.style.overflow = !isActive ? 'hidden' : '';
-        };
+    html.setAttribute('data-theme', initialTheme);
 
-        // Eventos para abrir/fechar o menu
-        hamburgerBtn.addEventListener('click', toggleMenu);
-        menuOverlay.addEventListener('click', toggleMenu); // Fecha ao clicar no overlay
+    // --- CSS DEV TOGGLE (Estado salvo) ---
+    const savedCssState = localStorage.getItem('css-disabled');
+    if (savedCssState === 'true') {
+      // Nota: O elemento link pode ainda não existir, então lidamos com isso no DOMLoaded também
+      // mas definimos o estado local para referência futura.
+      window.__CSS_DISABLED_INIT = true; 
+    }
+  };
 
-        // Fecha o menu ao pressionar a tecla 'Escape'
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && mobileNav.classList.contains('is-active')) {
-                toggleMenu();
-            }
-        });
+  initImmediateSettings();
+
+  /* ==========================================================================
+     2. APP CORE (Executa quando o HTML estiver carregado)
+     ========================================================================== */
+  
+  const onDOMLoaded = () => {
+    // UI & Layout
+    initThemeControl();
+    initCssDevControl();
+    initHamburgerMenu();
+    initBackToTop();
+    initClock();
+    initSkeletonLoader();
+    initDismissibleAlerts();
+    initCardActions();
+
+    // Formulários
+    initFormValidation();
+    initProfileEdit();
+  };
+
+  /* ==========================================================================
+     3. FUNCIONALIDADES DE UI / LAYOUT
+     ========================================================================== */
+
+  /**
+   * Gerencia a troca de tema (Dark/Light) e ícones
+   */
+  const initThemeControl = () => {
+    const toggleBtn = document.getElementById('theme-toggle') || document.getElementById('btn-theme-toggle');
+    if (!toggleBtn) return;
+
+    const html = document.documentElement;
+    const sunIcon = toggleBtn.querySelector('.icon-sun'); // Ajuste o seletor conforme seu HTML
+    const moonIcon = toggleBtn.querySelector('.icon-moon');
+    const textSpan = toggleBtn.querySelector('span'); // Texto do botão se houver
+
+    const updateUI = (theme) => {
+      const isDark = theme === 'dark';
+      html.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+
+      // Atualiza botão (classes ou ícones)
+      if (isDark) toggleBtn.classList.add('is-active');
+      else toggleBtn.classList.remove('is-active');
+
+      // Alternância visual de ícones (se existirem)
+      if (sunIcon && moonIcon) {
+        sunIcon.style.display = isDark ? 'inline-block' : 'none';
+        moonIcon.style.display = isDark ? 'none' : 'inline-block';
+      }
+      
+      // Atualiza texto (se existir)
+      if (textSpan) {
+        textSpan.textContent = isDark ? ' Modo Claro' : ' Modo Escuro';
+      }
+    };
+
+    // Sincroniza estado inicial com os botões
+    updateUI(html.getAttribute('data-theme'));
+
+    toggleBtn.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      updateUI(next);
+    });
+  };
+
+  /**
+   * Ferramenta de dev para desativar CSS
+   */
+  const initCssDevControl = () => {
+    const btn = document.getElementById('btn-no-css') || document.getElementById('css-toggle');
+    if (!btn) {
+      // Se não houver botão, apenas aplica o estado salvo (se houver link de estilo carregado)
+      if (window.__CSS_DISABLED_INIT) toggleLocalStyles(true);
+      return;
     }
 
-    // Lógica do botão de alternar tema
-    const themeToggleButton = document.getElementById('theme-toggle');
-    if (themeToggleButton) {
-        themeToggleButton.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
-        });
-    }
+    let isDisabled = window.__CSS_DISABLED_INIT || false;
 
-    // Lógica do botão de alternar CSS
-    const cssToggleButton = document.getElementById('css-toggle');
-    if (cssToggleButton) {
-        cssToggleButton.addEventListener('click', () => {
-            const mainStylesheet = document.querySelector('link[href*="style.css"]');
-            if (mainStylesheet) {
-                applyCssState(!mainStylesheet.disabled);
-            }
-        });
-    }
+    // Aplica estado inicial se necessário
+    if (isDisabled) toggleLocalStyles(true);
 
-    // Lógica do botão "Voltar ao Topo"
-    const backToTopBtn = document.getElementById('backToTopBtn');
-    if (backToTopBtn) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 200) {
-                backToTopBtn.classList.add('c-back-to-top--visible');
-            } else {
-                backToTopBtn.classList.remove('c-back-to-top--visible');
-            }
-        });
-        backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    }
+    btn.addEventListener('click', () => {
+      isDisabled = !isDisabled;
+      toggleLocalStyles(isDisabled);
+      
+      // Atualiza texto do botão se aplicável
+      const title = btn.querySelector('.c-settings-item__title') || btn;
+      if (title.childNodes.length > 0 && title.nodeType !== Node.TEXT_NODE) {
+         // Se tiver estrutura interna, tenta atualizar só o texto
+         title.textContent = isDisabled ? 'Ativar CSS' : 'Desativar CSS';
+      }
+    });
+  };
 
-    // Lógica para o Loading Skeleton
-    const skeletonGrid = document.getElementById('skeleton-grid');
-    const cardGrid = document.getElementById('card-grid');
+  // Helper para desativar/ativar stylesheets locais
+  const toggleLocalStyles = (disable) => {
+    const sheets = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
+    const localHeuristic = /style|main|app|site|guru/i;
+    
+    sheets.forEach(sheet => {
+      const href = sheet.getAttribute('href') || '';
+      if (localHeuristic.test(href)) {
+        sheet.disabled = disable;
+      }
+    });
+    localStorage.setItem('css-disabled', disable);
+  };
 
-    if (skeletonGrid && cardGrid) {
-        // Simula um tempo de carregamento (ex: 1 segundo).
-        // Em uma aplicação real, isso seria substituído por uma chamada de API (fetch).
+  /**
+   * Menu Hambúrguer Acessível com Focus Trap
+   */
+  const initHamburgerMenu = () => {
+    const btn = document.getElementById('hamburger-btn');
+    const nav = document.getElementById('mobile-nav');
+    const overlay = document.getElementById('menu-overlay');
+    if (!btn || !nav || !overlay) return;
+
+    // Configuração A11y Inicial
+    btn.setAttribute('aria-expanded', 'false');
+    nav.setAttribute('aria-hidden', 'true');
+
+    // Seletores focáveis
+    const focusableSelector = 'a[href], button:not([disabled]), input, textarea, select, [tabindex]:not([tabindex="-1"])';
+    
+    const toggleMenu = (forceClose = false) => {
+      const isActive = nav.classList.contains('is-active');
+      const shouldOpen = forceClose ? false : !isActive;
+
+      if (shouldOpen) {
+        document.body.classList.add('u-body-no-scroll');
+        btn.classList.add('is-active');
+        nav.classList.add('is-active');
+        overlay.classList.add('is-active');
+        btn.setAttribute('aria-expanded', 'true');
+        nav.setAttribute('aria-hidden', 'false');
+        
+        // Focus Trap: Mover foco para o primeiro item
         setTimeout(() => {
-            skeletonGrid.style.display = 'none';
-            cardGrid.style.display = 'grid';
-        }, 1000); // 1 segundo de delay
+          const first = nav.querySelector(focusableSelector);
+          if (first) first.focus();
+        }, 50);
+        document.addEventListener('keydown', trapFocus);
+      } else {
+        document.body.classList.remove('u-body-no-scroll');
+        btn.classList.remove('is-active');
+        nav.classList.remove('is-active');
+        overlay.classList.remove('is-active');
+        btn.setAttribute('aria-expanded', 'false');
+        nav.setAttribute('aria-hidden', 'true');
+        document.removeEventListener('keydown', trapFocus);
+        btn.focus(); // Retorna foco ao botão
+      }
+    };
+
+    const trapFocus = (e) => {
+      if (e.key !== 'Tab') return;
+      const focusables = Array.from(nav.querySelectorAll(focusableSelector));
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (e.shiftKey) { // Shift + Tab
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else { // Tab
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    // Listeners
+    btn.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(); });
+    overlay.addEventListener('click', () => toggleMenu(true));
+    
+    // Fechar ao clicar em links internos
+    nav.addEventListener('click', (e) => {
+      if (e.target.closest('a')) toggleMenu(true);
+    });
+
+    // Fechar com ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nav.classList.contains('is-active')) toggleMenu(true);
+    });
+  };
+
+  /**
+   * Botão Voltar ao Topo
+   */
+  const initBackToTop = () => {
+    const btn = document.getElementById('backToTopBtn');
+    if (!btn) return;
+
+    window.addEventListener('scroll', () => {
+      btn.classList.toggle('c-back-to-top--visible', window.scrollY > 300);
+    });
+
+    btn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  };
+
+  /**
+   * Relógio Digital
+   */
+  const initClock = () => {
+    const clockEl = document.getElementById('relogio');
+    if (!clockEl) return;
+
+    const update = () => {
+      const now = new Date();
+      clockEl.textContent = now.toLocaleTimeString('pt-BR');
+    };
+    update();
+    setInterval(update, 1000);
+  };
+
+  /**
+   * Skeleton Loading Simulator
+   */
+  const initSkeletonLoader = () => {
+    const skeleton = document.getElementById('skeleton-grid');
+    const content = document.getElementById('card-grid');
+    if (!skeleton || !content) return;
+
+    // Simula delay de API
+    setTimeout(() => {
+      skeleton.style.display = 'none';
+      content.style.display = 'grid';
+    }, 1000);
+  };
+
+  /**
+   * Alertas Dispensáveis
+   */
+  const initDismissibleAlerts = () => {
+    document.querySelectorAll('.c-alert__close-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const alert = e.target.closest('.c-alert');
+        if (alert) {
+          alert.style.opacity = '0';
+          setTimeout(() => alert.remove(), 300); // Aguarda transição CSS
+        }
+      });
+    });
+  };
+
+  /**
+   * Ações dos Cards (stop propagation)
+   */
+  const initCardActions = () => {
+    document.querySelectorAll('.c-card__action-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Ação do card acionada:', btn);
+      });
+    });
+  };
+
+  /* ==========================================================================
+     4. VALIDAÇÃO DE FORMULÁRIOS & PERFIL
+     ========================================================================== */
+
+  // Helpers de Validação
+  const Forms = {
+    setError: (field, message) => {
+      const wrapper = field.parentElement;
+      wrapper.classList.add('c-form-field--error');
+      let msgEl = wrapper.querySelector('.c-form-field__error-message');
+      if (!msgEl) {
+        msgEl = document.createElement('p');
+        msgEl.className = 'c-form-field__error-message';
+        wrapper.appendChild(msgEl);
+      }
+      msgEl.textContent = message;
+    },
+    clearError: (field) => {
+      const wrapper = field.parentElement;
+      wrapper.classList.remove('c-form-field--error');
+      const msgEl = wrapper.querySelector('.c-form-field__error-message');
+      if (msgEl) msgEl.remove();
+    },
+    validators: {
+      required: (field, name) => {
+        if (!field.value.trim()) {
+          Forms.setError(field, `O campo ${name} é obrigatório.`);
+          return false;
+        }
+        Forms.clearError(field);
+        return true;
+      },
+      email: (field) => {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!field.value.trim()) {
+          Forms.setError(field, 'Email obrigatório.');
+          return false;
+        }
+        if (!regex.test(field.value)) {
+          Forms.setError(field, 'Insira um email válido.');
+          return false;
+        }
+        Forms.clearError(field);
+        return true;
+      },
+      password: (field, minLen = 6) => {
+        if (!field.value.trim()) {
+          Forms.setError(field, 'Senha obrigatória.');
+          return false;
+        }
+        if (field.value.length < minLen) {
+          Forms.setError(field, `Mínimo de ${minLen} caracteres.`);
+          return false;
+        }
+        Forms.clearError(field);
+        return true;
+      },
+      match: (field, matchValue, msg) => {
+        if (field.value !== matchValue) {
+          Forms.setError(field, msg || 'Os campos não coincidem.');
+          return false;
+        }
+        Forms.clearError(field);
+        return true;
+      }
     }
+  };
 
-    // Lógica para fechar alertas
-    document.querySelectorAll('.c-alert__close-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const alert = e.target.closest('.c-alert');
-            if (alert) {
-                alert.style.display = 'none';
-            }
-        });
-    });
-
-    // Impede que o clique nos botões de ação do card navegue na página
-    document.querySelectorAll('.c-card__action-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            // Impede a ação padrão do link pai (navegar)
-            e.preventDefault();
-            // Impede que o evento se propague para elementos pais
-            e.stopPropagation();
-            // Adicione aqui a ação que o botão deve fazer, ex: abrir um modal
-            console.log('Botão de ação do card clicado!');
-        });
-    });
-
-    // --- LÓGICA DE VALIDAÇÃO DE FORMULÁRIOS ---
+  const initFormValidation = () => {
+    // --- LOGIN ---
     const loginForm = document.getElementById('login-form');
-    const cadastroForm = document.getElementById('cadastro-form');
-
-    const setFieldError = (field, message) => {
-        const formField = field.parentElement;
-        formField.classList.add('c-form-field--error');
-        let errorMessage = formField.querySelector('.c-form-field__error-message');
-        if (!errorMessage) {
-            errorMessage = document.createElement('p');
-            errorMessage.className = 'c-form-field__error-message';
-            formField.appendChild(errorMessage);
-        }
-        errorMessage.textContent = message;
-    };
-
-    const clearFieldError = (field) => {
-        const formField = field.parentElement;
-        formField.classList.remove('c-form-field--error');
-        const errorMessage = formField.querySelector('.c-form-field__error-message');
-        if (errorMessage) {
-            errorMessage.remove();
-        }
-    };
-
-    const validateEmail = (field) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (field.value.trim() === '') {
-            setFieldError(field, 'O campo de email é obrigatório.');
-            return false;
-        } else if (!emailRegex.test(field.value)) {
-            setFieldError(field, 'Por favor, insira um email válido.');
-            return false;
-        }
-        clearFieldError(field);
-        return true;
-    };
-
-    const validateRequired = (field, fieldName) => {
-        if (field.value.trim() === '') {
-            setFieldError(field, `O campo ${fieldName} é obrigatório.`);
-            return false;
-        }
-        clearFieldError(field);
-        return true;
-    };
-
-    const validatePassword = (field) => {
-        if (field.value.trim() === '') {
-            setFieldError(field, 'O campo de senha é obrigatório.');
-            return false;
-        } else if (field.value.length < 6) {
-            setFieldError(field, 'A senha deve ter no mínimo 6 caracteres.');
-            return false;
-        }
-        clearFieldError(field);
-        return true;
-    };
-
     if (loginForm) {
-        const emailField = loginForm.querySelector('#email');
-        const senhaField = loginForm.querySelector('#senha');
+      const email = loginForm.querySelector('#email');
+      const pass = loginForm.querySelector('#senha');
 
-        loginForm.addEventListener('submit', (e) => {
-            const isEmailValid = validateEmail(emailField);
-            const isSenhaValid = validateRequired(senhaField, 'senha');
-            if (!isEmailValid || !isSenhaValid) {
-                e.preventDefault();
-            }
-        });
+      loginForm.addEventListener('submit', (e) => {
+        const v1 = Forms.validators.email(email);
+        const v2 = Forms.validators.required(pass, 'senha');
+        if (!v1 || !v2) e.preventDefault();
+      });
+      
+      // Validação em tempo real (UX)
+      email.addEventListener('blur', () => Forms.validators.email(email));
     }
 
-    if (cadastroForm) {
-        const nomeField = cadastroForm.querySelector('#nome');
-        const emailField = cadastroForm.querySelector('#email');
-        const senhaField = cadastroForm.querySelector('#senha');
+    // --- CADASTRO ---
+    const registerForm = document.getElementById('cadastro-form');
+    if (registerForm) {
+      const name = registerForm.querySelector('#nome');
+      const email = registerForm.querySelector('#email');
+      const pass = registerForm.querySelector('#senha');
 
-        const addValidationListener = (field, validationFn, ...args) => {
-            field.addEventListener('blur', () => validationFn(field, ...args));
-            field.addEventListener('input', () => validationFn(field, ...args));
-        };
+      registerForm.addEventListener('submit', (e) => {
+        const v1 = Forms.validators.required(name, 'nome');
+        const v2 = Forms.validators.email(email);
+        const v3 = Forms.validators.password(pass);
+        if (!v1 || !v2 || !v3) e.preventDefault();
+      });
 
-        addValidationListener(nomeField, validateRequired, 'nome');
-        addValidationListener(emailField, validateEmail);
-        addValidationListener(senhaField, validatePassword);
-
-        cadastroForm.addEventListener('submit', (e) => {
-            const isNomeValid = validateRequired(nomeField, 'nome');
-            const isEmailValid = validateEmail(emailField);
-            const isSenhaValid = validatePassword(senhaField);
-            if (!isNomeValid || !isEmailValid || !isSenhaValid) {
-                e.preventDefault();
-            }
+      // Listeners
+      [name, email, pass].forEach(f => {
+        f.addEventListener('blur', () => {
+           if(f === name) Forms.validators.required(f, 'nome');
+           if(f === email) Forms.validators.email(f);
+           if(f === pass) Forms.validators.password(f);
         });
+      });
     }
+  };
 
-    // --- LÓGICA DE EDIÇÃO DE PERFIL (perfil.php) ---
-    const profileEditForm = document.getElementById('profile-edit-form');
-    if (profileEditForm) {
-        const editProfileBtn = document.getElementById('edit-profile-btn');
-        const cancelEditBtn = document.getElementById('cancel-edit-btn');
-        const editModeButtons = document.getElementById('edit-mode-buttons');
+  const initProfileEdit = () => {
+    const form = document.getElementById('profile-edit-form');
+    if (!form) return;
 
-        const nomeField = profileEditForm.querySelector('#nome');
-        const emailField = profileEditForm.querySelector('#email');
-        const nivelAcessoField = profileEditForm.querySelector('#nivel_acesso');
-        const currentPasswordField = profileEditForm.querySelector('#senha_atual');
-        const newPasswordField = profileEditForm.querySelector('#nova_senha');
-        const confirmPasswordField = profileEditForm.querySelector('#confirmar_senha');
+    const btnEdit = document.getElementById('edit-profile-btn');
+    const btnCancel = document.getElementById('cancel-edit-btn');
+    const btnContainer = document.getElementById('edit-mode-buttons');
 
-        const toggleEditMode = (isEditing) => {
-            nomeField.readOnly = !isEditing;
-            emailField.readOnly = !isEditing;
-            // Nível de acesso não é editável pelo usuário
-            nivelAcessoField.readOnly = true; 
+    const fields = {
+      nome: form.querySelector('#nome'),
+      email: form.querySelector('#email'),
+      nivel: form.querySelector('#nivel_acesso'),
+      passCurrent: form.querySelector('#senha_atual'),
+      passNew: form.querySelector('#nova_senha'),
+      passConfirm: form.querySelector('#confirmar_senha')
+    };
 
-            currentPasswordField.parentElement.style.display = isEditing ? 'block' : 'none';
-            newPasswordField.parentElement.style.display = isEditing ? 'block' : 'none';
-            confirmPasswordField.parentElement.style.display = isEditing ? 'block' : 'none';
+    // Toggle de UI
+    const toggleEdit = (isEditing) => {
+      fields.nome.readOnly = !isEditing;
+      fields.email.readOnly = !isEditing;
+      // Nivel geralmente não edita
+      
+      // Campos de senha
+      [fields.passCurrent, fields.passNew, fields.passConfirm].forEach(el => {
+        el.parentElement.style.display = isEditing ? 'block' : 'none';
+        if (!isEditing) {
+          el.value = ''; // Limpa ao cancelar
+          Forms.clearError(el);
+        }
+      });
 
-            editProfileBtn.style.display = isEditing ? 'none' : 'block';
-            editModeButtons.style.display = isEditing ? 'flex' : 'none';
+      btnEdit.style.display = isEditing ? 'none' : 'block';
+      btnContainer.style.display = isEditing ? 'flex' : 'none';
+    };
 
-            // Limpa campos de senha e erros ao sair do modo edição
-            if (!isEditing) {
-                currentPasswordField.value = '';
-                newPasswordField.value = '';
-                confirmPasswordField.value = '';
-                clearFieldError(nomeField);
-                clearFieldError(emailField);
-                clearFieldError(currentPasswordField);
-                clearFieldError(newPasswordField);
-                clearFieldError(confirmPasswordField);
-            }
-        };
+    // Inicializa
+    toggleEdit(false);
 
-        // Inicializa em modo de visualização
-        toggleEditMode(false);
+    btnEdit.addEventListener('click', () => toggleEdit(true));
+    btnCancel.addEventListener('click', () => toggleEdit(false));
 
-        editProfileBtn.addEventListener('click', () => toggleEditMode(true));
-        cancelEditBtn.addEventListener('click', () => toggleEditMode(false));
+    // Submit do Perfil
+    form.addEventListener('submit', (e) => {
+      let isValid = true;
+      isValid &= Forms.validators.required(fields.nome, 'nome');
+      isValid &= Forms.validators.email(fields.email);
 
-        // Adiciona listeners de validação para os campos editáveis
-        const addValidationListener = (field, validationFn, ...args) => {
-            field.addEventListener('blur', () => { if (!field.readOnly) validationFn(field, ...args); });
-            field.addEventListener('input', () => { if (!field.readOnly) validationFn(field, ...args); });
-        };
+      // Valida senha apenas se tentou alterar
+      const tryingToChangePass = fields.passNew.value.trim() !== '' || fields.passConfirm.value.trim() !== '';
+      
+      if (tryingToChangePass) {
+        isValid &= Forms.validators.required(fields.passCurrent, 'senha atual');
+        isValid &= Forms.validators.password(fields.passNew);
+        isValid &= Forms.validators.match(fields.passConfirm, fields.passNew.value, 'Confirmação incorreta.');
+      }
 
-        addValidationListener(nomeField, validateRequired, 'nome');
-        addValidationListener(emailField, validateEmail);
-        addValidationListener(currentPasswordField, (field) => {
-            if (newPasswordField.value.trim() !== '' || confirmPasswordField.value.trim() !== '') {
-                return validateRequired(field, 'senha atual');
-            }
-            clearFieldError(field);
-            return true;
-        });
-        addValidationListener(newPasswordField, (field) => {
-            if (field.value.trim() !== '') {
-                return validatePassword(field);
-            }
-            clearFieldError(field);
-            return true;
-        });
-        addValidationListener(confirmPasswordField, (field) => {
-            if (newPasswordField.value.trim() !== '') {
-                if (field.value.trim() === '') {
-                    setFieldError(field, 'Confirme a nova senha.');
-                    return false;
-                } else if (field.value !== newPasswordField.value) {
-                    setFieldError(field, 'As senhas não coincidem.');
-                    return false;
-                }
-            }
-            clearFieldError(field);
-            return true;
-        });
+      if (!isValid) e.preventDefault();
+    });
+  };
 
-        profileEditForm.addEventListener('submit', (e) => {
-            const isNomeValid = validateRequired(nomeField, 'nome');
-            const isEmailValid = validateEmail(emailField);
-            let isPasswordSectionValid = true;
+  // Inicializa tudo quando o DOM estiver pronto
+  document.addEventListener('DOMContentLoaded', onDOMLoaded);
 
-            // A validação de senha só é necessária se o usuário digitou em qualquer um dos campos de senha
-            if (newPasswordField.value.trim() !== '' || confirmPasswordField.value.trim() !== '') {
-                const isCurrentPasswordValid = validateRequired(currentPasswordField, 'senha atual');
-                const isNewPasswordValid = validatePassword(newPasswordField);
-                const isConfirmPasswordValid = confirmPasswordField.value === newPasswordField.value;
-                if (!isConfirmPasswordValid) setFieldError(confirmPasswordField, 'As senhas não coincidem.');
-                isPasswordSectionValid = isCurrentPasswordValid && isNewPasswordValid && isConfirmPasswordValid;
-            }
-
-            if (!isNomeValid || !isEmailValid || !isPasswordSectionValid) {
-                e.preventDefault();
-            }
-        });
-    }
-});
+})();

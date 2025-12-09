@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guru's House | Smart Hub</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Google+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- DESIGN SYSTEM: MATERIAL YOU (MD3) --- */
+        :root {
+            /* Cores (Teal & Terrosos) */
+            --md-sys-color-primary: #006a6a;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-primary-container: #6ff7f6;
+            --md-sys-color-on-primary-container: #002020;
+            --md-sys-color-secondary: #4a6363;
+            --md-sys-color-on-secondary: #ffffff;
+            --md-sys-color-secondary-container: #cce8e7;
+            --md-sys-color-on-secondary-container: #051f1f;
+            --md-sys-color-tertiary: #4b607c;
+            --md-sys-color-tertiary-container: #d3e4ff;
+            
+            --md-sys-color-surface: #fafdfc;
+            --md-sys-color-on-surface: #191c1c;
+            --md-sys-color-surface-container: #eff5f4;
+            
+            --md-sys-color-outline: #6f7979;
+            --md-sys-color-outline-variant: #bec8c8;
+            
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 28px;
+            
+            --shadow-1: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-2: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] {
+            --md-sys-color-primary: #4cdada;
+            --md-sys-color-on-primary: #003737;
+            --md-sys-color-primary-container: #004f4f;
+            --md-sys-color-on-primary-container: #6ff7f6;
+            --md-sys-color-secondary: #b0ccca;
+            --md-sys-color-on-secondary: #1b3535;
+            --md-sys-color-secondary-container: #324b4b;
+            --md-sys-color-on-secondary-container: #cce8e7;
+            --md-sys-color-surface: #191c1c;
+            --md-sys-color-on-surface: #e0e3e2;
+            --md-sys-color-surface-container: #1f2323;
+            --md-sys-color-outline: #889392;
+        }
+
+        /* RESET */
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+            overflow-x: hidden;
+            padding-bottom: 80px; /* Space for FAB */
+        }
+
+        /* UTILS */
+        .flex-center { display: flex; align-items: center; justify-content: center; }
+        .gap-sm { gap: 8px; }
+        .gap-md { gap: 16px; }
+
+        /* HEADER */
+        .app-bar {
+            padding: 16px 24px;
+            background: var(--md-sys-color-surface);
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid transparent;
+        }
+        .app-bar.scrolled {
+            background: var(--md-sys-color-surface-container);
+            border-bottom-color: var(--md-sys-color-outline-variant);
+        }
+
+        .brand { font-family: 'Google Sans', sans-serif; font-size: 1.4rem; font-weight: 500; display: flex; align-items: center; gap: 10px; }
+        .header-widgets { display: flex; align-items: center; gap: 12px; }
+
+        .weather-chip {
+            background: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex; align-items: center; gap: 6px;
+            font-weight: 500;
+        }
+
+        /* MAIN GRID */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* SCENES (Horizontal Scroll) */
+        .scenes-wrapper {
+            grid-column: 1 / -1;
+            display: flex; gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+        }
+        .scene-card {
+            background: var(--md-sys-color-surface-container);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            min-width: 140px;
+            padding: 16px;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .scene-card:hover { background: var(--md-sys-color-secondary-container); border-color: transparent; }
+        .scene-card.active {
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border-color: transparent;
+        }
+        .scene-icon { font-size: 24px; }
+        .scene-name { font-weight: 500; font-size: 0.95rem; }
+
+        /* DEVICE CARDS */
+        .device-card {
+            background: var(--md-sys-color-surface-container);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            display: flex; flex-direction: column;
+            transition: 0.3s;
+        }
+        .device-card:hover { box-shadow: var(--shadow-2); transform: translateY(-2px); }
+
+        .card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .card-title { font-family: 'Google Sans', sans-serif; font-size: 1.2rem; font-weight: 500; }
+        .icon-box {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* CONTROLS */
+        .control-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .control-row:last-child { border-bottom: none; }
+        
+        /* Custom Switch */
+        .switch { position: relative; width: 52px; height: 32px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--md-sys-color-outline-variant);
+            border-radius: 34px; transition: .4s;
+            border: 2px solid var(--md-sys-color-outline);
+        }
+        .slider:before {
+            position: absolute; content: "";
+            height: 16px; width: 16px; left: 6px; bottom: 6px;
+            background-color: var(--md-sys-color-outline);
+            border-radius: 50%; transition: .4s;
+        }
+        input:checked + .slider { background-color: var(--md-sys-color-primary); border-color: var(--md-sys-color-primary); }
+        input:checked + .slider:before { transform: translateX(20px); background-color: var(--md-sys-color-on-primary); width: 20px; height: 20px; bottom: 4px; left: 4px; }
+
+        /* Range Slider */
+        input[type=range] {
+            width: 100%; height: 6px; background: var(--md-sys-color-outline-variant);
+            border-radius: 5px; -webkit-appearance: none; margin-top: 10px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 20px; width: 20px;
+            border-radius: 50%; background: var(--md-sys-color-primary);
+            cursor: pointer; box-shadow: 0 0 5px rgba(0,0,0,0.3);
+        }
+
+        /* MEDIA PLAYER */
+        .media-content { display: flex; gap: 15px; align-items: center; }
+        .album-art { width: 80px; height: 80px; border-radius: 12px; background: #333; object-fit: cover; }
+        .media-info h3 { font-size: 1.1rem; margin-bottom: 4px; }
+        .media-info p { font-size: 0.9rem; opacity: 0.8; }
+        .media-controls { display: flex; gap: 15px; margin-top: 15px; justify-content: center; }
+        .media-btn { background: none; border: none; cursor: pointer; color: var(--md-sys-color-on-surface); padding: 5px; border-radius: 50%; }
+        .media-btn:hover { background: rgba(128,128,128,0.1); }
+        .play-btn { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); width: 45px; height: 45px; }
+
+        /* ENERGY CHART */
+        .chart-container { position: relative; height: 200px; width: 100%; }
+
+        /* SIDE PANEL & FAB */
+        .fab {
+            position: fixed; bottom: 24px; right: 24px;
+            width: 56px; height: 56px;
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            border-radius: 16px; border: none; cursor: pointer;
+            box-shadow: var(--shadow-2); z-index: 200;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .mic-fab { bottom: 96px; background: var(--md-sys-color-tertiary-container); color: var(--md-sys-color-on-secondary-container); }
+
+        .drawer {
+            position: fixed; top: 0; right: -400px;
+            width: 360px; height: 100%;
+            background: var(--md-sys-color-surface);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            padding: 24px; z-index: 150;
+            transition: right 0.4s cubic-bezier(0.2, 0, 0, 1);
+            display: flex; flex-direction: column;
+        }
+        .drawer.open { right: 0; }
+        
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); opacity: 0; pointer-events: none;
+            z-index: 140; transition: opacity 0.3s;
+        }
+        .overlay.active { opacity: 1; pointer-events: all; }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: #323232; color: #fff;
+            padding: 12px 24px; border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); opacity: 0; transition: 0.4s; z-index: 300;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        @media (max-width: 600px) {
+            .drawer { width: 100%; }
+            .grid-container { padding: 10px; gap: 12px; }
+            .media-content { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="app-bar" id="header">
+        <div class="brand">
+            <span class="material-symbols-rounded" style="color: var(--md-sys-color-primary);">smart_toy</span>
+            Guru's House
+        </div>
+        <div class="header-widgets">
+            <div class="weather-chip">
+                <span class="material-symbols-rounded">partly_cloudy_day</span>
+                <span>24°C</span>
+            </div>
+            <div id="clock" style="font-weight: 500; font-variant-numeric: tabular-nums;">00:00</div>
+            <button class="media-btn" id="theme-toggle">
+                <span class="material-symbols-rounded">dark_mode</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="overlay" id="overlay"></div>
+    <div id="toast" class="toast">Comando reconhecido</div>
+
+    <main class="grid-container">
+        
+        <section class="scenes-wrapper">
+            <div class="scene-card" onclick="app.scenes.activate('morning')">
+                <span class="material-symbols-rounded scene-icon" style="color: #ff9800;">wb_sunny</span>
+                <span class="scene-name">Bom Dia</span>
+            </div>
+            <div class="scene-card" onclick="app.scenes.activate('cinema')">
+                <span class="material-symbols-rounded scene-icon" style="color: #9c27b0;">movie</span>
+                <span class="scene-name">Cinema</span>
+            </div>
+            <div class="scene-card" onclick="app.scenes.activate('work')">
+                <span class="material-symbols-rounded scene-icon" style="color: #2196f3;">work</span>
+                <span class="scene-name">Trabalho</span>
+            </div>
+            <div class="scene-card" onclick="app.scenes.activate('leave')">
+                <span class="material-symbols-rounded scene-icon" style="color: #f44336;">logout</span>
+                <span class="scene-name">Sair de Casa</span>
+            </div>
+        </section>
+
+        <article class="device-card">
+            <div class="card-head">
+                <span class="icon-box"><span class="material-symbols-rounded">chair</span></span>
+                <h2 class="card-title">Sala</h2>
+            </div>
+            <div class="control-row">
+                <span>Luz Principal</span>
+                <label class="switch"><input type="checkbox" id="sw-living-light"><span class="slider"></span></label>
+            </div>
+            <div class="control-row">
+                <span>Smart TV</span>
+                <label class="switch"><input type="checkbox" id="sw-tv"><span class="slider"></span></label>
+            </div>
+            <div style="margin-top: 10px;">
+                <span style="font-size: 0.9rem; opacity: 0.8;">Brilho: <span id="val-bright">50%</span></span>
+                <input type="range" id="rng-bright" oninput="document.getElementById('val-bright').innerText = this.value + '%'">
+            </div>
+        </article>
+
+        <article class="device-card">
+            <div class="card-head">
+                <span class="icon-box"><span class="material-symbols-rounded">kitchen</span></span>
+                <h2 class="card-title">Cozinha</h2>
+            </div>
+            <div class="control-row">
+                <span>Leds Balcão</span>
+                <label class="switch"><input type="checkbox" id="sw-kitchen-light"><span class="slider"></span></label>
+            </div>
+            <div class="control-row">
+                <span>Cafeteira</span>
+                <label class="switch"><input type="checkbox" id="sw-coffee"><span class="slider"></span></label>
+            </div>
+            <div class="control-row">
+                <span>Geladeira</span>
+                <span style="color: var(--md-sys-color-primary); font-weight: bold;">3°C</span>
+            </div>
+        </article>
+
+        <article class="device-card" style="grid-column: span 1;">
+            <div class="card-head">
+                <span class="icon-box"><span class="material-symbols-rounded">bolt</span></span>
+                <h2 class="card-title">Consumo (kWh)</h2>
+            </div>
+            <div class="chart-container">
+                <canvas id="energyChart"></canvas>
+            </div>
+        </article>
+
+        <article class="device-card">
+            <div class="card-head">
+                <span class="icon-box"><span class="material-symbols-rounded">music_note</span></span>
+                <h2 class="card-title">Som Ambiente</h2>
+            </div>
+            <div class="media-content">
+                <img src="https://picsum.photos/id/39/150/150" alt="Album Art" class="album-art">
+                <div class="media-info">
+                    <h3 id="track-name">Lo-Fi Beats</h3>
+                    <p id="artist-name">Guru's Playlist</p>
+                </div>
+            </div>
+            <div class="media-controls">
+                <button class="media-btn" onclick="app.media.prev()"><span class="material-symbols-rounded">skip_previous</span></button>
+                <button class="media-btn play-btn" onclick="app.media.toggle()" id="play-btn"><span class="material-symbols-rounded">play_arrow</span></button>
+                <button class="media-btn" onclick="app.media.next()"><span class="material-symbols-rounded">skip_next</span></button>
+            </div>
+            <input type="range" style="margin-top: 20px;" value="40">
+        </article>
+
+        <article class="device-card">
+            <div class="card-head">
+                <span class="icon-box"><span class="material-symbols-rounded">security</span></span>
+                <h2 class="card-title">Segurança</h2>
+            </div>
+            <div class="control-row">
+                <span>Trancar Portas</span>
+                <label class="switch"><input type="checkbox" checked id="sw-lock"><span class="slider"></span></label>
+            </div>
+            <div class="control-row">
+                <span>Câmeras</span>
+                <span style="background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 6px; font-size: 0.85rem;">GRAVANDO</span>
+            </div>
+        </article>
+
+    </main>
+
+    <button class="fab mic-fab" onclick="app.voice.listen()" title="Comando de Voz">
+        <span class="material-symbols-rounded">mic</span>
+    </button>
+    
+    <button class="fab" onclick="app.drawer.toggle()" title="Lista de Compras">
+        <span class="material-symbols-rounded">shopping_cart</span>
+    </button>
+
+    <aside class="drawer" id="drawer">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h2 style="font-size: 1.4rem; font-family: 'Google Sans';">Lista de Compras</h2>
+            <button class="media-btn" onclick="app.drawer.toggle()"><span class="material-symbols-rounded">close</span></button>
+        </div>
+        
+        <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+            <input type="text" id="shop-input" placeholder="Adicionar item..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid var(--md-sys-color-outline);">
+            <button onclick="app.shopping.add()" style="background: var(--md-sys-color-primary); color: white; border: none; padding: 0 16px; border-radius: 8px; cursor: pointer;">
+                <span class="material-symbols-rounded">add</span>
+            </button>
+        </div>
+
+        <div id="shop-list" style="overflow-y: auto; flex: 1;">
+            </div>
+        
+        <div style="margin-top: auto; padding: 15px; background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); border-radius: 12px; display: flex; gap: 10px;">
+            <span class="material-symbols-rounded">notifications</span>
+            <div style="font-size: 0.9rem;">
+                <strong>Sistema:</strong><br>Atualização de firmware disponível para a Câmera 02.
+            </div>
+        </div>
+    </aside>
+
+    <script>
+        class SmartHomeApp {
+            constructor() {
+                this.state = {
+                    theme: localStorage.getItem('theme') || 'light',
+                    isPlaying: false
+                };
+                
+                // Módulos
+                this.scenes = new SceneManager(this);
+                this.media = new MediaManager(this);
+                this.shopping = new ShoppingManager(this);
+                this.drawer = new DrawerManager();
+                this.voice = new VoiceManager(this);
+                
+                this.init();
+            }
+
+            init() {
+                this.applyTheme(this.state.theme);
+                this.setupClock();
+                this.initChart();
+                
+                // Theme Toggle
+                document.getElementById('theme-toggle').addEventListener('click', () => {
+                    this.state.theme = this.state.theme === 'light' ? 'dark' : 'light';
+                    localStorage.setItem('theme', this.state.theme);
+                    this.applyTheme(this.state.theme);
+                });
+            }
+
+            applyTheme(theme) {
+                document.body.setAttribute('data-theme', theme);
+                document.getElementById('theme-toggle').querySelector('span').textContent = 
+                    theme === 'light' ? 'dark_mode' : 'light_mode';
+                // Atualizar cor do gráfico se necessário
+            }
+
+            setupClock() {
+                const update = () => {
+                    const now = new Date();
+                    document.getElementById('clock').textContent = now.toLocaleTimeString('pt-PT', {hour: '2-digit', minute:'2-digit'});
+                };
+                update();
+                setInterval(update, 1000);
+            }
+
+            initChart() {
+                const ctx = document.getElementById('energyChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['08h', '10h', '12h', '14h', '16h', '18h'],
+                        datasets: [{
+                            label: 'Consumo (kWh)',
+                            data: [1.2, 0.8, 2.5, 1.1, 1.4, 3.2],
+                            borderColor: '#006a6a',
+                            backgroundColor: 'rgba(0, 106, 106, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { display: false },
+                            y: { display: false }
+                        }
+                    }
+                });
+            }
+
+            toast(msg) {
+                const el = document.getElementById('toast');
+                el.textContent = msg;
+                el.classList.add('show');
+                setTimeout(() => el.classList.remove('show'), 3000);
+            }
+        }
+
+        /* --- SUB-MODULES --- */
+
+        class SceneManager {
+            constructor(app) { this.app = app; }
+
+            activate(scene) {
+                // Reset Visuals
+                document.querySelectorAll('.scene-card').forEach(c => c.classList.remove('active'));
+                
+                const elements = {
+                    livingLight: document.getElementById('sw-living-light'),
+                    tv: document.getElementById('sw-tv'),
+                    kitchenLight: document.getElementById('sw-kitchen-light'),
+                    coffee: document.getElementById('sw-coffee'),
+                    lock: document.getElementById('sw-lock')
+                };
+
+                switch(scene) {
+                    case 'morning':
+                        this.set(elements, { livingLight: true, tv: false, coffee: true, kitchenLight: true, lock: false });
+                        this.app.toast('Cena "Bom Dia" ativada');
+                        break;
+                    case 'cinema':
+                        this.set(elements, { livingLight: false, tv: true, coffee: false, kitchenLight: false, lock: true });
+                        this.app.toast('Modo Cinema: Luzes reduzidas');
+                        break;
+                    case 'work':
+                        this.set(elements, { livingLight: true, tv: false, coffee: true, kitchenLight: false });
+                        this.app.toast('Modo Foco ativado');
+                        break;
+                    case 'leave':
+                        this.set(elements, { livingLight: false, tv: false, kitchenLight: false, coffee: false, lock: true });
+                        this.app.toast('Casa em modo seguro');
+                        break;
+                }
+            }
+
+            set(els, states) {
+                for (const [key, val] of Object.entries(states)) {
+                    if(els[key]) els[key].checked = val;
+                }
+            }
+        }
+
+        class MediaManager {
+            constructor(app) { 
+                this.app = app;
+                this.tracks = [
+                    { t: "Lo-Fi Beats", a: "Guru's Playlist" },
+                    { t: "Jazz Vibes", a: "Evening Chill" },
+                    { t: "Synthwave", a: "Neon Nights" }
+                ];
+                this.idx = 0;
+            }
+
+            toggle() {
+                this.app.state.isPlaying = !this.app.state.isPlaying;
+                const icon = document.getElementById('play-btn').querySelector('span');
+                icon.textContent = this.app.state.isPlaying ? 'pause' : 'play_arrow';
+            }
+
+            next() {
+                this.idx = (this.idx + 1) % this.tracks.length;
+                this.updateUI();
+            }
+            
+            prev() {
+                this.idx = (this.idx - 1 + this.tracks.length) % this.tracks.length;
+                this.updateUI();
+            }
+
+            updateUI() {
+                document.getElementById('track-name').textContent = this.tracks[this.idx].t;
+                document.getElementById('artist-name').textContent = this.tracks[this.idx].a;
+            }
+        }
+
+        class ShoppingManager {
+            constructor(app) {
+                this.app = app;
+                this.listEl = document.getElementById('shop-list');
+                this.input = document.getElementById('shop-input');
+                this.load();
+                
+                this.input.addEventListener('keypress', (e) => { if(e.key === 'Enter') this.add(); });
+            }
+
+            add() {
+                const val = this.input.value.trim();
+                if(!val) return;
+                this.render(val);
+                this.save();
+                this.input.value = '';
+            }
+
+            render(val) {
+                const div = document.createElement('div');
+                div.style.cssText = 'display:flex; justify-content:space-between; padding:10px; background:var(--md-sys-color-surface-container); margin-bottom:5px; border-radius:8px; align-items:center;';
+                div.innerHTML = `<span>${val}</span> <button style="border:none; background:none; color:red; cursor:pointer;"><span class="material-symbols-rounded">delete</span></button>`;
+                div.querySelector('button').onclick = () => { div.remove(); this.save(); };
+                this.listEl.appendChild(div);
+            }
+
+            save() {
+                const items = Array.from(this.listEl.querySelectorAll('span')).map(s => s.textContent).filter(t => t !== 'delete');
+                localStorage.setItem('shoplist', JSON.stringify(items));
+            }
+
+            load() {
+                const items = JSON.parse(localStorage.getItem('shoplist')) || ['Leite', 'Café Premium'];
+                items.forEach(i => this.render(i));
+            }
+        }
+
+        class DrawerManager {
+            constructor() {
+                this.el = document.getElementById('drawer');
+                this.overlay = document.getElementById('overlay');
+                this.overlay.onclick = () => this.toggle();
+            }
+            toggle() {
+                this.el.classList.toggle('open');
+                this.overlay.classList.toggle('active');
+            }
+        }
+
+        class VoiceManager {
+            constructor(app) { this.app = app; }
+            listen() {
+                this.app.toast('Ouvindo... (Diga "Acender Luz")');
+                setTimeout(() => {
+                    this.app.toast('Comando "Luzes Sala" Executado');
+                    document.getElementById('sw-living-light').checked = !document.getElementById('sw-living-light').checked;
+                }, 2000);
+            }
+        }
+
+        // START APP
+        document.addEventListener('DOMContentLoaded', () => {
+            window.app = new SmartHomeApp();
+            
+            // Scroll Effect
+            window.addEventListener('scroll', () => {
+                const header = document.getElementById('header');
+                if(window.scrollY > 10) header.classList.add('scrolled');
+                else header.classList.remove('scrolled');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guru's Health | Care Center</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0..1,0" />
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* =========================================
+           1. DESIGN TOKENS (MATERIAL YOU - MD3)
+           ========================================= */
+        :root {
+            /* Cores (Teal & Coral Theme) */
+            --md-sys-color-primary: #006a6a;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-primary-container: #9cf1f1;
+            --md-sys-color-on-primary-container: #002020;
+            
+            --md-sys-color-secondary: #4a6363;
+            --md-sys-color-secondary-container: #cce8e7;
+            --md-sys-color-on-secondary-container: #051f1f;
+            
+            --md-sys-color-tertiary: #ba1a1a; /* Emergency Red */
+            --md-sys-color-tertiary-container: #ffdad6;
+            --md-sys-color-on-tertiary-container: #410002;
+
+            --md-sys-color-surface: #fafdfc;
+            --md-sys-color-surface-container: #eff5f4;
+            --md-sys-color-surface-container-high: #e9efee;
+            --md-sys-color-on-surface: #191c1c;
+            --md-sys-color-outline: #6f7979;
+            --md-sys-color-outline-variant: #bec8c8;
+
+            /* Tipografia */
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+
+            /* Efeitos */
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 16px rgba(0,0,0,0.1);
+            --radius-md: 16px;
+            --radius-lg: 28px;
+            --radius-full: 9999px;
+        }
+
+        [data-theme="dark"] {
+            --md-sys-color-primary: #80d5d4;
+            --md-sys-color-on-primary: #003737;
+            --md-sys-color-primary-container: #004f4f;
+            --md-sys-color-on-primary-container: #9cf1f1;
+            
+            --md-sys-color-secondary: #b0ccca;
+            --md-sys-color-secondary-container: #324b4b;
+            --md-sys-color-on-secondary-container: #cce8e7;
+
+            --md-sys-color-tertiary: #ffb4ab;
+            --md-sys-color-tertiary-container: #93000a;
+            --md-sys-color-on-tertiary-container: #ffdad6;
+            
+            --md-sys-color-surface: #101414;
+            --md-sys-color-surface-container: #1d2121;
+            --md-sys-color-surface-container-high: #282b2b;
+            --md-sys-color-on-surface: #e0e3e2;
+            --md-sys-color-outline: #889392;
+            --md-sys-color-outline-variant: #3f4948;
+        }
+
+        /* RESET */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            font-family: var(--font-body);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* --- LAYOUT --- */
+        .app-container {
+            display: flex;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* SIDEBAR (Rail) */
+        .nav-rail {
+            width: 80px;
+            background: var(--md-sys-color-surface-container);
+            border-right: 1px solid var(--md-sys-color-outline-variant);
+            display: flex; flex-direction: column; align-items: center;
+            padding: 24px 0;
+            z-index: 10;
+        }
+        
+        .nav-logo {
+            font-size: 24px;
+            color: var(--md-sys-color-primary);
+            margin-bottom: 40px;
+            width: 48px; height: 48px;
+            background: var(--md-sys-color-primary-container);
+            border-radius: 16px;
+            display: grid; place-items: center;
+        }
+
+        .nav-item {
+            width: 56px; height: 56px;
+            border-radius: 28px;
+            display: grid; place-items: center;
+            color: var(--md-sys-color-on-surface);
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: 0.2s cubic-bezier(0.2, 0, 0, 1);
+            position: relative;
+        }
+        .nav-item span { font-size: 24px; pointer-events: none; }
+        .nav-item.active {
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+        .nav-item.active span { font-variation-settings: 'FILL' 1; }
+        
+        /* Tooltips */
+        .nav-tooltip {
+            position: absolute; left: 70px; 
+            background: var(--md-sys-color-on-surface); color: var(--md-sys-color-surface);
+            padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; pointer-events: none;
+            opacity: 0; transform: translateX(-10px); transition: 0.2s; white-space: nowrap; z-index: 20;
+        }
+        .nav-item:hover .nav-tooltip { opacity: 1; transform: translateX(0); }
+
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            padding: 0;
+            overflow-y: auto;
+            position: relative;
+            scroll-behavior: smooth;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            padding: 24px 32px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.01);
+            backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 5;
+        }
+        .page-title h1 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; }
+        .page-title p { font-size: 0.9rem; color: var(--md-sys-color-outline); }
+
+        .profile-actions { display: flex; gap: 16px; align-items: center; }
+        .btn-icon { background: var(--md-sys-color-surface-container-high); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--md-sys-color-on-surface); display: grid; place-items: center; transition: 0.2s; }
+        .btn-icon:hover { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
+
+        /* VIEWS */
+        .view-section {
+            display: none;
+            padding: 0 32px 32px 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: fadeIn 0.4s ease-out;
+        }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* GRID & CARDS */
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+        }
+        
+        .md-card {
+            background: var(--md-sys-color-surface-container);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            position: relative;
+            transition: box-shadow 0.2s;
+            border: 1px solid transparent;
+        }
+        .md-card:hover { box-shadow: var(--shadow-md); border-color: var(--md-sys-color-outline-variant); }
+
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .card-title { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .card-icon-bg { width: 40px; height: 40px; border-radius: 12px; background: var(--md-sys-color-surface-container-high); display: grid; place-items: center; color: var(--md-sys-color-primary); }
+
+        /* Vitals Component */
+        .vital-num { font-size: 3.5rem; font-family: var(--font-display); font-weight: 700; color: var(--md-sys-color-on-surface); line-height: 1; }
+        .vital-unit { font-size: 1rem; color: var(--md-sys-color-outline); font-weight: 500; }
+        .vital-trend { font-size: 0.85rem; padding: 4px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px; margin-top: 10px; }
+        .vital-trend.up { background: #e6f4ea; color: #137333; }
+        [data-theme="dark"] .vital-trend.up { background: #0f5223; color: #a8dab5; }
+        
+        /* Water Ring */
+        .hydro-ring { width: 140px; height: 140px; border-radius: 50%; background: conic-gradient(var(--md-sys-color-primary) var(--p, 50%), var(--md-sys-color-surface-container-high) 0%); margin: 0 auto; position: relative; display: grid; place-items: center; }
+        .hydro-inner { width: 110px; height: 110px; background: var(--md-sys-color-surface-container); border-radius: 50%; position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        /* Appointments */
+        .appointment-item {
+            display: flex; align-items: center; gap: 16px; padding: 16px;
+            background: var(--md-sys-color-surface); border-radius: var(--radius-md);
+            margin-bottom: 12px; border: 1px solid var(--md-sys-color-outline-variant);
+        }
+        .date-box { 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            width: 50px; height: 50px; background: var(--md-sys-color-primary-container); 
+            color: var(--md-sys-color-on-primary-container); border-radius: 12px; font-weight: 700; font-size: 0.8rem;
+        }
+        .date-box span { font-size: 1.1rem; line-height: 1; }
+
+        /* Video Modal */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000;
+            display: grid; place-items: center; opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .video-modal {
+            width: 90%; max-width: 900px; aspect-ratio: 16/9; background: #000;
+            border-radius: 24px; position: relative; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .video-feed { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+        .video-controls {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 16px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+            padding: 12px 24px; border-radius: 40px;
+        }
+        .video-btn {
+            width: 50px; height: 50px; border-radius: 50%; border: none;
+            background: rgba(255,255,255,0.2); color: white; cursor: pointer; display: grid; place-items: center;
+            transition: 0.2s;
+        }
+        .video-btn:hover { background: rgba(255,255,255,0.4); }
+        .video-btn.hangup { background: var(--md-sys-color-tertiary); }
+
+        /* FAB */
+        .fab {
+            position: fixed; bottom: 32px; right: 32px;
+            padding: 16px 24px; border-radius: 16px;
+            background: var(--md-sys-color-tertiary);
+            color: var(--md-sys-color-on-primary);
+            box-shadow: var(--shadow-lg);
+            border: none; cursor: pointer;
+            display: flex; align-items: center; gap: 12px;
+            font-family: var(--font-display); font-weight: 600;
+            transition: transform 0.2s; z-index: 50;
+        }
+        .fab:hover { transform: translateY(-4px); box-shadow: 0 12px 20px rgba(0,0,0,0.2); }
+
+        /* Input */
+        .input-group { margin-bottom: 20px; }
+        .md-input {
+            width: 100%; padding: 16px; background: var(--md-sys-color-surface-container-high);
+            border: 1px solid transparent; border-radius: 8px; border-bottom: 2px solid var(--md-sys-color-outline);
+            color: var(--md-sys-color-on-surface); font-family: var(--font-body); outline: none; transition: 0.2s;
+        }
+        .md-input:focus { background: var(--md-sys-color-surface-container); border-bottom-color: var(--md-sys-color-primary); }
+        .md-btn {
+            height: 54px; width: 100%; border-radius: 8px; 
+            background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); 
+            border: none; font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .md-btn:hover { opacity: 0.9; }
+
+        /* Toast */
+        #toast {
+            position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: #1a1a1a; color: #fff; padding: 12px 24px; border-radius: 50px;
+            box-shadow: var(--shadow-lg); z-index: 2000; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; align-items: center; gap: 10px;
+        }
+        #toast.visible { transform: translateX(-50%) translateY(0); }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .app-container { flex-direction: column; }
+            .nav-rail { 
+                width: 100%; height: 70px; flex-direction: row; justify-content: space-around; 
+                padding: 0; order: 2; border-right: none; border-top: 1px solid var(--md-sys-color-outline-variant);
+                position: fixed; bottom: 0;
+            }
+            .nav-logo, .nav-tooltip { display: none; }
+            .nav-item { margin-bottom: 0; }
+            .main-content { padding-bottom: 80px; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .fab { bottom: 90px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <nav class="nav-rail">
+            <div class="nav-logo">
+                <span class="material-symbols-rounded">medical_services</span>
+            </div>
+            
+            <div class="nav-item active" id="nav-dashboard" title="Painel">
+                <span class="material-symbols-rounded">grid_view</span>
+                <div class="nav-tooltip">Painel</div>
+            </div>
+            <div class="nav-item" id="nav-appointments" title="Consultas">
+                <span class="material-symbols-rounded">calendar_month</span>
+                <div class="nav-tooltip">Consultas</div>
+            </div>
+            <div class="nav-item" id="nav-records" title="Histórico">
+                <span class="material-symbols-rounded">history_edu</span>
+                <div class="nav-tooltip">Histórico</div>
+            </div>
+            
+            <div class="nav-item" id="nav-theme" title="Tema" style="margin-top: auto;">
+                <span class="material-symbols-rounded" id="theme-icon">dark_mode</span>
+                <div class="nav-tooltip">Tema</div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            
+            <header class="top-bar">
+                <div class="page-title">
+                    <h1 id="page-title-text">Visão Geral</h1>
+                    <p id="page-date">Carregando data...</p>
+                </div>
+                <div class="profile-actions">
+                    <button class="btn-icon" id="btn-notif" title="Notificações"><span class="material-symbols-rounded">notifications</span></button>
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--md-sys-color-primary); display: grid; place-items: center; color: white; font-weight: bold;">P1</div>
+                </div>
+            </header>
+
+            <section id="view-dashboard" class="view-section active">
+                <div class="dashboard-grid">
+                    
+                    <div style="grid-column: span 12; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+                        
+                        <div class="md-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <div class="card-icon-bg"><span class="material-symbols-rounded">ecg_heart</span></div>
+                                    Batimentos
+                                </div>
+                                <span class="material-symbols-rounded" style="color:var(--md-sys-color-primary);">more_horiz</span>
+                            </div>
+                            <div style="display: flex; align-items: flex-end; gap: 8px;">
+                                <span class="vital-num" id="bpm-display">72</span>
+                                <span class="vital-unit">BPM</span>
+                            </div>
+                            <div class="vital-trend up">
+                                <span class="material-symbols-rounded" style="font-size:16px;">trending_flat</span> Normal
+                            </div>
+                            <div style="height: 100px; margin-top: 15px;">
+                                <canvas id="chartBPM"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="md-card" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                            <div class="card-header" style="width: 100%;">
+                                <div class="card-title">
+                                    <div class="card-icon-bg" style="color:#00a8ff;"><span class="material-symbols-rounded">water_drop</span></div>
+                                    Hidratação
+                                </div>
+                            </div>
+                            <div class="hydro-ring" id="water-ring" style="--p: 50%;">
+                                <div class="hydro-inner">
+                                    <span style="font-weight: 700; font-size: 1.5rem;" id="water-val">1250</span>
+                                    <span style="font-size: 0.8rem; color: var(--md-sys-color-outline);">ml</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                                <button class="btn-icon" id="btn-water-minus" style="background:var(--md-sys-color-surface-container-high);"><span class="material-symbols-rounded">remove</span></button>
+                                <button class="btn-icon" id="btn-water-plus" style="background:var(--md-sys-color-primary); color:white;"><span class="material-symbols-rounded">add</span></button>
+                            </div>
+                        </div>
+
+                        <div class="md-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <div class="card-icon-bg" style="color:#e67e22;"><span class="material-symbols-rounded">medication</span></div>
+                                    Medicação
+                                </div>
+                            </div>
+                            <div id="med-list">
+                                </div>
+                        </div>
+                    </div>
+
+                    <div style="grid-column: span 12;">
+                        <div class="md-card" style="background: linear-gradient(135deg, var(--md-sys-color-primary), var(--md-sys-color-secondary)); color: white;">
+                            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;">
+                                <div>
+                                    <h2 style="font-family: var(--font-display); margin-bottom: 8px;">Falar com Especialista</h2>
+                                    <p style="opacity: 0.9;">Dr. Silva está disponível para teleconsulta.</p>
+                                </div>
+                                <button id="btn-telemed" style="background: white; color: var(--md-sys-color-primary); border: none; padding: 12px 24px; border-radius: 20px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                                    <span class="material-symbols-rounded">videocam</span> Iniciar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-appointments" class="view-section">
+                <div class="dashboard-grid">
+                    <div class="md-card" style="grid-column: span 12;">
+                        <div class="card-header">
+                            <div class="card-title">Agendar Nova Consulta</div>
+                        </div>
+                        <form id="appointment-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                            <div class="input-group" style="margin:0;">
+                                <input type="text" class="md-input" id="input-specialty" placeholder="Especialidade (ex: Cardiologista)" required>
+                            </div>
+                            <div class="input-group" style="margin:0;">
+                                <input type="date" class="md-input" id="input-date" required>
+                            </div>
+                            <button type="submit" class="md-btn">Buscar Horários</button>
+                        </form>
+                    </div>
+
+                    <div style="grid-column: span 12;" id="appointments-list">
+                        <h3 style="margin-bottom: 16px;">Próximas Consultas</h3>
+                        <div class="appointment-item">
+                            <div class="date-box"><span>12</span>OUT</div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; font-size: 1.1rem;">Cardiologista</div>
+                                <div style="color: var(--md-sys-color-outline);">Dr. Roberto Santos • 14:00</div>
+                            </div>
+                            <button class="btn-icon"><span class="material-symbols-rounded">more_vert</span></button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-records" class="view-section">
+                <div class="md-card" style="text-align: center; padding: 60px;">
+                    <span class="material-symbols-rounded" style="font-size: 64px; color: var(--md-sys-color-outline-variant);">folder_off</span>
+                    <h2 style="margin-top: 20px;">Nenhum exame recente</h2>
+                    <p style="color: var(--md-sys-color-outline);">Seus resultados de exames aparecerão aqui.</p>
+                </div>
+            </section>
+        </main>
+
+        <button id="btn-sos" class="fab">
+            <span class="material-symbols-rounded">emergency</span>
+            SOS
+        </button>
+    </div>
+
+    <div class="modal-overlay" id="video-modal">
+        <div class="video-modal">
+            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" class="video-feed" alt="Doctor">
+            <div style="position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.6); color: white; padding: 8px 16px; border-radius: 20px; display: flex; align-items: center; gap: 8px;">
+                <div style="width: 10px; height: 10px; background: #ff0000; border-radius: 50%; animation: blink 1s infinite;"></div>
+                Ao Vivo
+            </div>
+            <div class="video-controls">
+                <button class="video-btn"><span class="material-symbols-rounded">mic</span></button>
+                <button class="video-btn"><span class="material-symbols-rounded">videocam</span></button>
+                <button class="video-btn hangup" id="btn-hangup"><span class="material-symbols-rounded">call_end</span></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast">
+        <span class="material-symbols-rounded">info</span>
+        <span id="toast-msg">Mensagem</span>
+    </div>
+
+    <script>
+        class GuruHealthApp {
+            constructor() {
+                // Estado da Aplicação
+                this.state = {
+                    theme: 'light',
+                    bpm: 72,
+                    water: 1250,
+                    waterTarget: 2500,
+                    meds: [
+                        { id: 1, name: 'Vitamina D', time: '08:00', taken: true },
+                        { id: 2, name: 'Ômega 3', time: '13:00', taken: false }
+                    ]
+                };
+
+                // Elementos DOM
+                this.dom = {
+                    views: {
+                        dashboard: document.getElementById('view-dashboard'),
+                        appointments: document.getElementById('view-appointments'),
+                        records: document.getElementById('view-records')
+                    },
+                    navs: {
+                        dashboard: document.getElementById('nav-dashboard'),
+                        appointments: document.getElementById('nav-appointments'),
+                        records: document.getElementById('nav-records'),
+                        theme: document.getElementById('nav-theme')
+                    },
+                    waterVal: document.getElementById('water-val'),
+                    waterRing: document.getElementById('water-ring'),
+                    bpmDisplay: document.getElementById('bpm-display'),
+                    medList: document.getElementById('med-list'),
+                    videoModal: document.getElementById('video-modal'),
+                    toast: document.getElementById('toast'),
+                    toastMsg: document.getElementById('toast-msg')
+                };
+
+                this.chart = null;
+                this.init();
+            }
+
+            init() {
+                this.setupNavigation();
+                this.setupButtons();
+                this.setupDate();
+                this.renderMeds();
+                this.initChart();
+                this.startSimulation();
+            }
+
+            // --- CONFIGURAÇÃO DE EVENTOS ---
+            setupNavigation() {
+                // Navegação
+                this.dom.navs.dashboard.addEventListener('click', () => this.switchView('dashboard'));
+                this.dom.navs.appointments.addEventListener('click', () => this.switchView('appointments'));
+                this.dom.navs.records.addEventListener('click', () => this.switchView('records'));
+                
+                // Tema
+                this.dom.navs.theme.addEventListener('click', () => this.toggleTheme());
+            }
+
+            setupButtons() {
+                // Água
+                document.getElementById('btn-water-plus').addEventListener('click', () => this.updateWater(250));
+                document.getElementById('btn-water-minus').addEventListener('click', () => this.updateWater(-250));
+
+                // Vídeo
+                document.getElementById('btn-telemed').addEventListener('click', () => this.toggleVideo(true));
+                document.getElementById('btn-hangup').addEventListener('click', () => this.toggleVideo(false));
+
+                // SOS
+                document.getElementById('btn-sos').addEventListener('click', () => {
+                    this.showToast('🚨 SOS Acionado! Contatando emergência...');
+                    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                });
+
+                // Notificação
+                document.getElementById('btn-notif').addEventListener('click', () => this.showToast('Você não tem novas notificações.'));
+
+                // Formulário de Agendamento
+                document.getElementById('appointment-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const spec = document.getElementById('input-specialty').value;
+                    const date = document.getElementById('input-date').value;
+                    
+                    if(spec && date) {
+                        this.addAppointment(spec, date);
+                        this.showToast('✅ Busca realizada com sucesso!');
+                    }
+                });
+            }
+
+            // --- LÓGICA DE INTERFACE ---
+            switchView(viewName) {
+                // Ocultar todas as views
+                Object.values(this.dom.views).forEach(el => el.classList.remove('active'));
+                // Desativar todos navs
+                Object.values(this.dom.navs).forEach(el => { if(el.id !== 'nav-theme') el.classList.remove('active'); });
+
+                // Ativar selecionado
+                this.dom.views[viewName].classList.add('active');
+                this.dom.navs[viewName].classList.add('active');
+
+                // Atualizar título
+                const titles = { 'dashboard': 'Visão Geral', 'appointments': 'Consultas', 'records': 'Histórico' };
+                document.getElementById('page-title-text').textContent = titles[viewName];
+            }
+
+            toggleTheme() {
+                this.state.theme = this.state.theme === 'light' ? 'dark' : 'light';
+                document.body.setAttribute('data-theme', this.state.theme);
+                document.getElementById('theme-icon').textContent = this.state.theme === 'light' ? 'dark_mode' : 'light_mode';
+            }
+
+            showToast(msg) {
+                this.dom.toastMsg.textContent = msg;
+                this.dom.toast.classList.add('visible');
+                setTimeout(() => this.dom.toast.classList.remove('visible'), 3000);
+            }
+
+            // --- FUNCIONALIDADES ---
+            updateWater(amount) {
+                this.state.water = Math.max(0, this.state.water + amount);
+                this.dom.waterVal.textContent = this.state.water;
+                
+                const percent = (this.state.water / this.state.waterTarget) * 100;
+                this.dom.waterRing.style.setProperty('--p', `${Math.min(percent, 100)}%`);
+                
+                if (amount > 0) this.showToast(`Hidratação registrada: +${amount}ml`);
+            }
+
+            toggleVideo(open) {
+                if(open) {
+                    this.dom.videoModal.classList.add('active');
+                    this.showToast('Conectando ao médico...');
+                } else {
+                    this.dom.videoModal.classList.remove('active');
+                    this.showToast('Chamada finalizada.');
+                }
+            }
+
+            renderMeds() {
+                this.dom.medList.innerHTML = '';
+                this.state.meds.forEach(med => {
+                    const item = document.createElement('div');
+                    item.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--md-sys-color-outline-variant); cursor: pointer;';
+                    item.innerHTML = `
+                        <div style="width: 24px; height: 24px; border-radius: 50%; border: 2px solid ${med.taken ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-outline)'}; background: ${med.taken ? 'var(--md-sys-color-primary)' : 'transparent'}; display: grid; place-items: center;">
+                            ${med.taken ? '<span class="material-symbols-rounded" style="font-size: 16px; color: white;">check</span>' : ''}
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; ${med.taken ? 'text-decoration: line-through; opacity: 0.5;' : ''}">${med.name}</div>
+                            <div style="font-size: 0.8rem; color: var(--md-sys-color-outline);">${med.time}</div>
+                        </div>
+                    `;
+                    item.addEventListener('click', () => this.toggleMed(med.id));
+                    this.dom.medList.appendChild(item);
+                });
+            }
+
+            toggleMed(id) {
+                const med = this.state.meds.find(m => m.id === id);
+                if(med) {
+                    med.taken = !med.taken;
+                    this.renderMeds();
+                    if(med.taken) this.showToast(`${med.name} marcado como tomado.`);
+                }
+            }
+
+            addAppointment(specialty, dateStr) {
+                const list = document.getElementById('appointments-list');
+                const dateObj = new Date(dateStr);
+                const day = dateObj.getDate() || '??';
+                const month = dateObj.toLocaleString('pt-BR', { month: 'short' }).toUpperCase();
+                
+                const div = document.createElement('div');
+                div.className = 'appointment-item';
+                div.style.animation = 'fadeIn 0.5s';
+                div.innerHTML = `
+                    <div class="date-box" style="background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container);"><span>${day}</span>${month}</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; font-size: 1.1rem;">${specialty}</div>
+                        <div style="color: var(--md-sys-color-outline);">Agendado • 10:00</div>
+                    </div>
+                    <button class="btn-icon"><span class="material-symbols-rounded">more_vert</span></button>
+                `;
+                list.appendChild(div);
+            }
+
+            setupDate() {
+                const date = new Date();
+                const opt = { weekday: 'long', day: 'numeric', month: 'long' };
+                document.getElementById('page-date').textContent = date.toLocaleDateString('pt-BR', opt);
+            }
+
+            // --- GRÁFICOS & SIMULAÇÃO ---
+            initChart() {
+                const ctx = document.getElementById('chartBPM');
+                if(!ctx) return;
+
+                const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 100);
+                gradient.addColorStop(0, 'rgba(0, 106, 106, 0.2)');
+                gradient.addColorStop(1, 'rgba(0, 106, 106, 0)');
+
+                this.chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: Array(20).fill(''),
+                        datasets: [{
+                            data: Array(20).fill(72),
+                            borderColor: '#006a6a',
+                            borderWidth: 2,
+                            backgroundColor: gradient,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { x: { display: false }, y: { display: false, min: 50, max: 110 } },
+                        animation: { duration: 0 }
+                    }
+                });
+            }
+
+            startSimulation() {
+                setInterval(() => {
+                    const variation = Math.floor(Math.random() * 5) - 2;
+                    this.state.bpm = Math.max(60, Math.min(100, this.state.bpm + variation));
+                    this.dom.bpmDisplay.textContent = this.state.bpm;
+
+                    if(this.chart) {
+                        const data = this.chart.data.datasets[0].data;
+                        data.shift();
+                        data.push(this.state.bpm);
+                        this.chart.update();
+                    }
+                }, 2000);
+            }
+        }
+
+        // Animação de Blink para o modal
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes blink { 50% { opacity: 0; } }`;
+        document.head.appendChild(style);
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            window.app = new GuruHealthApp();
+        });
+    </script>
+</body>
+</html>

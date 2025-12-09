@@ -1,32 +1,32 @@
 /* ==========================================================================
-   ARQUIVO: styles.refactor.css
-   DESCRIÇÃO: Folha de estilos principal refatorada e corrigida.
+   ARQUIVO: style.css
+   DESCRIÇÃO: Folha de estilos principal (Design System).
    METODOLOGIA: ITCSS (Inverted Triangle CSS) + BEM
    ========================================================================== */
 
 /* ==========================================================================
-   1. SETTINGS: Tokens e Variáveis
+   1. SETTINGS: Tokens, Variáveis e Imports
    ========================================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 :root {
-  /* --- 1.1 Paleta de Cores Primitivas (Raw Colors) --- */
+  /* --- 1.1 Cores Primitivas (Paleta Base) --- */
+  --color-primary-100: #dbeafe;
   --color-primary-500: #2563eb;
   --color-primary-600: #1d4ed8;
-  --color-primary-100: #dbeafe;
-  
+
   --color-success-500: #16a34a;
   --color-warning-500: #f59e0b;
-  --color-error-500:   #dc2626;
   --color-error-100:   #fee2e2;
+  --color-error-500:   #dc2626;
 
-  --color-neutral-900: #18181b; /* Quase preto */
-  --color-neutral-800: #27272a;
-  --color-neutral-700: #3f3f46;
-  --color-neutral-500: #71717a;
-  --color-neutral-200: #e4e4e7; /* Cinza claro */
-  --color-neutral-100: #f4f4f5; /* Fundo claro */
   --color-neutral-0:   #ffffff;
+  --color-neutral-100: #f4f4f5;
+  --color-neutral-200: #e4e4e7;
+  --color-neutral-500: #71717a;
+  --color-neutral-700: #3f3f46;
+  --color-neutral-800: #27272a;
+  --color-neutral-900: #18181b;
 
   /* Cores de Temas (Setores) */
   --theme-saude:     #06b6d4;
@@ -36,12 +36,12 @@
   --theme-lazer:     #ec4899;
   --theme-economia:  #10b981;
 
-  /* --- 1.2 Variáveis Semânticas (Light Mode Padrão) --- */
+  /* --- 1.2 Variáveis Semânticas (Light Mode) --- */
   --bg-body:        var(--color-neutral-0);
   --bg-section:     var(--color-neutral-100);
   --bg-card:        var(--color-neutral-0);
   --bg-input:       var(--color-neutral-0);
-  --bg-overlay:     rgba(0,0,0,0.45);
+  --bg-overlay:     rgba(0, 0, 0, 0.45);
   
   --text-main:      var(--color-neutral-700);
   --text-heading:   var(--color-neutral-900);
@@ -52,12 +52,13 @@
   --border-color:   var(--color-neutral-200);
   --border-focus:   var(--color-primary-100);
 
+  /* Sombras */
   --shadow-sm:      0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md:      0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --shadow-lg:      0 10px 15px -3px rgba(0, 0, 0, 0.1);
   --shadow-card:    0 10px 30px -5px rgba(0, 0, 0, 0.1);
 
-  /* --- 1.3 Tipografia e Espaçamento --- */
+  /* --- 1.3 Tipografia, Espaçamento e Layout --- */
   --font-base:      'Inter', system-ui, sans-serif;
   --font-mono:      'Courier New', monospace;
   
@@ -71,32 +72,41 @@
 
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
+  --radius-xl: 1.5rem; /* 24px - Usado nos botões Android */
   
   --transition: 200ms ease-in-out;
+
+  /* --- 1.4 Camadas (Z-Index) --- */
+  --z-back: -1;
+  --z-normal: 1;
+  --z-sticky: 10;
+  --z-fixed: 50;  /* Overlay */
+  --z-modal: 60;  /* Hamburger/Menu */
+  --z-popover: 70; /* Nav content */
 }
 
 /* ==========================================================================
-   2. THEME: Dark Mode (Correção Completa)
+   2. THEME: Dark Mode Configuration
    ========================================================================== */
 html[data-theme='dark'] {
-  color-scheme: dark; /* Ajusta scrollbars e inputs nativos do navegador */
+  color-scheme: dark;
 
   /* Redefinição Semântica */
-  --bg-body:        #121212; /* Preto suave */
-  --bg-section:     #18181b; /* Cinza muito escuro */
-  --bg-card:        #27272a; /* Superfície elevada */
+  --bg-body:        #121212;
+  --bg-section:     #18181b;
+  --bg-card:        #27272a;
   --bg-input:       #27272a;
   
-  --text-main:      #d4d4d8; /* Cinza claro */
-  --text-heading:   #f4f4f5; /* Branco suave */
+  --text-main:      #d4d4d8;
+  --text-heading:   #f4f4f5;
   --text-muted:     #a1a1aa;
-  --text-inverse:   #18181b; /* Texto escuro para fundos claros */
+  --text-inverse:   #18181b;
   --text-link:      var(--color-primary-100); 
 
   --border-color:   #3f3f46;
   --border-focus:   var(--color-primary-600);
 
-  /* Sombras adaptadas para brilho/profundidade no escuro */
+  /* Sombras (Mais sutis ou baseadas em brilho) */
   --shadow-sm:      0 1px 2px 0 rgba(0, 0, 0, 0.3);
   --shadow-card:    0 4px 20px -5px rgba(0, 0, 0, 0.5); 
 }
@@ -120,6 +130,7 @@ body {
   font-family: var(--font-base);
   line-height: 1.6;
   transition: background-color var(--transition), color var(--transition);
+  -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, h4 {
@@ -127,7 +138,6 @@ h1, h2, h3, h4 {
   font-weight: 700;
   line-height: 1.2;
 }
-/* Tamanhos restaurados */
 h1 { font-size: 1.875rem; }
 h2 { font-size: 1.5rem; }
 h3 { font-size: 1.25rem; }
@@ -164,7 +174,7 @@ a:hover {
 }
 
 /* ==========================================================================
-   5. OBJECTS (Layout)
+   5. OBJECTS (Layout Helpers)
    ========================================================================== */
 .o-container {
   width: 100%;
@@ -185,18 +195,28 @@ a:hover {
 .o-grid { display: grid; gap: var(--space-6); }
 .o-grid--3-cols { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
 
+/* Grid específico para Settings (Android Style) */
+.o-grid--settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
 /* ==========================================================================
    6. COMPONENTS
    ========================================================================== */
 
 /* --- 6.1 Header (c-site-header) --- */
 .c-site-header {
-  background-color: var(--color-neutral-900); /* Sempre escuro */
+  background-color: var(--color-neutral-900);
   padding: var(--space-4) 0;
   border-bottom: 4px solid transparent;
   border-image: linear-gradient(to right, var(--theme-saude), var(--theme-seguranca), var(--theme-transito), var(--theme-educ), var(--theme-lazer), var(--theme-economia)) 1;
   animation: brilhoTexto 10s linear infinite;
   position: relative;
+  z-index: var(--z-sticky);
 }
 
 .c-site-header .o-container {
@@ -214,21 +234,42 @@ a:hover {
 }
 
 #relogio {
+  background-image: linear-gradient(
+    to right, 
+    var(--theme-saude), 
+    var(--theme-seguranca), 
+    var(--theme-transito), 
+    var(--theme-educ), 
+    var(--theme-lazer), 
+    var(--theme-economia)
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: brilhoTexto 5s linear infinite;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-decoration: none;
+  user-select: none;
   position: absolute;
   top: 50%;
   left: var(--space-6);
   transform: translateY(-50%);
-  color: var(--color-neutral-0);
-  font-family: var(--font-mono);
-  background-color: rgba(255, 255, 255, 0.1);
   padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-  font-weight: 700;
+  border-radius: var(--radius-md); 
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-/* Botões de Ação do Usuário (Escondidos no header, aparecem no menu) */
+#relogio:hover {
+  filter: brightness(1.3) drop-shadow(0 0 5px rgba(255,255,255,0.3));
+  transform: translateY(-50%) scale(1.05);
+  cursor: default;
+}
+
+/* Ações (Menu) */
 .c-site-header__actions {
-  display: none; /* Só aparece dentro do menu lateral */
+  display: none; /* Apenas no menu lateral */
   flex-direction: column;
   align-items: center;
   gap: var(--space-6);
@@ -244,8 +285,34 @@ a:hover {
   color: var(--text-muted);
   font-weight: 600;
   font-size: 0.875rem;
+  text-decoration: none;
 }
-.c-site-header__user-link:hover { color: var(--text-heading); }
+.c-site-header__user-link:hover {
+  color: var(--text-heading);
+  text-decoration: none; 
+}
+
+.c-site-header__title-link {
+  color: inherit;
+  text-decoration: none;
+}
+.c-site-header__title-link:hover {
+  background-image: linear-gradient(
+    to right, 
+    var(--theme-saude), 
+    var(--theme-seguranca), 
+    var(--theme-transito), 
+    var(--theme-educ), 
+    var(--theme-lazer), 
+    var(--theme-economia)
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-decoration: none;
+  animation: brilhoTexto 5s linear infinite;
+}
 
 /* --- 6.2 Menu Lateral (Off-canvas) --- */
 .c-hamburger-btn {
@@ -253,15 +320,21 @@ a:hover {
   top: 50%;
   right: var(--space-6);
   transform: translateY(-50%);
-  display: flex; flex-direction: column; gap: 4px;
-  background: transparent; border: none; cursor: pointer; z-index: 60;
+  display: flex; flex-direction: column; 
+  gap: 8px; 
+  align-items: center; 
+  justify-content: center;
+  background: transparent; 
+  border: none; 
+  cursor: pointer;
   color: var(--color-neutral-0);
   width: 44px; height: 44px;
-  align-items: center; justify-content: center;
+  z-index: var(--z-modal);
 }
 .c-hamburger-btn__bar {
   width: 32px; height: 2px;
   background-color: currentColor;
+  border-radius: 50px;
   transition: 0.25s;
 }
 
@@ -271,7 +344,7 @@ a:hover {
   background-color: var(--bg-card);
   box-shadow: -6px 0 20px rgba(0,0,0,0.15);
   transition: right 0.3s ease;
-  z-index: 70;
+  z-index: var(--z-popover);
   padding: var(--space-4);
   overflow-y: auto;
   border-left: 1px solid var(--border-color);
@@ -305,31 +378,32 @@ a:hover {
   position: fixed; inset: 0;
   background: var(--bg-overlay);
   opacity: 0; visibility: hidden;
-  transition: 0.25s; z-index: 50;
+  transition: 0.25s; z-index: var(--z-fixed);
 }
 .c-overlay.is-active { opacity: 1; visibility: visible; }
 
 /* --- 6.3 Cartões (Cards) --- */
 .c-card {
-  min-height: 350px;
+  min-height: 350px; /* Garante altura mínima, mas cresce se necessário */
   max-width: 400px;
+  width: 100%;
   background-color: var(--bg-card);
   border-radius: var(--radius-lg);
   overflow: hidden;
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: 1fr auto; /* Conteúdo | Footer */
   position: relative;
   transition: transform 0.4s ease-out, box-shadow 0.4s ease-out, background-color var(--transition);
-  justify-self: center; /* Garante que o card se centralize na célula do grid */
+  justify-self: center;
   cursor: pointer;
   box-shadow: var(--shadow-card);
   text-decoration: none;
   color: var(--text-main);
   animation: fadeInUp 0.5s ease-out forwards;
-  border: 1px solid transparent; /* Fallback */
+  border: 1px solid transparent;
 }
 
-/* Efeito de brilho "Glass" */
+/* Efeito Glass/Shine */
 .c-card::before {
   content: ''; position: absolute;
   top: 0; left: -150%; width: 80%; height: 100%;
@@ -343,20 +417,18 @@ a:hover {
   transform: translateY(-10px);
   background-color: var(--card-theme-color);
   box-shadow: 0 20px 40px -10px var(--card-theme-color);
+  text-decoration: none;
 }
-
 html[data-theme='dark'] .c-card:hover {
   box-shadow: 0 10px 30px -5px var(--card-theme-color);
 }
 
 .c-card__content { padding: var(--space-6); z-index: 2; }
-
 .c-card__title {
   margin-bottom: var(--space-2);
   color: var(--text-heading);
   transition: color 0.3s;
 }
-
 .c-card:hover .c-card__title { color: var(--color-neutral-0); }
 
 .c-card p {
@@ -364,10 +436,7 @@ html[data-theme='dark'] .c-card:hover {
   opacity: 1;
 }
 .c-card:hover p {
-  opacity: 0;
-  height: 0;
-  margin: 0;
-  overflow: hidden;
+  opacity: 0; height: 0; margin: 0; overflow: hidden;
 }
 
 .c-card__footer {
@@ -375,7 +444,6 @@ html[data-theme='dark'] .c-card:hover {
   display: flex; justify-content: center; align-items: center;
   opacity: 0; transform: translateY(10px);
   transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-  /* Garante que o footer não ocupe espaço visualmente até ser necessário */
 }
 .c-card:hover .c-card__footer { opacity: 1; transform: translateY(0); }
 
@@ -397,37 +465,117 @@ html[data-theme='dark'] .c-card:hover {
 .c-card--lazer     { --card-theme-color: var(--theme-lazer);     border-top: 4px solid var(--theme-lazer); }
 .c-card--economia  { --card-theme-color: var(--theme-economia);  border-top: 4px solid var(--theme-economia); }
 
-/* Correção para bordas no Dark Mode (sem borda superior colorida, usa apenas a cor no hover/texto) */
-html[data-theme='dark'] .c-card {
-  border-top: 1px solid var(--border-color);
-}
-html[data-theme='dark'] .c-card:hover {
-  border-top-color: var(--card-theme-color);
+
+html[data-theme='dark'] .c-card--saude     { --card-theme-color: var(--theme-saude);     border-top: 4px solid var(--theme-saude); }
+html[data-theme='dark'] .c-card--seguranca { --card-theme-color: var(--theme-seguranca); border-top: 4px solid var(--theme-seguranca); }
+html[data-theme='dark'] .c-card--transito  { --card-theme-color: var(--theme-transito);  border-top: 4px solid var(--theme-transito); }
+html[data-theme='dark'] .c-card--educ      { --card-theme-color: var(--theme-educ);      border-top: 4px solid var(--theme-educ); }
+html[data-theme='dark'] .c-card--lazer     { --card-theme-color: var(--theme-lazer);     border-top: 4px solid var(--theme-lazer); }
+html[data-theme='dark'] .c-card--economia  { --card-theme-color: var(--theme-economia);  border-top: 4px solid var(--theme-economia); }
+
+/* Ajuste de borda no Modo Escuro */
+html[data-theme='dark'] .c-card:hover { border-top-color: var(--card-theme-color); }
+
+/* --- 6.4 Configurações / Botões Android (c-settings-item) --- */
+.c-settings-item {
+  display: flex; align-items: center;
+  width: 100%;
+  padding: var(--space-4) var(--space-6);
+  background-color: var(--bg-card);
+  border: 3px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-heading);
+  transition: background-color 0.2s, transform 0.1s, border-color 0.2s;
+  font-family: inherit; appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  position: relative; overflow: hidden;
 }
 
-/* --- 6.4 Barra de Busca (Restaurada) --- */
+.c-settings-item:hover { background-color: var(--color-neutral-200); }
+.c-settings-item:hover .c-settings-switch { border: 2px solid var(--bg-card); }
+html[data-theme='dark'] .c-settings-item:hover .c-settings-switch { border: 2px solid transparent; }
+.c-settings-item:active { transform: scale(0.98); background-color: var(--color-neutral-200); }
+
+html[data-theme='dark'] .c-settings-item {
+  border: 1px solid var(--border-color);
+}
+
+html[data-theme='dark'] .c-settings-item:hover {
+  background-color: var(--color-neutral-500);
+  border-color: var(--color-neutral-700);
+}
+
+.c-settings-item__content {
+  flex: 1;
+  display: flex; 
+  flex-direction: column;
+  margin-right: 10px;
+}
+
+.c-settings-item__title {
+  font-size: 1rem; font-weight: 600; color: var(--text-heading);
+}
+.c-settings-item__subtitle {
+  font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;
+}
+
+/* Switch Component */
+
+.c-settings-switch {
+  width: 48px; height: 28px;
+  background-color: var(--color-neutral-200);
+  border-radius: 100px;
+  position: relative;
+  transition: background-color 0.3s ease;
+  border: 1px solid var(--color-neutral-200);
+}
+
+html[data-theme='dark'] .c-settings-switch {
+  border: 2px solid transparent;
+}
+
+.c-settings-switch__handle {
+  width: 20px; height: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%; left: 4px;
+  transform: translateY(-50%);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: left 0.3s ease, width 0.3s;
+}
+
+.c-settings-item.is-active .c-settings-switch { background-color: var(--color-primary-500); }
+.c-settings-item.is-active .c-settings-switch__handle { left: calc(100% - 24px); }
+html[data-theme='dark'] .c-settings-switch { background-color: var(--color-neutral-700); }
+
+/* --- 6.5 Formulários e Busca --- */
 .c-search-bar { margin-bottom: var(--space-8); }
 .c-search-bar form {
   display: flex; gap: var(--space-4);
   max-width: 600px; margin: 0 auto;
 }
-.c-search-bar__input {
-  flex-grow: 1;
+.c-search-bar__input,
+.c-form-field__input {
+  display: block; width: 100%; flex-grow: 1;
   padding: var(--space-3) var(--space-4);
   font-family: inherit; font-size: 1rem;
   background-color: var(--bg-input);
+  color: var(--text-heading);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  color: var(--text-heading);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
-.c-search-bar__input:focus {
+
+.c-search-bar__input:focus,
+.c-form-field__input:focus {
   outline: none;
   border-color: var(--color-primary-500);
   box-shadow: 0 0 0 3px var(--border-focus);
 }
 
-/* --- 6.5 Formulários e Login --- */
 .c-login-box {
   background-color: var(--bg-card);
   padding: var(--space-8);
@@ -437,36 +585,22 @@ html[data-theme='dark'] .c-card:hover {
   animation: fadeInUp 0.5s ease-out;
   border: 1px solid var(--border-color);
 }
-.c-login-box__title { text-align: center; margin-bottom: var(--space-6); color: var(--text-heading); }
+.c-login-box__title { text-align: center; margin-bottom: var(--space-6); }
 
 .c-form-field { margin-bottom: var(--space-4); }
 .c-form-field__label {
   display: block; font-size: 0.875rem; font-weight: 600;
   margin-bottom: var(--space-2); color: var(--text-main);
 }
-.c-form-field__input {
-  display: block; width: 100%;
-  padding: var(--space-3) var(--space-4);
-  font-family: inherit; font-size: 1rem;
-  background-color: var(--bg-input);
-  color: var(--text-heading);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  transition: var(--transition);
-}
-.c-form-field__input:focus {
-  outline: none; border-color: var(--color-primary-500);
-  box-shadow: 0 0 0 3px var(--border-focus);
-}
-.c-form-field--error .c-form-field__input { border-color: var(--color-error-500); }
 .c-form-field__error-message {
   display: none; margin-top: var(--space-2);
   font-size: 0.875rem; color: var(--color-error-500);
 }
+.c-form-field--error .c-form-field__input { border-color: var(--color-error-500); }
 .c-form-field--error .c-form-field__error-message { display: block; }
 .c-login-box__signup-link { text-align: center; margin-top: var(--space-6); font-size: 0.875rem; }
 
-/* --- 6.6 Botões --- */
+/* --- 6.6 Botões Padrão --- */
 .c-btn {
   display: inline-block;
   padding: var(--space-3) var(--space-6);
@@ -481,11 +615,13 @@ html[data-theme='dark'] .c-card:hover {
 
 .c-btn--primary { background-color: var(--color-primary-500); color: #fff; }
 .c-btn--primary:hover { background-color: var(--color-primary-600); color: #fff; }
-.c-btn--danger { background-color: var(--color-error-500); color: #fff; }
-.c-btn--danger:hover { background-color: #b91c1c; color: #fff; }
-.c-btn--sm { padding: var(--space-2) var(--space-3); font-size: 0.875rem; }
+.c-btn--danger { border: 1px solid var(--color-error-500); color: #000; }
+html[data-theme='dark'] .c-btn--danger { border: 1px solid var(--color-error-500); color: #fff; }
+.c-btn--danger:hover { box-shadow: inset 0 0 0 2px var(--color-error-500); color: #000; }
+html[data-theme='dark'] .c-btn--danger:hover { box-shadow: inset 0 0 0 2px var(--color-error-500); color: #fff; }
+.c-btn--sm { padding: var(--space-2) var(--space-3); font-size: 0.875rem; } 
 
-/* --- 6.7 Página de Setor (Restaurada) --- */
+/* --- 6.7 Página de Setor --- */
 .c-sector-page { padding: var(--space-12) 0; }
 .c-sector-page__title { margin-bottom: var(--space-2); color: var(--text-heading); }
 .c-sector-page__description {
@@ -497,7 +633,7 @@ html[data-theme='dark'] .c-card:hover {
   gap: var(--space-8);
 }
 
-/* --- 6.8 Footer SAC (c-sac-footer) --- */
+/* --- 6.8 Footer SAC --- */
 .c-sac-footer {
   background-color: var(--color-neutral-900);
   color: var(--color-neutral-100);
@@ -512,15 +648,14 @@ html[data-theme='dark'] .c-card:hover {
 }
 @media (min-width: 768px) {
   .c-sac-footer__grid { grid-template-columns: 1fr 1fr; align-items: center; }
+  .c-sac-footer__buttons { align-items: flex-end; }
 }
+
 .c-sac-footer__info h2 { color: var(--color-neutral-0); margin-bottom: var(--space-4); }
 .c-sac-footer__info p { color: var(--color-neutral-200); max-width: 45ch; }
 .c-sac-footer__contacts { list-style: none; margin-top: var(--space-6); }
 .c-sac-footer__contacts a { color: inherit; }
 .c-sac-footer__buttons { display: flex; flex-direction: column; gap: var(--space-4); }
-@media (min-width: 768px) {
-  .c-sac-footer__buttons { align-items: flex-end; }
-}
 
 .c-sac-btn {
   background-color: rgba(255, 255, 255, 0.1);
@@ -564,7 +699,7 @@ html[data-theme='dark'] .c-card:hover {
   border: none; border-radius: 50%;
   box-shadow: var(--shadow-lg);
   cursor: pointer; display: flex; align-items: center; justify-content: center;
-  z-index: 10; opacity: 0; visibility: hidden;
+  z-index: var(--z-sticky); opacity: 0; visibility: hidden;
   transform: translateY(1rem);
   transition: all 0.3s;
 }
@@ -582,20 +717,12 @@ html[data-theme='dark'] .c-card:hover {
   background: none; border: none; font-size: 1.5rem; cursor: pointer; color: inherit; opacity: 0.7;
 }
 
-/* Variáveis locais para alertas */
-.c-alert--success {
-  background-color: #dcfce7; color: #166534; border: 1px solid #4ade80;
-}
-html[data-theme='dark'] .c-alert--success {
-  background-color: #052e16; color: #dcfce7; border-color: #15803d;
-}
+/* Mixins de Alerta */
+.c-alert--success { background-color: #dcfce7; color: #166534; border: 1px solid #4ade80; }
+.c-alert--error   { background-color: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
 
-.c-alert--error {
-  background-color: #fee2e2; color: #991b1b; border: 1px solid #f87171;
-}
-html[data-theme='dark'] .c-alert--error {
-  background-color: #450a0a; color: #fee2e2; border-color: #b91c1c;
-}
+html[data-theme='dark'] .c-alert--success { background-color: #052e16; color: #dcfce7; border-color: #15803d; }
+html[data-theme='dark'] .c-alert--error   { background-color: #450a0a; color: #fee2e2; border-color: #b91c1c; }
 
 /* Skeleton Loading */
 .c-card--skeleton {

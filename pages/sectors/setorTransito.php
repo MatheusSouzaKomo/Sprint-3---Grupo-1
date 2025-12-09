@@ -29,39 +29,7 @@
                 </div>
             </a>
         </div>
-
-        <!-- Funcionalidade Única: Simulador de Semáforo -->
-        <div class="c-feature-box">
-            <h3 class="c-feature-box__title">Simulador de Semáforo</h3>
-            <div class="c-traffic-light">
-                <div id="light-red" class="c-traffic-light__light c-traffic-light__light--red active"></div>
-                <div id="light-yellow" class="c-traffic-light__light c-traffic-light__light--yellow"></div>
-                <div id="light-green" class="c-traffic-light__light c-traffic-light__light--green"></div>
-            </div>
-            <div class="u-text-center">
-                <button id="change-light-btn" class="c-btn c-btn--primary">Trocar Sinal</button>
-            </div>
-        </div>
     </main>
     <?php include '../includes/footer.php';?>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const changeBtn = document.getElementById('change-light-btn');
-            const lights = {
-                red: document.getElementById('light-red'),
-                yellow: document.getElementById('light-yellow'),
-                green: document.getElementById('light-green')
-            };
-            const states = ['red', 'green', 'yellow'];
-            let currentStateIndex = 0;
-
-            changeBtn.addEventListener('click', () => {
-                lights[states[currentStateIndex]].classList.remove('active');
-                currentStateIndex = (currentStateIndex + 1) % states.length;
-                lights[states[currentStateIndex]].classList.add('active');
-            });
-        });
-    </script>
 </body>
 </html>

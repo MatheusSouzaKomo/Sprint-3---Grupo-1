@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guru's Mind | Neural Interface</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* =========================================
+           1. MATERIAL DESIGN 3 (TOKENS & THEME)
+           ========================================= */
+        :root {
+            /* Palette: Neon Green & Deep Dark */
+            --md-sys-color-primary: #8aff00;
+            --md-sys-color-on-primary: #0f1a00;
+            --md-sys-color-primary-container: #2d4500;
+            --md-sys-color-on-primary-container: #b5ff66;
+            
+            --md-sys-color-background: #000000;
+            --md-sys-color-surface: #121212;
+            --md-sys-color-surface-container: #1e1e1e;
+            --md-sys-color-on-surface: #e2e2e2;
+            --md-sys-color-on-surface-variant: #c4c7c5;
+            
+            --md-sys-color-outline: #444746;
+            --md-sys-color-outline-variant: #252625;
+            
+            /* Typography */
+            --font-display: 'Orbitron', sans-serif;
+            --font-body: 'Roboto', sans-serif;
+
+            /* Shapes */
+            --md-shape-corner-extra-large: 28px;
+            --md-shape-corner-large: 16px;
+            --md-shape-corner-medium: 12px;
+            --md-shape-corner-full: 9999px;
+
+            /* Elevations & Effects */
+            --md-elevation-1: 0 1px 3px rgba(0,0,0,0.5);
+            --md-elevation-3: 0 4px 8px rgba(0,0,0,0.6);
+            --glow-primary: 0 0 15px rgba(138, 255, 0, 0.15);
+        }
+
+        /* =========================================
+           2. RESET & BASE STYLES
+           ========================================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-surface);
+            font-family: var(--font-body);
+            height: 100vh;
+            overflow: hidden; /* App-like feel */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Background Ambient Effect */
+        .ambient-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 30%, #152200 0%, #000000 80%);
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        h1, h2, h3 { font-family: var(--font-display); letter-spacing: 1px; }
+
+        /* =========================================
+           3. COMPONENTS (MATERIAL YOU STYLE)
+           ========================================= */
+        
+        /* Buttons */
+        .md-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 0 24px; height: 48px;
+            border-radius: var(--md-shape-corner-full);
+            font-family: var(--font-display);
+            font-size: 0.9rem; font-weight: 600; text-transform: uppercase;
+            cursor: pointer; border: none; transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+        .md-btn-filled {
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+        }
+        .md-btn-filled:hover {
+            box-shadow: 0 0 20px rgba(138, 255, 0, 0.4);
+            transform: scale(1.02);
+        }
+        .md-btn-tonal {
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+        .md-btn-icon {
+            width: 40px; height: 40px; padding: 0; border-radius: 50%;
+            background: transparent; color: var(--md-sys-color-on-surface-variant);
+            font-size: 1.2rem;
+        }
+        .md-btn-icon:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--md-sys-color-primary);
+        }
+
+        /* Cards */
+        .md-card {
+            background: var(--md-sys-color-surface-container);
+            border-radius: var(--md-shape-corner-extra-large);
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex; flex-direction: column;
+        }
+
+        /* Inputs (Floating Label) */
+        .md-input-wrapper {
+            position: relative; margin-bottom: 24px; width: 100%;
+        }
+        .md-input {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            background: var(--md-sys-color-surface);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: var(--md-shape-corner-large);
+            color: white; font-size: 1rem; outline: none;
+            transition: border-color 0.2s;
+        }
+        .md-input:focus {
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 1px var(--md-sys-color-primary);
+        }
+        .md-input-icon {
+            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+        .md-input:focus ~ .md-input-icon { color: var(--md-sys-color-primary); }
+        .md-label {
+            position: absolute; left: 48px; top: 50%; transform: translateY(-50%);
+            color: var(--md-sys-color-on-surface-variant);
+            pointer-events: none; transition: 0.2s ease; background: var(--md-sys-color-surface); padding: 0 4px;
+        }
+        .md-input:focus ~ .md-label, .md-input:not(:placeholder-shown) ~ .md-label {
+            top: 0; left: 12px; font-size: 0.75rem; color: var(--md-sys-color-primary);
+        }
+
+        /* =========================================
+           4. LAYOUT & VIEWS
+           ========================================= */
+        .view {
+            display: none; width: 100%; height: 100%;
+            animation: fadeIn 0.4s ease;
+        }
+        .view.active { display: flex; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Login View --- */
+        #login-view { align-items: center; justify-content: center; padding: 20px; }
+        .login-container { width: 100%; max-width: 400px; text-align: center; }
+        .brand-logo { 
+            font-size: 3rem; color: var(--md-sys-color-primary); margin-bottom: 10px; 
+            text-shadow: 0 0 20px rgba(138,255,0,0.3);
+        }
+        .brand-title { margin-bottom: 40px; background: linear-gradient(to right, #fff, #8aff00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* --- Dashboard View --- */
+        #dashboard-view { flex-direction: row; }
+        
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 80px; background: var(--md-sys-color-surface);
+            display: flex; flex-direction: column; align-items: center; padding: 30px 0;
+            border-right: 1px solid var(--md-sys-color-outline-variant); z-index: 10;
+            transition: width 0.3s ease;
+        }
+        .sidebar:hover { width: 220px; }
+        .nav-item {
+            width: 100%; padding: 15px 0;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--md-sys-color-on-surface-variant);
+            cursor: pointer; transition: 0.2s; position: relative;
+        }
+        .nav-item i { font-size: 1.5rem; min-width: 80px; text-align: center; }
+        .nav-item span { display: none; white-space: nowrap; font-weight: 500; }
+        .sidebar:hover .nav-item span { display: block; animation: fadeIn 0.3s; }
+        .sidebar:hover .nav-item { justify-content: flex-start; }
+        
+        .nav-item:hover, .nav-item.active { color: var(--md-sys-color-primary); background: rgba(255,255,255,0.03); }
+        .nav-item.active::before {
+            content: ''; position: absolute; left: 0; top: 10%; height: 80%; width: 3px;
+            background: var(--md-sys-color-primary); border-radius: 0 4px 4px 0;
+        }
+        .sidebar-spacer { flex: 1; }
+
+        /* Main Content */
+        .main-content {
+            flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column;
+        }
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
+        }
+        .user-chip {
+            background: var(--md-sys-color-surface-container); padding: 8px 16px; border-radius: 50px;
+            display: flex; align-items: center; gap: 10px; border: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        /* Grid System */
+        .grid-layout {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;
+            width: 100%;
+        }
+
+        /* --- Specific Modules Styles --- */
+        
+        /* Chat */
+        .chat-area { height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; padding-right: 5px;}
+        .msg { padding: 10px 16px; border-radius: 12px; max-width: 80%; line-height: 1.4; font-size: 0.95rem; }
+        .msg.bot { background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); align-self: flex-start; border-bottom-left-radius: 2px; }
+        .msg.user { background: #333; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .input-row { display: flex; gap: 10px; }
+
+        /* Tools */
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
+        .calc-btn { padding: 15px; font-size: 1.2rem; background: rgba(255,255,255,0.05); border: none; color: white; border-radius: 12px; cursor: pointer; }
+        .calc-btn:hover { background: rgba(255,255,255,0.1); }
+        .calc-btn.accent { color: var(--md-sys-color-primary); }
+        .calc-display { background: black; color: var(--md-sys-color-primary); font-family: var(--font-display); font-size: 1.8rem; text-align: right; padding: 15px; border-radius: 12px; }
+
+        /* Game & Video */
+        canvas#gameCanvas { background: #000; border: 2px solid var(--md-sys-color-outline); border-radius: 12px; width: 100%; max-width: 320px; display: block; margin: 0 auto; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 16px; background: black; display: none; margin-top: 15px; }
+        .video-container.show { display: block; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+
+        /* Toast Notification */
+        #toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--md-sys-color-surface-container); border: 1px solid var(--md-sys-color-primary);
+            color: var(--md-sys-color-primary); padding: 12px 24px; border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); opacity: 0; transition: 0.3s ease; z-index: 100;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* Tabs Logic (Hidden/Shown) */
+        .tab-content { display: none; animation: fadeIn 0.3s; }
+        .tab-content.active { display: block; }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            #dashboard-view { flex-direction: column-reverse; }
+            .sidebar { width: 100%; height: 60px; flex-direction: row; justify-content: space-evenly; padding: 0; border-top: 1px solid #333; border-right: none; }
+            .sidebar:hover { width: 100%; }
+            .sidebar:hover .nav-item span { display: none; } /* No text on mobile nav */
+            .sidebar:hover .nav-item { justify-content: center; }
+            .nav-item.active::before { width: 40px; height: 4px; bottom: 0; top: auto; left: 50%; transform: translateX(-50%); border-radius: 4px 4px 0 0; }
+            .main-content { padding-bottom: 80px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-bg"></div>
+    
+    <div id="toast">Notificação do Sistema</div>
+
+    <section id="login-view" class="view active">
+        <div class="md-card login-container">
+            <div class="text-center">
+                <i class="fas fa-brain brand-logo"></i>
+                <h1 class="brand-title">Guru's Mind</h1>
+            </div>
+            
+            <form id="login-form">
+                <div class="md-input-wrapper">
+                    <input type="text" id="username" class="md-input" placeholder=" " required>
+                    <i class="fas fa-user md-input-icon"></i>
+                    <label class="md-label">Identificação de Usuário</label>
+                </div>
+                <div class="md-input-wrapper">
+                    <input type="password" id="password" class="md-input" placeholder=" " required>
+                    <i class="fas fa-fingerprint md-input-icon"></i>
+                    <label class="md-label">Chave de Acesso</label>
+                </div>
+                <button type="submit" class="md-btn md-btn-filled" style="width: 100%;">
+                    <i class="fas fa-link"></i> Conectar
+                </button>
+            </form>
+            <p style="margin-top: 20px; font-size: 0.8rem; color: #666;">v3.0.1 Stable • Neural Link Secure</p>
+        </div>
+    </section>
+
+    <section id="dashboard-view" class="view">
+        
+        <nav class="sidebar">
+            <div style="margin-bottom: 20px; color: var(--md-sys-color-primary);">
+                <i class="fas fa-brain fa-lg"></i>
+            </div>
+            
+            <div class="nav-item active" onclick="app.nav('home')">
+                <i class="fas fa-home"></i> <span>Geral</span>
+            </div>
+            <div class="nav-item" onclick="app.nav('monitor')">
+                <i class="fas fa-chart-line"></i> <span>Monitor</span>
+            </div>
+            <div class="nav-item" onclick="app.nav('tools')">
+                <i class="fas fa-tools"></i> <span>Tools</span>
+            </div>
+            <div class="nav-item" onclick="app.nav('lazer')">
+                <i class="fas fa-gamepad"></i> <span>Lazer</span>
+            </div>
+
+            <div class="sidebar-spacer"></div>
+
+            <div class="nav-item" onclick="app.logout()">
+                <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            
+            <header class="top-bar">
+                <h2 id="page-title">Visão Geral</h2>
+                <div class="user-chip">
+                    <span id="display-user">Convidado</span>
+                    <i class="fas fa-circle" style="color: var(--md-sys-color-primary); font-size: 0.7rem;"></i>
+                </div>
+            </header>
+
+            <div id="tab-home" class="tab-content active">
+                <div class="grid-layout">
+                    <div class="md-card">
+                        <h3><i class="fas fa-wifi"></i> Status do Sistema</h3>
+                        <div style="margin-top: 20px; display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 60px; height: 60px; border-radius: 50%; border: 4px solid var(--md-sys-color-primary); display: flex; align-items: center; justify-content: center;">
+                                <span style="font-weight: bold;">98%</span>
+                            </div>
+                            <div>
+                                <p style="color: white; font-weight: bold;">Sincronização Estável</p>
+                                <p style="font-size: 0.8rem; color: #aaa;">Latência: 12ms</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="md-card">
+                        <h3><i class="fas fa-robot"></i> Assistente IA</h3>
+                        <div class="chat-area" id="chat-feed">
+                            <div class="msg bot">Olá. O sistema está online. Como posso auxiliar sua mente hoje?</div>
+                        </div>
+                        <div class="input-row">
+                            <input type="text" id="chat-input" class="md-input" placeholder="Comando..." style="margin-bottom: 0;">
+                            <button onclick="app.sendChat()" class="md-btn md-btn-icon" style="background: var(--md-sys-color-primary); color: black;">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-monitor" class="tab-content">
+                <div class="md-card" style="height: 400px;">
+                    <h3><i class="fas fa-heartbeat"></i> Biometria Neural</h3>
+                    <div style="flex: 1; position: relative;">
+                        <canvas id="bioChart"></canvas>
+                    </div>
+                </div>
+                <div class="grid-layout" style="margin-top: 24px;">
+                    <div class="md-card">
+                        <h3>Hidratação</h3>
+                        <p style="font-size: 2rem; color: var(--md-sys-color-primary);" id="water-level">1.2 L</p>
+                        <button class="md-btn md-btn-tonal" style="margin-top: 10px;" onclick="app.addWater()">+250ml</button>
+                    </div>
+                    <div class="md-card">
+                        <h3>Calorias Mentais</h3>
+                        <p style="font-size: 2rem; color: #ffb4ab;">2,450 kcal</p>
+                        <span style="font-size: 0.8rem; color: #aaa;">Consumo acima da média</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-tools" class="tab-content">
+                <div class="grid-layout">
+                    <div class="md-card">
+                        <h3><i class="fas fa-calculator"></i> Calculadora Rápida</h3>
+                        <div class="calc-display" id="calc-display">0</div>
+                        <div class="calc-grid" id="calc-buttons"></div>
+                    </div>
+
+                    <div class="md-card">
+                        <h3><i class="fas fa-eye"></i> Filtros de Visão</h3>
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                            <button class="md-btn md-btn-tonal" onclick="app.toast('Modo Noturno Ativado')"><i class="fas fa-moon"></i> Visão Noturna</button>
+                            <button class="md-btn md-btn-tonal" onclick="app.toast('Modo Térmico Ativado')"><i class="fas fa-fire"></i> Térmico</button>
+                            <button class="md-btn md-btn-tonal" onclick="app.toast('Filtro de Leitura Ativado')"><i class="fas fa-book"></i> Leitura</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-lazer" class="tab-content">
+                <div class="grid-layout">
+                    <div class="md-card">
+                        <h3><i class="fas fa-play"></i> Neural Tube</h3>
+                        <div class="input-row">
+                            <input type="text" id="yt-search" class="md-input" placeholder="Pesquisar vídeo..." style="margin-bottom: 0;">
+                            <button onclick="app.searchVideo()" class="md-btn md-btn-filled">Buscar</button>
+                        </div>
+                        <div id="video-box" class="video-container">
+                            <iframe id="video-frame" src="" allowfullscreen></iframe>
+                        </div>
+                    </div>
+
+                    <div class="md-card" style="align-items: center;">
+                        <h3><i class="fas fa-gamepad"></i> Treino de Foco</h3>
+                        <p style="margin-bottom: 10px; color: #aaa;">Clique/Espaço para pular</p>
+                        <canvas id="gameCanvas" width="320" height="400"></canvas>
+                        <button class="md-btn md-btn-filled" style="margin-top: 15px;" onclick="app.startGame()">Iniciar Jogo</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </section>
+
+    <script>
+        class GuruApp {
+            constructor() {
+                this.state = {
+                    user: null,
+                    water: 1200,
+                    chart: null,
+                    gameRunning: false
+                };
+                
+                // Cache DOM elements
+                this.views = {
+                    login: document.getElementById('login-view'),
+                    dashboard: document.getElementById('dashboard-view')
+                };
+                
+                this.init();
+            }
+
+            init() {
+                // Auth Check
+                const savedUser = localStorage.getItem('guru_user');
+                if (savedUser) this.login(savedUser);
+
+                // Event Listeners
+                document.getElementById('login-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const user = document.getElementById('username').value;
+                    if(user) this.login(user);
+                });
+
+                document.getElementById('chat-input').addEventListener('keypress', (e) => {
+                    if(e.key === 'Enter') this.sendChat();
+                });
+
+                // Init Tools
+                this.buildCalculator();
+            }
+
+            // --- AUTHENTICATION ---
+            login(username) {
+                this.state.user = username;
+                localStorage.setItem('guru_user', username);
+                document.getElementById('display-user').textContent = username;
+                
+                this.views.login.classList.remove('active');
+                this.views.dashboard.classList.add('active');
+                
+                this.toast(`Conexão neural estabelecida: ${username}`);
+                this.initChart();
+            }
+
+            logout() {
+                localStorage.removeItem('guru_user');
+                location.reload();
+            }
+
+            // --- NAVIGATION ---
+            nav(tabName) {
+                // Update Sidebar UI
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                event.currentTarget.classList.add('active');
+
+                // Update Content UI
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+                document.getElementById(`tab-${tabName}`).classList.add('active');
+                
+                // Update Title
+                const titles = { 'home': 'Visão Geral', 'monitor': 'Monitoramento', 'tools': 'Ferramentas', 'lazer': 'Entretenimento' };
+                document.getElementById('page-title').textContent = titles[tabName];
+
+                if(tabName === 'monitor' && this.state.chart) {
+                    this.state.chart.resize();
+                }
+            }
+
+            // --- UI HELPERS ---
+            toast(msg) {
+                const el = document.getElementById('toast');
+                el.textContent = msg;
+                el.classList.add('show');
+                setTimeout(() => el.classList.remove('show'), 3000);
+            }
+
+            // --- CHATBOT ---
+            sendChat() {
+                const input = document.getElementById('chat-input');
+                const txt = input.value.trim();
+                if(!txt) return;
+
+                const feed = document.getElementById('chat-feed');
+                feed.innerHTML += `<div class="msg user">${txt}</div>`;
+                input.value = '';
+                feed.scrollTop = feed.scrollHeight;
+
+                setTimeout(() => {
+                    const responses = [
+                        "Processando sua solicitação.",
+                        "Interessante. Vou analisar seus dados.",
+                        "Sistemas operando em capacidade máxima.",
+                        "Entendido."
+                    ];
+                    const reply = responses[Math.floor(Math.random() * responses.length)];
+                    feed.innerHTML += `<div class="msg bot">${reply}</div>`;
+                    feed.scrollTop = feed.scrollHeight;
+                }, 800);
+            }
+
+            // --- CHART ---
+            initChart() {
+                const ctx = document.getElementById('bioChart').getContext('2d');
+                this.state.chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['00h', '04h', '08h', '12h', '16h', '20h'],
+                        datasets: [{
+                            label: 'Atividade Neural (Hz)',
+                            data: [10, 15, 8, 25, 20, 15],
+                            borderColor: '#8aff00',
+                            backgroundColor: 'rgba(138, 255, 0, 0.1)',
+                            fill: true, tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { grid: { color: '#333' }, ticks: { color: '#888' } },
+                            x: { grid: { color: '#333' }, ticks: { color: '#888' } }
+                        }
+                    }
+                });
+            }
+
+            addWater() {
+                this.state.water += 250;
+                document.getElementById('water-level').textContent = (this.state.water / 1000).toFixed(1) + ' L';
+                this.toast('Hidratação registrada.');
+            }
+
+            // --- CALCULATOR ---
+            buildCalculator() {
+                const chars = ['C', '(', ')', '/', '7', '8', '9', '*', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', '=', 'Del'];
+                const container = document.getElementById('calc-buttons');
+                const display = document.getElementById('calc-display');
+                
+                chars.forEach(char => {
+                    const btn = document.createElement('button');
+                    btn.className = `calc-btn ${['=', 'C'].includes(char) ? 'accent' : ''}`;
+                    btn.textContent = char;
+                    btn.onclick = () => {
+                        if(char === 'C') display.textContent = '0';
+                        else if(char === 'Del') display.textContent = display.textContent.slice(0, -1) || '0';
+                        else if(char === '=') {
+                            try { display.textContent = eval(display.textContent); } 
+                            catch { display.textContent = 'Erro'; }
+                        } else {
+                            if(display.textContent === '0') display.textContent = char;
+                            else display.textContent += char;
+                        }
+                    };
+                    container.appendChild(btn);
+                });
+            }
+
+            // --- YOUTUBE ---
+            searchVideo() {
+                const query = document.getElementById('yt-search').value;
+                if(query) {
+                    const container = document.getElementById('video-box');
+                    const iframe = document.getElementById('video-frame');
+                    // Usando embed trick para busca
+                    iframe.src = `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(query)}`;
+                    container.classList.add('show');
+                }
+            }
+
+            // --- GAME (Flappy Clone) ---
+            startGame() {
+                if(this.state.gameRunning) return;
+                this.state.gameRunning = true;
+                const cvs = document.getElementById('gameCanvas');
+                const ctx = cvs.getContext('2d');
+                let bird = {x: 50, y: 150, v: 0, g: 0.6, jump: -8};
+                let pipes = [];
+                let frame = 0;
+                
+                // Input handler
+                const jump = () => bird.v = bird.jump;
+                cvs.onclick = jump;
+                document.body.onkeydown = (e) => { if(e.code==='Space') jump(); };
+
+                const loop = () => {
+                    if(!this.state.gameRunning) return;
+                    
+                    // Update
+                    bird.v += bird.g;
+                    bird.y += bird.v;
+                    if(frame % 100 === 0) pipes.push({x: 320, h: Math.random() * 200 + 50});
+                    pipes.forEach(p => p.x -= 3);
+                    pipes = pipes.filter(p => p.x > -50);
+
+                    // Collision
+                    if(bird.y > 400 || bird.y < 0) this.state.gameRunning = false;
+                    pipes.forEach(p => {
+                        if(bird.x > p.x && bird.x < p.x + 40 && (bird.y < p.h || bird.y > p.h + 100)) {
+                            this.state.gameRunning = false;
+                        }
+                    });
+
+                    // Draw
+                    ctx.fillStyle = '#000'; ctx.fillRect(0,0,320,400);
+                    
+                    ctx.fillStyle = '#8aff00';
+                    ctx.beginPath(); ctx.arc(bird.x, bird.y, 10, 0, Math.PI*2); ctx.fill();
+                    
+                    ctx.fillStyle = '#2d4500';
+                    pipes.forEach(p => {
+                        ctx.fillRect(p.x, 0, 40, p.h);
+                        ctx.fillRect(p.x, p.h + 100, 40, 400);
+                    });
+
+                    if(this.state.gameRunning) requestAnimationFrame(loop);
+                    else {
+                        ctx.fillStyle = 'white'; ctx.font = '20px Orbitron';
+                        ctx.fillText("Game Over", 100, 200);
+                    }
+                    frame++;
+                };
+                loop();
+            }
+        }
+
+        // Iniciar Aplicação
+        document.addEventListener('DOMContentLoaded', () => {
+            window.app = new GuruApp();
+        });
+    </script>
+</body>
+</html>

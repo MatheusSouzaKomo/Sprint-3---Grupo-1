@@ -112,17 +112,6 @@
                 </footer>
             </a>
         </div>
-
-        <?php
-        // Verifica se o usuário está logado e se é um administrador para exibir o botão de modo desenvolvedor
-        if (isset($_SESSION['nivel']) && $_SESSION['nivel'] === 'Administração'):
-        ?>
-            <div class="u-text-center" style="margin-top: var(--space-8);">
-                <button id="css-toggle" class="c-btn c-btn--primary" style="background: linear-gradient(45deg, #ef4444, #f97316); font-size: 0.85rem;">
-                    🔧 Modo Desenvolvedor (CSS Desligado)
-                </button>
-            </div>
-        <?php endif; ?>
         <button id="backToTopBtn" class="c-back-to-top" aria-label="Voltar ao topo" title="Voltar ao topo">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24" aria-hidden="true">
                 <path d="M11.9999 10.8284L7.05019 15.7782L5.63598 14.364L11.9999 8L18.3639 14.364L16.9497 15.7782L11.9999 10.8284Z"></path>
