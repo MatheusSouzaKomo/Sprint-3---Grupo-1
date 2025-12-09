@@ -36,7 +36,10 @@
                    <option value="5">5 - Excelente</option>
                </select>
            </div>
-            <button type="submit" class="c-btn c-btn--primary" style="width: 100%; margin-top: var(--space-4);">Enviar Avaliação</button>
+            <button type="submit" class="c-btn c-btn--primary" style="width: 100%;">Enviar Avaliação</button>
        </form>
+       <div class="c-login-box__footer">
+           <a href="index.php" class="c-link">Voltar</a>
+       </div>
    </div>
 </body>
