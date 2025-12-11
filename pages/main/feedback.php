@@ -13,7 +13,7 @@
         <form action="../../actions/auth_feedback.php" method="POST" class="c-login-box__form">
             <div class="c-form-field">
                 <label for="msg_avaliacao" class="c-form-field__label">Mensagem de avaliação:</label>
-                <textarea id="msg_avaliacao" name="msg_avaliacao" class="c-form-field__input" rows="4" required></textarea>
+                <textarea id="msg_avaliacao" name="msg_avaliacao" class="c-form-field__input" rows="4" style="resize: none;" required></textarea>
            </div>
             <div class="c-form-field">
                 <label for="setor_avaliacao" class="c-form-field__label">Setor:</label>

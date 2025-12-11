@@ -64,10 +64,10 @@ function generate_breadcrumb($items) {
                 <p class="c-menu-profile__greeting">Olá, <strong><?php echo htmlspecialchars($_SESSION['nome']); ?></strong></p>
                 <p class="c-menu-profile__level">(<?php echo htmlspecialchars($_SESSION['nivel']); ?>)</p>
             </div>
-            <a href="/Sprint-3---Grupo-1/hub.php" class="c-btn c-btn--primary u-w-full">Painel de Serviços</a>
+            <a href="../main/hub.php" class="c-btn c-btn--primary u-w-full">Painel de Serviços</a>
             <a href="../main/profile.php" class="c-btn c-btn--secondary u-w-full">Meu Perfil</a>
             <?php if (isset($_SESSION['nivel']) && $_SESSION['nivel'] === 'Administração'): ?>
-                <a href="admin/admin_users.php" class="c-btn c-btn--secondary u-w-full">Painel de Admin</a>
+                <a href="../../admin/admin_users.php" class="c-btn c-btn--secondary u-w-full">Painel de Admin</a>
             <?php endif; ?>
             <a href="../../actions/logout.php" class="c-btn c-btn--danger u-w-full">Sair</a>
         <?php else: ?>

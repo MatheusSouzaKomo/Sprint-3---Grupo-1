@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../config/connection.php';
+include '../connection.php';
 
 // Proteção da página: Apenas administradores podem acessar
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION['nivel'] !== 'Administração') {

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,16 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../assets/css/boilerplate.css">
     <link rel="stylesheet" href="../../assets/css/style.css">
-    <title>Document</title>
+    <title>Suporte e Reclamação</title>
 </head>
-<?php include '../../includes/header.php'; ?>
 <body class="o-page-container">
     <div class="c-login-box">
         <h2 class="c-login-box__title">Enviar Reclamação</h2>
-        <form action="processa_reclamacao.php" method="POST" class="c-login-box__form">
+        <form action="../../actions/auth_support.php" method="POST" class="c-login-box__form">
             <div class="c-form-field">
                 <label for="msg_reclamacao" class="c-form-field__label">Mensagem de reclamação:</label>
-                <textarea id="msg_reclamacao" name="msg_reclamacao" class="c-form-field__input" rows="4" required></textarea>
+                <textarea id="msg_reclamacao" name="msg_reclamacao" class="c-form-field__input" rows="4" style="resize: none;" required></textarea>
             </div>
             <div class="c-form-field">
                 <label for="setor_reclamacao" class="c-form-field__label">Setor:</label>
@@ -30,6 +30,9 @@
             <button type="submit" class="c-btn c-btn--primary" style="width: 100%; margin-top: var(--space-4);">Enviar Reclamação</button>
         </form>
     </div>
+    <div class="c-login-box__footer">
+           <a href="hub.php" class="c-link">Voltar</a>
+            </div>
     <script src="../../assets/js/script.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../config/connection.php';
+include '../connection.php';
 
 if (!isset($_SESSION['id_usuario'])) {
     die("Você precisa estar logado para fazer uma avaliação.");
@@ -20,4 +20,8 @@ if ($stmt->execute()) {
 } else {
     echo "Erro ao registrar avaliação: " . $stmt->error;
 }
+
 ?>
+ <div class="c-login-box__footer">
+           <a href="../pages/main/hub.php" class="c-link">Voltar</a>
+            </div>

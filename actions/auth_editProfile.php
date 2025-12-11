@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../config/connection.php';
+include '../connection.php';
 
 // Verifica se o usuário está logado
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
