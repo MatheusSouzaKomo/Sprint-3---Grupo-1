@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'connection.php';
+include '../config/connection.php';
 
 $email = $_POST['email'];
 $senha = $_POST['senha'];
@@ -30,7 +30,7 @@ if ($result->num_rows === 1) {
         $_SESSION["id_usuario"] = $user["id_usuario"];
         $_SESSION["nome"] = $user["nome"];
         $_SESSION["nivel"] = $user["nivel_acesso"];
-        header("Location: hub.php?status=loggedin");
+        header("Location: ../pages/main/hub.php?status=loggedin");
         exit();
     }
 }

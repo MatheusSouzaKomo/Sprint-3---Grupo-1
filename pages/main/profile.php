@@ -1,8 +1,6 @@
 <?php
 session_start();
-include 'connection.php';
-include 'functions.php';
-include 'breadcrumb.php';
+include '../../config/connection.php';
 
 // Verifica se o usuário está logado
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
@@ -21,7 +19,6 @@ $result = $stmt->get_result(); // Use get_result() para buscar os dados
 $user = $result->fetch_assoc();
 
 if (!$user) {
-    // Caso o usuário não seja encontrado (o que não deveria acontecer se o ID da sessão for válido)
     echo "Erro: Usuário não encontrado.";
     exit;
 }
@@ -33,13 +30,12 @@ if (!$user) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - <?php echo htmlspecialchars($user['nome']); ?></title>
-    <script src="script.js" defer></script>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/boilerplate.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/boilerplate.css">
 </head>
 <body>
-    <?php include __DIR__ . '/includes/header.php'; ?>
-
+    <?php include '../../includes/header.php'; ?>
+    
     <main class="o-container" style="padding-top: var(--space-12); padding-bottom: var(--space-12);">
         <?php
         generate_breadcrumb([
@@ -50,7 +46,7 @@ if (!$user) {
 
         <h1 class="u-text-center" style="margin-bottom: var(--space-8);">Meu Perfil</h1>
         <div class="c-login-box" style="max-width: 500px; margin: 0 auto;" id="profile-container">
-            <form action="processa_edicao_perfil.php" method="POST" id="profile-edit-form" novalidate>
+            <form action="../../actions/auth_editProfile.php" method="POST" id="profile-edit-form" novalidate>
                 <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($id_usuario); ?>">
 
                 <div class="c-form-field">
@@ -92,10 +88,20 @@ if (!$user) {
                     </div>
                 </div>
             </form>
-            <a href="/Sprint-3---Grupo-1/hub.php" class="c-btn c-btn--primary" style="margin-top: var(--space-6); display: block; text-align: center;">Voltar ao Painel</a>
+
+            <?php if (isset($user['nivel_acesso']) && $user['nivel_acesso'] === 'admin'): ?>
+                <div class="c-admin-panel-link" style="margin-top: var(--space-6); border-top: 1px solid #ccc; padding-top: var(--space-6); text-align: center;">
+                    <h2 class="u-h4" style="margin-bottom: var(--space-4);">Painel Administrativo</h2>
+                    <p style="margin-bottom: var(--space-4);">Você tem acesso às ferramentas de administração do site.</p>
+                    <a href="/Sprint-3---Grupo-1/admin_dashboard.php" class="c-btn c-btn--secondary">Acessar Painel de Admin</a>
+                </div>
+            <?php endif; ?>
+
+            <a href="hub.php" class="c-btn c-btn--primary" style="margin-top: var(--space-6); display: block; text-align: center;">Voltar ao Painel</a>
         </div>
     </main>
-
-    <?php include __DIR__ . '/includes/footer.php'; ?>
+    
+    <?php include '../../includes/footer.php'; ?>
+    <script src="../../assets/js/script.js"></script>
 </body>
 </html>

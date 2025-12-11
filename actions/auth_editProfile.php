@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'connection.php';
+include '../config/connection.php';
 
 // Verifica se o usuário está logado
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
@@ -17,12 +17,12 @@ $confirmar_senha = $_POST['confirmar_senha'] ?? '';
 
 // Validação básica
 if (empty($nome) || empty($email)) {
-    header("Location: perfil.php?status=empty_fields");
+    header("Location: ../pages/main/profile.php?status=empty_fields");
     exit;
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    header("Location: perfil.php?status=invalid_email");
+    header("Location: ../pages/main/profile.php?status=invalid_email");
     exit;
 }
 
@@ -34,7 +34,7 @@ $sql = "UPDATE login SET nome = ?, email = ?";
 if (!empty($nova_senha)) {
     // 1. Senha atual é obrigatória se uma nova senha for fornecida
     if (empty($senha_atual)) {
-        header("Location: perfil.php?status=current_pass_required");
+        header("Location: ../pages/main/profile.php?status=current_pass_required");
         exit;
     }
 
@@ -46,13 +46,13 @@ if (!empty($nova_senha)) {
 
     // 3. Verificar se a senha atual corresponde
     if (!password_verify($senha_atual, $user['senha'])) {
-        header("Location: perfil.php?status=wrong_current_pass");
+        header("Location: ../pages/main/profile.php?status=wrong_current_pass");
         exit;
     }
 
     // 4. Verificar se a nova senha e a confirmação coincidem
     if ($nova_senha !== $confirmar_senha) {
-        header("Location: perfil.php?status=pass_mismatch");
+        header("Location: ../pages/main/profile.php?status=pass_mismatch");
         exit;
     }
 
@@ -72,8 +72,8 @@ $stmt->bind_param($types, ...$params);
 
 if ($stmt->execute()) {
     $_SESSION['nome'] = $nome; // Atualiza o nome na sessão
-    header("Location: perfil.php?status=success");
+    header("Location: ../pages/main/profile.php?status=success");
 } else {
-    header("Location: perfil.php?status=update_error");
+    header("Location: ../pages/main/profile.php?status=update_error");
 }
 exit;

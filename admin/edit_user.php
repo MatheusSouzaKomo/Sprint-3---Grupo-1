@@ -1,12 +1,10 @@
 <?php
 session_start();
-include __DIR__ . '/connection.php';
-include __DIR__ . '/includes/functions.php';
-include __DIR__ . '/includes/breadcrumb.php';
+include '../../connection.php';
 
 // Proteção: Apenas administradores podem acessar
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION['nivel'] !== 'Administração') {
-    header("Location: hub.php");
+    header("Location: ../pages/main/hub.php");
     exit;
 }
 
@@ -32,7 +30,7 @@ if (!$user) {
     exit;
 }
 
-$niveis_acesso = ['Usuário', 'Administração']; // Opções para o select
+$niveis_acesso = ['Cidadão', 'Associado', 'Administração']; // Opções para o select
 
 ?>
 <!DOCTYPE html>
@@ -41,18 +39,17 @@ $niveis_acesso = ['Usuário', 'Administração']; // Opções para o select
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Usuário - <?php echo htmlspecialchars($user['nome']); ?></title>
-    <script src="script.js" defer></script>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/boilerplate.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boilerplate.css">
 </head>
 <body>
-    <?php include __DIR__ . '/includes/header.php'; ?>
+    <?php include '../includes/header.php'; ?>
 
     <main class="o-container" style="padding-top: var(--space-12); padding-bottom: var(--space-12);">
         <?php
         generate_breadcrumb([
             ['name' => 'Painel Principal', 'url' => '/Sprint-3---Grupo-1/hub.php'],
-            ['name' => 'Administração', 'url' => '/Sprint-3---Grupo-1/admin_users.php'],
+            ['name' => 'Administração', 'url' => '/Sprint-3---Grupo-1/admin/admin_users.php'],
             ['name' => 'Editar Usuário', 'url' => '#']
         ]);
         ?>
@@ -93,7 +90,7 @@ $niveis_acesso = ['Usuário', 'Administração']; // Opções para o select
             </form>
         </div>
     </main>
-
-    <?php include __DIR__ . '/includes/footer.php'; ?>
+    <?php include '/../includes/footer.php'; ?>
+    <script src="../assets/js/script.js"></script>
 </body>
 </html>

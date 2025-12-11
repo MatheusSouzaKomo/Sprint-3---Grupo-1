@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="theme.js"></script>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../../assets/css/boilerplate.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
     <title>Document</title>
 </head>
+<?php include '../../includes/header.php'; ?>
 <body class="o-page-container">
     <div class="c-login-box">
         <h2 class="c-login-box__title">Enviar Reclamação</h2>
@@ -29,6 +30,7 @@
             <button type="submit" class="c-btn c-btn--primary" style="width: 100%; margin-top: var(--space-4);">Enviar Reclamação</button>
         </form>
     </div>
+    <script src="../../assets/js/script.js"></script>
 </body>
 </html>
     

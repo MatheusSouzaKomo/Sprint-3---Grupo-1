@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'connection.php';
+include '../config/connection.php';
 
 if (!isset($_SESSION['id_usuario'])) {
     die("Você precisa estar logado para fazer uma avaliação.");

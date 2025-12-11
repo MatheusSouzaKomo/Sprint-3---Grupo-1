@@ -1,6 +1,5 @@
 <?php
-require_once 'includes/config.php'; // Centraliza o início da sessão
-require_once 'connection.php'; // Conexão com o banco
+require_once '../config/connection.php'; // Conexão com o banco
 
 // Garante que o usuário esteja logado
 if (!isset($_SESSION['id_usuario'])) {
@@ -24,11 +23,11 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("sii", $msg_reclamacao, $setor_reclamacao, $id_usuario); // "sii" estava correto
 
 if ($stmt->execute()) {
-    header('Location: hub.php?status=complaint_success');
+    header('Location: ../pages/main/hub.php?status=complaint_success');
 } else {
     // Em produção, logar o erro em vez de exibi-lo ao usuário
     error_log("Erro ao registrar reclamação: " . $stmt->error);
-    header('Location: hub.php?status=complaint_error');
+    header('Location: ../pages/main/hub.php?status=complaint_error');
 }
 
 $stmt->close();

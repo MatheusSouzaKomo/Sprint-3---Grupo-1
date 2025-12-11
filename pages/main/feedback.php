@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Formulário de Avaliação</title>
-   <script src="theme.js"></script>
-   <link rel="stylesheet" href="css/style.css">
+   <link rel="stylesheet" href="../../assets/css/boilerplate.css">
+   <link rel="stylesheet" href="../../assets/css/style.css">
 </head>
 <body class="o-page-container">
     <div class="c-login-box">
         <h2 class="c-login-box__title">Deixe sua Avaliação</h2>
-        <form action="processa_avaliacao.php" method="POST" class="c-login-box__form">
+        <form action="../../actions/auth_feedback.php" method="POST" class="c-login-box__form">
             <div class="c-form-field">
                 <label for="msg_avaliacao" class="c-form-field__label">Mensagem de avaliação:</label>
                 <textarea id="msg_avaliacao" name="msg_avaliacao" class="c-form-field__input" rows="4" required></textarea>
@@ -39,7 +39,8 @@
             <button type="submit" class="c-btn c-btn--primary" style="width: 100%;">Enviar Avaliação</button>
        </form>
        <div class="c-login-box__footer">
-           <a href="index.php" class="c-link">Voltar</a>
+           <a href="hub.php" class="c-link">Voltar</a>
+           <script src="../../assets/js/script.js"></script>
        </div>
    </div>
 </body>

@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="script.js" defer></script>
-   <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../assets/css/boilerplate.css">
+   <link rel="stylesheet" href="../assets/css/style.css">
    <title>Document</title>
 </head>
     <body class="o-page-container">
         <div class="c-login-box">
             <h2 class="c-login-box__title">Cadastro</h2>
-            <form action="processa_cadastro.php" method="POST" id="cadastro-form" class="c-login-box__form" novalidate>
+            <form action="auth_register.php" method="POST" id="cadastro-form" class="c-login-box__form" novalidate>
                 <div class="c-form-field">
                     <label for="nome" class="c-form-field__label">Nome:</label>
                     <input type="text" id="nome" name="nome" class="c-form-field__input" required>
@@ -34,4 +34,5 @@
                 <button type="submit" class="c-btn c-btn--primary" style="width: 100%; margin-top: var(--space-4);">Cadastrar</button>
            </form>
        </div>
+       <script src="../assets/js/script.js"></script>
    </body>

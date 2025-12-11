@@ -11,8 +11,8 @@
             </ul>
         </div>   
         <div class="c-sac-footer__buttons">
-            <a href="avaliacao.php" class="c-btn c-sac-btn c-btn--primary">Enviar Avaliação</a>
-            <a href="reclamacao.php" class="c-btn c-sac-btn c-btn--primary">Enviar Reclamação</a>
+            <a href="../main/feedback.php" class="c-btn c-sac-btn c-btn--primary">Enviar Avaliação</a>
+            <a href="../main/support.php" class="c-btn c-sac-btn c-btn--primary">Enviar Reclamação</a>
         </div>
     </div>
 </footer>

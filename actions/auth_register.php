@@ -1,5 +1,5 @@
 <?php
-include 'connection.php';
+include '../config/connection.php';
 
     $nome = $_POST["nome"];
     $email = $_POST["email"];
@@ -11,7 +11,7 @@ include 'connection.php';
     $stmt->bind_param("ssss", $nome, $email, $senha, $nivel);
 
     if ($stmt->execute()) {
-    header("Location: login.php"); // redireciona caso sucesso
+    header("Location: login.php"); 
     exit();
         } else {
     echo "Erro ao cadastrar: " . $conn->error;

@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/boilerplate.css">
+    <link rel="stylesheet" href="../../assets/css/boilerplate.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
     <title>Painel Principal</title>
 </head>
 <body>
-    <?php include 'includes/header.php'; ?>
+    <?php include '../../includes/header.php'; ?>
 
     <main id="main-content" class="o-container" style="padding-top: var(--space-12); padding-bottom: var(--space-12);">
 
@@ -54,10 +54,9 @@
             <?php endfor; ?>
         </div>
 
-        <!-- Real Card Grid (Initially hidden, shown via JS) -->
         <div id="card-grid" class="o-grid o-grid--3-cols" style="display: none;">
-            <!-- Cards -->
-            <a href="sectors/setorSaude.php" class="c-card c-card--saude" style="--animation-delay: 0.1s;">
+
+            <a href="../sectors/setorSaude.php" class="c-card c-card--saude" style="--animation-delay: 0.1s;">
                 <div class="c-card__content">
                     <h2 class="c-card__title">Saúde</h2>
                     <p>Explore informações e serviços relacionados à saúde.</p>
@@ -66,7 +65,7 @@
                     <span class="c-card__action-btn">Ver Detalhes</span>
                 </footer>
             </a>
-            <a href="sectors/setorSeguranca.php" class="c-card c-card--seguranca" style="--animation-delay: 0.2s;">
+            <a href="../sectors/setorSeguranca.php" class="c-card c-card--seguranca" style="--animation-delay: 0.2s;">
                 <div class="c-card__content">
                     <h2 class="c-card__title">Segurança</h2>
                     <p>Descubra iniciativas e dados sobre segurança pública.</p>
@@ -75,7 +74,7 @@
                     <span class="c-card__action-btn">Ver Detalhes</span>
                 </footer>
             </a>
-            <a href="sectors/setorTransito.php" class="c-card c-card--transito" style="--animation-delay: 0.3s;">
+            <a href="../sectors/setorTransito.php" class="c-card c-card--transito" style="--animation-delay: 0.3s;">
                 <div class="c-card__content">
                     <h2 class="c-card__title">Trânsito</h2>
                     <p>Informações sobre mobilidade urbana e trânsito.</p>
@@ -84,7 +83,7 @@
                     <span class="c-card__action-btn">Ver Detalhes</span>
                 </footer>
             </a>
-            <a href="sectors/setorEducacao.php" class="c-card c-card--educ" style="--animation-delay: 0.4s;">
+            <a href="../sectors/setorEducacao.php" class="c-card c-card--educ" style="--animation-delay: 0.4s;">
                 <div class="c-card__content">
                     <h2 class="c-card__title">Educação</h2>
                     <p>Acesse conteúdos e serviços educacionais.</p>
@@ -93,7 +92,7 @@
                     <span class="c-card__action-btn">Ver Detalhes</span>
                 </footer>
             </a>
-            <a href="sectors/setorLazer.php" class="c-card c-card--lazer" style="--animation-delay: 0.5s;">
+            <a href="../sectors/setorLazer.php" class="c-card c-card--lazer" style="--animation-delay: 0.5s;">
                 <div class="c-card__content">
                     <h2 class="c-card__title">Lazer</h2>
                     <p>Encontre opções de lazer e entretenimento.</p>
@@ -102,7 +101,7 @@
                     <span class="c-card__action-btn">Ver Detalhes</span>
                 </footer>
             </a>
-            <a href="sectors/setorEconomia.php" class="c-card c-card--economia" style="--animation-delay: 0.6s;">
+            <a href="../sectors/setorEconomia.php" class="c-card c-card--economia" style="--animation-delay: 0.6s;">
                 <div class="c-card__content">
                     <h2 class="c-card__title">Economia</h2>
                     <p>Saiba mais sobre economia e finanças.</p>
@@ -119,8 +118,7 @@
         </button>
 
     </main>
-
-    <?php include 'includes/footer.php'; ?>
-    <script src="main.js"></script>
+    <?php include '../../includes/footer.php';?>
+    <script src="../../assets/js/script.js"></script>
 </body>
 </html>

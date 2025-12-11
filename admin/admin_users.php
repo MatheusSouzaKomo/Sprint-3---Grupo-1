@@ -1,15 +1,34 @@
 <?php
 session_start();
-include __DIR__ . '/connection.php';
-include __DIR__ . '/includes/functions.php'; // Inclui a função get_status_message
-include __DIR__ . '/includes/breadcrumb.php'; // Inclui a função de breadcrumb
+include '../config/connection.php';
 
 // Proteção da página: Apenas administradores podem acessar
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION['nivel_acesso'] !== 'Administração') {
-    header("Location: hub.php");
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION['nivel'] !== 'Administração') {
+    header("Location: ../pages/main/hub.php");
     exit;
 }
 
+// Função para obter mensagens de status
+function get_status_message($status) {
+    switch ($status) {
+        case 'user_deleted':
+            return ['message' => 'Usuário excluído com sucesso.', 'type' => 'success'];
+        case 'delete_error':
+            return ['message' => 'Erro ao excluir o usuário.', 'type' => 'danger'];
+        case 'user_updated':
+            return ['message' => 'Usuário atualizado com sucesso.', 'type' => 'success'];
+        case 'update_error':
+            return ['message' => 'Erro ao atualizar o usuário.', 'type' => 'danger'];
+        case 'user_created':
+            return ['message' => 'Usuário criado com sucesso.', 'type' => 'success'];
+        case 'create_error':
+            return ['message' => 'Erro ao criar o usuário.', 'type' => 'danger'];
+        case 'self_delete_error':
+            return ['message' => 'Você não pode excluir sua própria conta.', 'type' => 'warning'];
+        default:
+            return null;
+    }
+}
 // Lógica de Busca
 $search_term = $_GET['search'] ?? '';
 $search_query = "%" . $search_term . "%";
@@ -44,37 +63,32 @@ $status_message = get_status_message($_GET['status'] ?? '');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administração de Usuários</title>
-    <script src="main.js" defer></script>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/boilerplate.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/boilerplate.css">
 </head>
 <body>
-    <?php include __DIR__ . '/includes/header.php'; ?>
+    <?php include '../includes/header.php'; ?>
 
-     <main class="o-container" style="padding-top: var(--space-12); padding-bottom: var(--space-12);">
-        <?php
-        generate_breadcrumb([
-            ['name' => 'Painel Principal', 'url' => '/Sprint-3---Grupo-1/hub.php'],
-            ['name' => 'Administração de Usuários', 'url' => '#']
-        ]);
-        ?>
+     <main style="padding-top: var(--space-12); padding-bottom: var(--space-12);">
+        
+        <div class="o-container">
+            <h1 class="u-text-center" style="margin-bottom: var(--space-8);">Administração de Usuários</h1>
 
-        <h1 class="u-text-center" style="margin-bottom: var(--space-8);">Administração de Usuários</h1>
-
-        <!-- Barra de Busca -->
-        <div class="c-search-bar">
-            <form action="admin_users.php" method="GET">
-                <input type="search" name="search" class="c-search-bar__input" placeholder="Buscar por nome ou email..." value="<?php echo htmlspecialchars($search_term); ?>">
-                <button type="submit" class="c-btn c-btn--primary">Buscar</button>
-            </form>
-        </div>
-
-        <?php if ($status_message): ?>
-            <div class="c-alert c-alert--<?php echo $status_message['type']; ?>">
-                <span><?php echo $status_message['message']; ?></span>
-                <button class="c-alert__close-btn" aria-label="Fechar">&times;</button>
+            <!-- Barra de Busca -->
+            <div class="c-search-bar">
+                <form action="admin_users.php" method="GET">
+                    <input type="search" name="search" class="c-search-bar__input" placeholder="Buscar por nome ou email..." value="<?php echo htmlspecialchars($search_term); ?>">
+                    <button type="submit" class="c-btn c-btn--primary">Buscar</button>
+                </form>
             </div>
-        <?php endif; ?>
+
+            <?php if ($status_message): ?>
+                <div class="c-alert c-alert--<?php echo $status_message['type']; ?>">
+                    <span><?php echo $status_message['message']; ?></span>
+                    <button class="c-alert__close-btn" aria-label="Fechar">&times;</button>
+                </div>
+            <?php endif; ?>
+        </div>
 
         <div class="c-table-container">
             <table class="c-table">
@@ -112,24 +126,27 @@ $status_message = get_status_message($_GET['status'] ?? '');
         </div>
 
         <!-- Componente de Paginação -->
-        <nav class="c-pagination" aria-label="Navegação de página">
-            <?php if ($pagina_atual > 1): // Mantém o termo de busca na paginação ?>
-                <a href="?page=<?php echo $pagina_atual - 1; ?>&search=<?php echo urlencode($search_term); ?>" class="c-pagination__link">Anterior</a>
-            <?php endif; ?>
+        <div class="o-container">
+            <nav class="c-pagination" aria-label="Navegação de página">
+                <?php if ($pagina_atual > 1): // Mantém o termo de busca na paginação ?>
+                    <a href="?page=<?php echo $pagina_atual - 1; ?>&search=<?php echo urlencode($search_term); ?>" class="c-pagination__link">Anterior</a>
+                <?php endif; ?>
 
-            <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
-                <a href="?page=<?php echo $i; ?>&search=<?php echo urlencode($search_term); ?>" class="c-pagination__link <?php if ($i == $pagina_atual) echo 'c-pagination__link--active'; ?>">
-                    <?php echo $i; ?>
-                </a>
-            <?php endfor; ?>
+                <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
+                    <a href="?page=<?php echo $i; ?>&search=<?php echo urlencode($search_term); ?>" class="c-pagination__link <?php if ($i == $pagina_atual) echo 'c-pagination__link--active'; ?>">
+                        <?php echo $i; ?>
+                    </a>
+                <?php endfor; ?>
 
-            <?php if ($pagina_atual < $total_paginas): ?>
-                <a href="?page=<?php echo $pagina_atual + 1; ?>&search=<?php echo urlencode($search_term); ?>" class="c-pagination__link">Próxima</a>
-            <?php endif; ?>
-        </nav>
+                <?php if ($pagina_atual < $total_paginas): ?>
+                    <a href="?page=<?php echo $pagina_atual + 1; ?>&search=<?php echo urlencode($search_term); ?>" class="c-pagination__link">Próxima</a>
+                <?php endif; ?>
+            </nav>
+        </div>
 
     </main>
 
-    <?php include __DIR__ . '/includes/footer.php'; ?>
+    <?php include '../includes/footer.php'; ?>
+    <script src="../assets/js/script.js"></script>
 </body>
 </html>
